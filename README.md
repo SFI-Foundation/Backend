@@ -164,6 +164,7 @@ CORS settings in `__init__.py` include local frontend ports and Open Coding Soci
 
 ## Handoff Checklist
 
+
 Before continuing backend work:
 
 - Confirm `../greppers/_data/sfi_specs.json` exists and is current.
