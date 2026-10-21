@@ -1,6 +1,7 @@
 import jwt
 from flask import Blueprint, app, request, jsonify, current_app, Response, g
 from flask_restful import Api, Resource # used for REST API building
+from flask_login import logout_user
 from datetime import datetime
 from __init__ import app, db
 from api.authorize import token_required
@@ -14,6 +15,23 @@ user_api = Blueprint('user_api', __name__,
 # API docs https://flask-restful.readthedocs.io/en/latest/api.html
 api = Api(user_api)
 
+
+def reserved_admin_uid(uid):
+    # MySQL usernames may compare case-insensitively and ignore trailing spaces.
+    return isinstance(uid, str) and uid.strip().casefold() in {
+        'admin', app.config['ADMIN_UID'].strip().casefold(),
+    }
+
+
+def _without_password(user_data):
+    """Upstream security fix: never expose hashes in general user API responses.
+
+    Admin backup/export code still calls User.read directly for restoration.
+    """
+    user_data.pop('password', None)
+    return user_data
+
+
 class UserAPI:        
     class _ID(Resource):  # Individual identification API operation
         @token_required()
@@ -21,7 +39,7 @@ class UserAPI:
             ''' Retrieve the current user from the token_required authentication check '''
             current_user = g.current_user
             ''' Return the current user as a json object with role information '''
-            user_data = current_user.read()
+            user_data = _without_password(current_user.read())
             # Add role information to response
             user_data['role'] = current_user.role
             user_data['is_admin'] = current_user.is_admin()
@@ -93,8 +111,12 @@ class UserAPI:
             
             # validate uid
             uid = body.get('uid')
-            if uid is None or len(uid) < 2:
+            if not isinstance(uid, str) or len(uid) < 2:
                 return {'message': f'User ID is missing, or is less than 2 characters'}, 400
+            # Startup assigns the administrators group to the reserved admin UID.
+            # Public signup must never claim that identity, even on an empty DB.
+            if reserved_admin_uid(uid):
+                return {'message': 'This username is reserved. Please choose another.'}, 400
           
             ''' User object creation '''
             #1: Setup minimal User object using __init__ method
@@ -143,13 +165,13 @@ class UserAPI:
                     db_user = User.query.filter_by(_uid=uid).first()
                     if db_user:
                         #print(f"User exists in DB but create returned None: {db_user.uid}")
-                        return jsonify(db_user.read())  # Return the user anyway
+                        return jsonify(_without_password(db_user.read()))  # Return the user anyway
                     else:
                         return {'message': f'Processed {name}, either a format error or User ID {uid} is duplicate'}, 400
                 
                 #print(f"Successfully created user: {user.uid}")
                 # return response, the created user details as a JSON object
-                return jsonify(user.read())
+                return jsonify(_without_password(user.read()))
                 
             except Exception as e:
                 #print(f"Error creating user: {e}")
@@ -193,7 +215,7 @@ class UserAPI:
             # prepare a json list of user dictionaries
             json_ready = []  
             for user in users:
-                user_data = user.read()
+                user_data = _without_password(user.read())
                 # Add access control
                 if current_user.role == 'Admin' or current_user.id == user.id:
                     user_data['access'] = ['rw'] # read-write access control 
@@ -232,6 +254,11 @@ class UserAPI:
             # Read data from the JSON body of the request
             body = request.get_json()
 
+            if (current_user.role != 'Admin'
+                    and reserved_admin_uid(body.get('uid'))
+                    and body.get('uid') != current_user.uid):
+                return {'message': 'This username is reserved. Please choose another.'}, 400
+
             ''' Admin-specific update handling '''
             if current_user.role == 'Admin':
                 uid = body.get('uid')
@@ -251,7 +278,7 @@ class UserAPI:
             user.update(body)
             
             # return response, the updated user details as a JSON object
-            return jsonify(user.read())
+            return jsonify(_without_password(user.read()))
         
         @token_required("Admin")
         def delete(self):
@@ -274,7 +301,7 @@ class UserAPI:
                 return {'message': f'User {uid} not found'}, 404
            
             # Read and then Delete the User object using custom methods
-            user_json = user.read()
+            user_json = _without_password(user.read())
             user.delete()
             
             # 204 is the status code for delete with no json response
@@ -421,7 +448,6 @@ class UserAPI:
                                 path='/',
                                 samesite='Lax'
                             )
-                        print(f"Token set: {token}")
                         return resp 
                     except Exception as e:
                         return {
@@ -479,6 +505,7 @@ class UserAPI:
                         path='/',
                         samesite='Lax'
                     )
+                logout_user()
                 return resp
             except Exception as e:
                 return {
@@ -703,12 +730,12 @@ class UserAPI:
                     # Check if user was actually created in database
                     db_user = User.query.filter_by(_uid=uid).first()
                     if db_user:
-                        return jsonify(db_user.read())
+                        return jsonify(_without_password(db_user.read()))
                     else:
                         return {'message': f'Failed to create guest account for {uid}, username may already exist'}, 400
 
                 # Return the created user details
-                return jsonify(user.read())
+                return jsonify(_without_password(user.read()))
 
             except Exception as e:
                 return {'message': f'Error creating guest user: {str(e)}'}, 500
