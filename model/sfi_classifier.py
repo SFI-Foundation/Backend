@@ -12,11 +12,14 @@ synonyms, keyword extraction, and partial-phrase variants.
 import json
 import os
 import re
+import joblib
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.svm import LinearSVC
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import LabelEncoder
+
+MODEL_PATH = os.path.join(os.path.dirname(__file__), "sfi_model.joblib")
 
 
 class SfiClassifier:
@@ -226,12 +229,42 @@ class SfiClassifier:
         self.trained = True
         print(f"[SFI Classifier] Trained on {self.n_samples} samples, accuracy: {self.accuracy:.1%}")
 
+    def save(self, path=MODEL_PATH):
+        joblib.dump({
+            "spec_pipeline": self.spec_pipeline,
+            "category_pipeline": self.category_pipeline,
+            "spec_encoder": self.spec_encoder,
+            "category_encoder": self.category_encoder,
+            "accuracy": self.accuracy,
+            "n_samples": self.n_samples,
+        }, path)
+        print(f"[SFI Classifier] Saved model to {path}")
+
+    def _load_saved(self, path=MODEL_PATH):
+        state = joblib.load(path)
+        self.spec_pipeline = state["spec_pipeline"]
+        self.category_pipeline = state["category_pipeline"]
+        self.spec_encoder = state["spec_encoder"]
+        self.category_encoder = state["category_encoder"]
+        self.accuracy = state["accuracy"]
+        self.n_samples = state["n_samples"]
+        self.trained = True
+        print(f"[SFI Classifier] Loaded saved model from {path}")
+
     @classmethod
     def get_instance(cls):
         if cls._instance is None:
             cls._instance = cls()
             cls._instance._load_data()
+            if os.path.exists(MODEL_PATH):
+                try:
+                    cls._instance._load_saved()
+                    return cls._instance
+                except Exception as e:
+                    print(f"[SFI Classifier] Could not load saved model ({e}); retraining")
             cls._instance._train()
+            if cls._instance.trained:
+                cls._instance.save()
         return cls._instance
 
     def predict(self, description, top_n=10):
@@ -302,3 +335,12 @@ class SfiClassifier:
 
 def initSfiClassifier():
     SfiClassifier.get_instance()
+
+
+if __name__ == "__main__":
+    # Force a fresh train and overwrite the saved model
+    clf = SfiClassifier()
+    clf._load_data()
+    clf._train()
+    if clf.trained:
+        clf.save()
