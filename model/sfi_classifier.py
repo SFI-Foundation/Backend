@@ -12,6 +12,7 @@ synonyms, keyword extraction, and partial-phrase variants.
 import json
 import os
 import re
+import threading
 import joblib
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -20,6 +21,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import LabelEncoder
 
 MODEL_PATH = os.path.join(os.path.dirname(__file__), "sfi_model.joblib")
+_retrain_lock = threading.Lock()
 
 
 class SfiClassifier:
@@ -89,23 +91,47 @@ class SfiClassifier:
         self.accuracy = 0.0
         self.n_samples = 0
 
+    def _load_db_specs(self):
+        """Current SfiSpec rows in the JSON entry shape, or [] if unavailable."""
+        try:
+            from flask import has_app_context
+            if not has_app_context():
+                return []
+            from model.sfi_spec import SfiSpec
+            return [{
+                "product_name": r.product_name or "",
+                "category": r.category or "",
+                "subcategory": r.subcategory or "",
+                "spec_numbers": [r.spec_number],
+                "spec_pdfs": [r.spec_pdf or ""],
+                "manufacturer_pdfs": [r.manufacturer_pdf or ""],
+                "products_pdfs": [r.products_pdf or ""],
+                "effective_date": r.effective_date or "",
+            } for r in SfiSpec.query.order_by(SfiSpec.id).all() if r.spec_number]
+        except Exception as e:
+            print(f"[SFI Classifier] Could not read specs from database ({e}); using JSON")
+            return []
+
     def _load_data(self):
-        json_path = os.path.join(
-            os.path.dirname(__file__), "..", "..",
-            "greppers", "_data", "sfi_specs.json"
-        )
-        if not os.path.exists(json_path):
+        self.specs_data = self._load_db_specs()
+        if not self.specs_data:
             json_path = os.path.join(
-                os.path.dirname(__file__), "..",
-                "sfi_specs.json"
+                os.path.dirname(__file__), "..", "..",
+                "greppers", "_data", "sfi_specs.json"
             )
-        if not os.path.exists(json_path):
-            print("[SFI Classifier] WARNING: sfi_specs.json not found")
-            return
+            if not os.path.exists(json_path):
+                json_path = os.path.join(
+                    os.path.dirname(__file__), "..",
+                    "sfi_specs.json"
+                )
+            if not os.path.exists(json_path):
+                print("[SFI Classifier] WARNING: sfi_specs.json not found")
+                return
 
-        with open(json_path, "r", encoding="utf-8") as f:
-            self.specs_data = json.load(f)
+            with open(json_path, "r", encoding="utf-8") as f:
+                self.specs_data = json.load(f)
 
+        self.spec_lookup = {}
         for entry in self.specs_data:
             for i, spec_num in enumerate(entry.get("spec_numbers", [])):
                 self.spec_lookup[spec_num] = {
@@ -266,6 +292,25 @@ class SfiClassifier:
             if cls._instance.trained:
                 cls._instance.save()
         return cls._instance
+
+    def retrain(self):
+        """Rebuild the model from the current specs and save it.
+
+        Trains into a fresh instance and swaps it in only on success, so a
+        failed retrain leaves the live model untouched.
+        """
+        with _retrain_lock:
+            fresh = SfiClassifier()
+            fresh._load_data()
+            fresh._train()
+            if not fresh.trained:
+                return False
+            fresh.save()
+            for attr in ("spec_pipeline", "category_pipeline", "spec_encoder",
+                         "category_encoder", "specs_data", "spec_lookup",
+                         "accuracy", "n_samples", "trained"):
+                setattr(self, attr, getattr(fresh, attr))
+            return True
 
     def predict(self, description, top_n=10):
         if not self.trained:
