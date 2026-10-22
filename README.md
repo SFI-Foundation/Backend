@@ -172,3 +172,18 @@ Before continuing backend work:
 - Test `GET /api/sfi/classifier/status` to confirm the classifier trained.
 - Configure `GEMINI_API_KEY` before testing `POST /api/sfi/chat`.
 - Treat the `/admin/` frontend as unfinished until the backend admin endpoints and permission checks are added.
+
+## SFI spec write access (admin only)
+
+`POST/PUT/DELETE /api/sfi/specs[/<id>]` are protected by `@admin_required` (`api/auth_utils.py`). GET routes stay public. The `/sfi-specs/` admin panel is only shown when `/api/sfi/me` reports an admin.
+
+```mermaid
+flowchart TD
+    R["POST/PUT/DELETE /api/sfi/specs"] --> D{"@admin_required"}
+    D -->|no session or token| E1["401 Unauthorized"]
+    D -->|user, not admin| E2["403 Forbidden"]
+    D -->|admin| V{"required fields present?"}
+    V -->|missing/blank| E3["400 Bad Request"]
+    V -->|ok| H["Route handler"] --> DB[("SQLite")]
+    G["GET spec routes"] -->|public| H2["Read handler"]
+```
