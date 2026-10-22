@@ -27,6 +27,12 @@ class SfiSpec(db.Model):
     products_pdf = db.Column(db.String(255), default='')
     effective_date = db.Column(db.String(50), default='')
 
+    chunks = db.relationship(
+        'SfiSpecChunk',
+        back_populates='spec',
+        cascade='all, delete-orphan',
+    )
+
     def to_dict(self):
         """Convert this spec to a JSON-serializable dictionary."""
         return {
@@ -40,6 +46,24 @@ class SfiSpec(db.Model):
             "products_pdf": self.products_pdf,
             "effective_date": self.effective_date,
         }
+
+
+class SfiSpecChunk(db.Model):
+    """An extracted, page-cited text chunk belonging to an SFI spec."""
+    __tablename__ = 'sfi_spec_chunks'
+
+    id = db.Column(db.Integer, primary_key=True)
+    spec_id = db.Column(
+        db.Integer,
+        db.ForeignKey('sfi_specs.id', ondelete='CASCADE'),
+        nullable=False,
+        index=True,
+    )
+    page = db.Column(db.Integer, nullable=False)
+    chunk_index = db.Column(db.Integer, nullable=False)
+    text = db.Column(db.Text, nullable=False)
+
+    spec = db.relationship('SfiSpec', back_populates='chunks')
 
 
 def initSfiSpecs():

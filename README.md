@@ -25,6 +25,7 @@ The Flask backend provides:
 | `api/sfi_chat.py` | Gemini-backed chatbot endpoint. |
 | `api/user_gear.py` | Authenticated user gear CRUD endpoints. |
 | `model/sfi_spec.py` | SQLAlchemy model for SFI specs and import from frontend JSON. |
+| `scripts/ingest_sfi_pdfs.py` | Downloads and indexes text chunks from official SFI spec PDFs. |
 | `model/sfi_classifier.py` | TF-IDF plus LinearSVC classifier for part/spec prediction. |
 | `model/user_gear.py` | SQLAlchemy model for user equipment tracking. |
 | `__init__.py` | Flask app setup, CORS, environment config, and database configuration. |
@@ -74,6 +75,55 @@ greppers/
 ```
 
 If the frontend repo is not beside this backend repo, SFI spec import and classifier training may fail unless the path logic is updated.
+
+## SFI PDF Text Ingestion
+
+Run the ingestion pipeline from the repository root:
+
+```bash
+python scripts/ingest_sfi_pdfs.py
+```
+
+The script reads unique `spec_pdfs` paths from `sfi_specs.json`, resolves relative
+paths against `https://sfifoundation.com/wp-content/pdfs/`, and stores downloaded
+PDFs in the ignored `instance/sfi_pdf_cache/` directory. Set `SFI_PDF_BASE_URL`
+to override that base. Cached valid PDFs are reused on later runs. Text is
+extracted page-by-page and stored as overlapping 800-character chunks in
+`sfi_spec_chunks`; each row has a `spec_id`, one-based `page`, and per-spec
+`chunk_index`. A successful re-run replaces that spec's chunks rather than
+duplicating them. Failed downloads, scanned/no-text PDFs, and parse errors are
+logged and skipped without discarding existing chunks.
+
+```mermaid
+flowchart TD
+    A["scripts/ingest_sfi_pdfs.py"] --> B["Read spec_pdfs from sfi_specs.json"]
+    B --> C{"Cached valid PDF?"}
+    C -->|No| D["Download once to instance/sfi_pdf_cache"]
+    C -->|Yes| E["Reuse cached PDF"]
+    D --> F["Extract text page-by-page"]
+    E --> F
+    D -.->|Download error| H["Log failure and keep existing chunks"]
+    F -.->|Parse error| H
+    F --> G{"Any extractable text?"}
+    G -->|No| H["Log failure and keep existing chunks"]
+    G -->|Yes| I["Create overlapping page-aware chunks"]
+    I --> J[("sfi_spec_chunks")]
+    J --> K["Replace chunks linked by spec_id"]
+    H --> L["Print succeeded/failed summary"]
+    K --> L
+```
+
+```mermaid
+erDiagram
+    SFI_SPECS ||--o{ SFI_SPEC_CHUNKS : "split into"
+    SFI_SPEC_CHUNKS {
+        int id PK
+        int spec_id FK
+        int page
+        int chunk_index
+        text text
+    }
+```
 
 ## Local Setup
 
@@ -148,8 +198,8 @@ CORS settings in `__init__.py` include local frontend ports and Open Coding Soci
 - No implemented admin/group endpoints for the standalone frontend `/admin/` page.
 - Spec create, update, and delete endpoints are not currently restricted to admin users.
 - Gear API does not support pending, approved, rejected, owner metadata, reviewer notes, or all-user admin views.
-- Chatbot does not read PDFs or crawl the website. It only receives compact spec rows from the database.
-- No PDF extraction, summarization, vector search, or RAG layer exists yet.
+- Chatbot does not yet retrieve PDF chunks or crawl the website; it only receives compact spec rows from the database.
+- PDF extraction and chunk storage are implemented; PDF summaries, search, and chatbot retrieval remain future work.
 - `/api/sfi/detect` is keyword-based and separate from the frontend's TensorFlow.js image detector.
 - There are no focused automated tests for the SFI API endpoints yet.
 
@@ -171,4 +221,5 @@ Before continuing backend work:
 - Start the backend and test `GET /api/sfi/specs`.
 - Test `GET /api/sfi/classifier/status` to confirm the classifier trained.
 - Configure `GEMINI_API_KEY` before testing `POST /api/sfi/chat`.
+- Run `python scripts/ingest_sfi_pdfs.py` to refresh the local SFI PDF chunk index.
 - Treat the `/admin/` frontend as unfinished until the backend admin endpoints and permission checks are added.
