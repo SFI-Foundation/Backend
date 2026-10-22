@@ -4,11 +4,13 @@ SFI Classifier API — ML-powered part identification endpoints.
 Endpoints:
     POST   /api/sfi/classify           — classify a part description using ML
     GET    /api/sfi/classifier/status   — model status and accuracy info
+    POST   /api/sfi/classifier/retrain  — admin only: retrain from the current spec database
 """
 
 from flask import Blueprint, request, jsonify
 from flask_restful import Api, Resource
 from model.sfi_classifier import SfiClassifier
+from api.auth_utils import admin_required
 
 sfi_classifier_api = Blueprint('sfi_classifier_api', __name__, url_prefix='/api/sfi')
 api = Api(sfi_classifier_api)
@@ -43,5 +45,15 @@ class SfiClassifierAPI:
             classifier = SfiClassifier.get_instance()
             return jsonify(classifier.get_status())
 
+    class _Retrain(Resource):
+        """POST /api/sfi/classifier/retrain (admin only)"""
+        @admin_required
+        def post(self):
+            classifier = SfiClassifier.get_instance()
+            if not classifier.retrain():
+                return {"error": "Retraining failed: no spec data available"}, 500
+            return jsonify(classifier.get_status())
+
     api.add_resource(_Classify, '/classify')
     api.add_resource(_Status, '/classifier/status')
+    api.add_resource(_Retrain, '/classifier/retrain')
