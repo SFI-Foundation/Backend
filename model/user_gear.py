@@ -7,6 +7,7 @@ member of a group with `can_approve_gear`) can approve or reject them.
 
 from __init__ import db
 from datetime import datetime
+from sqlalchemy.orm import synonym
 
 
 STATUS_PENDING = 'pending'
@@ -25,13 +26,17 @@ class UserGear(db.Model):
     cert_date = db.Column(db.String(20), default='')       # YYYY-MM-DD or empty
     category = db.Column(db.String(100), default='')
     product_name = db.Column(db.String(255), default='')
-    source = db.Column(db.String(40), default='manual')    # 'manual' | 'ai-detection' | 'search'
+    source = db.Column(db.String(40), default='manual')    # manual | detector | classifier (legacy values accepted)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     status = db.Column(db.String(20), default=STATUS_PENDING, nullable=False)
     reviewer_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
     reviewed_at = db.Column(db.DateTime, nullable=True)
-    review_note = db.Column(db.String(500), default='')
+    reviewer_notes = db.Column(db.Text, default='')
+    # Keep existing callers working while exposing the agreed model field.
+    review_note = synonym('reviewer_notes')
 
     def to_dict(self, owner=None):
         data = {
@@ -48,10 +53,18 @@ class UserGear(db.Model):
             'reviewNote': self.review_note,
             'createdAt': self.created_at.isoformat() if self.created_at else None,
             'userId': self.user_id,
+            'reviewer_id': self.reviewer_id,
+            'reviewer_notes': self.reviewer_notes,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None,
+            'updatedAt': self.updated_at.isoformat() if self.updated_at else None,
         }
         if owner is not None:
             data['owner'] = {'id': owner.id, 'uid': owner._uid, 'name': owner._name}
         return data
+
+    def read(self):
+        return self.to_dict()
 
     @staticmethod
     def create(user_id, data, auto_approve=False, reviewer_id=None):
@@ -96,7 +109,8 @@ class UserGear(db.Model):
         self.status = new_status
         self.reviewer_id = reviewer_id
         self.reviewed_at = datetime.utcnow()
-        self.review_note = (note or '')[:500]
+        self.reviewer_notes = note or ''
+        self.updated_at = datetime.utcnow()
         db.session.commit()
 
     def delete(self):
