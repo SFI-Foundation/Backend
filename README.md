@@ -58,23 +58,23 @@ Partially implemented or prototype-only behavior:
 
 ## Data Flow
 
-The SFI spec source data lives in the frontend repo:
+The importer and classifier JSON fallback share `sfi_config.load_specs()`.
+The default source is sibling `Frontend/_data/sfi_specs.json`:
 
 ```text
-../greppers/_data/sfi_specs.json
+sfi-foundation/
+  Frontend/_data/sfi_specs.json
+  Backend/
 ```
 
-`model/sfi_spec.py` imports that JSON into the backend database. `model/sfi_classifier.py` also trains from the same JSON file.
-
-Expected local repo layout:
-
-```text
-greppers/
-  greppers/   # frontend repo
-  flask/      # this backend repo
-```
-
-If the frontend repo is not beside this backend repo, SFI spec import and classifier training may fail unless the path logic is updated.
+Set `SFI_SPECS_PATH` for a different layout (for example this workspace's
+`../SFI-Frontend/_data/sfi_specs.json`). Relative overrides resolve from the
+Backend repository, never the shell's working directory; absolute paths and
+`~` are supported. Empty uses the default. Missing files, malformed JSON and
+invalid entries raise `SpecDataError` with the resolved path. Validation occurs
+before the importer clears rows. Classifier retraining still prefers current
+DB rows so admin edits remain supported; JSON fallback uses the same loader.
+Saved classifiers are retrained when the training-data fingerprint changes.
 
 ## SFI PDF Text Ingestion
 
@@ -140,29 +140,30 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-Create a local `.env` file. At minimum, include auth defaults and Gemini settings if the chatbot should work:
+Copy the placeholder-only example and replace passwords and the session secret:
 
-```env
-DEFAULT_PASSWORD='password'
-ADMIN_USER='Admin Name'
-ADMIN_UID='admin'
-ADMIN_PASSWORD='password'
-ADMIN_PFP='default.png'
-
-USER_NAME='User Name'
-USER_UID='user'
-USER_PASSWORD='password'
-USER_PFP='default.png'
-
-GEMINI_API_KEY='your-key-here'
-GEMINI_SERVER='https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent'
+```bash
+cp .env.example .env
 ```
 
-Initialize or refresh the database:
+The app loads Backend's `.env` independently of the current directory. Existing
+environment variables take precedence. Gemini is optional; database credentials
+are optional (blank selects local SQLite). `FLASK_PORT` defaults to 8423.
+`IS_PRODUCTION=true` retains the existing HTTPS credential-cookie behavior for
+the current Open Coding Society service; its cookie domain is still
+`.opencodingsociety.com`. A replacement host needs cookie/deployment verification.
+
+Initialize **only a disposable local database**:
 
 ```bash
 python scripts/db_init.py
 ```
+
+This initializer drops tables after confirmation. Do not run it against an
+existing/shared database to apply this configuration change; no schema migration
+is required. The repository includes prototype SQLite files: in a disposable
+clone only, use a new empty `instance/volumes/user_management.db` and accept the
+initializer prompt (main imports create tables before that prompt).
 
 Run the backend:
 
@@ -191,7 +192,20 @@ The frontend pages that depend on this backend include:
 - Site-wide chatbot widget for `/api/sfi/chat`.
 - `/admin/`, although the required admin endpoints are currently missing.
 
-CORS settings in `__init__.py` include local frontend ports and Open Coding Society domains. If testing from a new origin, update `allowed_origins`.
+Flask owns credentialed CORS, including OPTIONS; both checked-in nginx templates
+forward requests without adding CORS headers. Exact allowed origins are
+`https://sfi-foundation.github.io` and HTTP localhost/127.0.0.1 ports
+4000, 4100, 4500, 4600, 8000, 8080 and 8423. Origins have no `/Frontend` path.
+Unapproved Origin headers receive 403 without allow-origin headers; requests
+without Origin remain usable by CLI clients. `Vary: Origin` separates caches.
+Authentication/authorization remain required independently of CORS.
+
+Frontend `sfi_api_base` in `_config.yml` configures the shared API base for
+SFI pages and auth. Blank preserves the current service listed above; no new
+production URL is confirmed. Deployment/nginx reload, browser authentication
+on Pages, and production CORS verification remain pending.
+
+See [the feature diagram and capstone notes](docs/sfi-config.md).
 
 ## Known Gaps
 
@@ -216,8 +230,8 @@ CORS settings in `__init__.py` include local frontend ports and Open Coding Soci
 
 Before continuing backend work:
 
-- Confirm `../greppers/_data/sfi_specs.json` exists and is current.
-- Run `python scripts/db_init.py`.
+- Confirm sibling `Frontend/_data/sfi_specs.json` exists, or set `SFI_SPECS_PATH`.
+- Initialize only a disposable database with `python scripts/db_init.py`; preserve existing data.
 - Start the backend and test `GET /api/sfi/specs`.
 - Test `GET /api/sfi/classifier/status` to confirm the classifier trained.
 - Configure `GEMINI_API_KEY` before testing `POST /api/sfi/chat`.

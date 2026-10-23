@@ -9,7 +9,8 @@ Training data comes from sfi_specs.json (136 entries), augmented with
 synonyms, keyword extraction, and partial-phrase variants.
 """
 
-import json
+from sfi_config import load_specs
+import hashlib
 import os
 import re
 import threading
@@ -115,21 +116,7 @@ class SfiClassifier:
     def _load_data(self):
         self.specs_data = self._load_db_specs()
         if not self.specs_data:
-            json_path = os.path.join(
-                os.path.dirname(__file__), "..", "..",
-                "greppers", "_data", "sfi_specs.json"
-            )
-            if not os.path.exists(json_path):
-                json_path = os.path.join(
-                    os.path.dirname(__file__), "..",
-                    "sfi_specs.json"
-                )
-            if not os.path.exists(json_path):
-                print("[SFI Classifier] WARNING: sfi_specs.json not found")
-                return
-
-            with open(json_path, "r", encoding="utf-8") as f:
-                self.specs_data = json.load(f)
+            self.specs_data = load_specs()
 
         self.spec_lookup = {}
         for entry in self.specs_data:
@@ -257,6 +244,7 @@ class SfiClassifier:
 
     def save(self, path=MODEL_PATH):
         joblib.dump({
+            "data_digest": self._data_digest(),
             "spec_pipeline": self.spec_pipeline,
             "category_pipeline": self.category_pipeline,
             "spec_encoder": self.spec_encoder,
@@ -266,8 +254,14 @@ class SfiClassifier:
         }, path)
         print(f"[SFI Classifier] Saved model to {path}")
 
+    def _data_digest(self):
+        import json
+        return hashlib.sha256(json.dumps(self.specs_data, sort_keys=True).encode()).hexdigest()
+
     def _load_saved(self, path=MODEL_PATH):
         state = joblib.load(path)
+        if state.get("data_digest") != self._data_digest():
+            raise ValueError("Saved classifier source changed")
         self.spec_pipeline = state["spec_pipeline"]
         self.category_pipeline = state["category_pipeline"]
         self.spec_encoder = state["spec_encoder"]
@@ -280,8 +274,9 @@ class SfiClassifier:
     @classmethod
     def get_instance(cls):
         if cls._instance is None:
-            cls._instance = cls()
-            cls._instance._load_data()
+            fresh = cls()
+            fresh._load_data()
+            cls._instance = fresh
             if os.path.exists(MODEL_PATH):
                 try:
                     cls._instance._load_saved()

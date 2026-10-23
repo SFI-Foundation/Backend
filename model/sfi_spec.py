@@ -8,8 +8,7 @@ Data is loaded from _data/sfi_specs.json which is produced by
 scripts/extract_sfi_specs.py in the greppers frontend repo.
 """
 
-import json
-import os
+from sfi_config import load_specs
 from __init__ import app, db
 
 
@@ -72,18 +71,7 @@ def initSfiSpecs():
     Clears existing data and re-imports so the DB always matches
     the latest extraction. Safe to call on every server start.
     """
-    # Path to the JSON produced by extract_sfi_specs.py
-    json_path = os.path.join(
-        os.path.dirname(__file__), "..", "..",
-        "greppers", "_data", "sfi_specs.json"
-    )
-
-    if not os.path.exists(json_path):
-        print(f"[SFI] WARNING: {json_path} not found — skipping spec import")
-        return
-
-    with open(json_path, "r", encoding="utf-8") as f:
-        specs_data = json.load(f)
+    specs_data = load_specs()  # validate before deleting any existing rows
 
     # Clear old data
     db.session.query(SfiSpec).delete()
