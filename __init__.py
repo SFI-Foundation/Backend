@@ -7,7 +7,7 @@ import os
 
 
 # Load environment variables from .env file
-load_dotenv()
+load_dotenv(os.path.join(os.path.dirname(__file__), ".env"))
 
 
 # Setup of key Flask object (app)
@@ -25,23 +25,30 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 
-# CORS is not handled by Flask. In production, nginx adds the
-# Access-Control-Allow-* headers; Flask-CORS has been removed so the app runs
-# without any cross-origin handling of its own.
-# For local development (no nginx), allow localhost/127.0.0.1 origins only,
-# so production headers from nginx are never duplicated.
-LOCAL_ORIGIN_PREFIXES = ('http://localhost:', 'http://127.0.0.1:')
+# Flask owns CORS both directly and behind nginx (which forwards OPTIONS).
+ALLOWED_ORIGINS = {
+    "https://sfi-foundation.github.io",
+    *(f"http://{host}:{port}" for host in ("localhost", "127.0.0.1")
+      for port in (4000, 4100, 4500, 4600, 8000, 8080, 8423)),
+}
+
+@app.before_request
+def validate_cors_origin():
+    origin = request.headers.get('Origin')
+    if origin and origin not in ALLOWED_ORIGINS:
+        return {"error": "Origin is not allowed"}, 403
+    if origin and request.method == 'OPTIONS':
+        return '', 204
 
 @app.after_request
-def add_local_cors_headers(response):
-    origin = request.headers.get('Origin', '')
-    if origin.startswith(LOCAL_ORIGIN_PREFIXES):
+def add_cors_headers(response):
+    origin = request.headers.get('Origin')
+    response.vary.add('Origin')
+    if origin in ALLOWED_ORIGINS:
         response.headers['Access-Control-Allow-Origin'] = origin
         response.headers['Access-Control-Allow-Credentials'] = 'true'
-        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, PATCH, DELETE, OPTIONS'
-        response.headers['Access-Control-Allow-Headers'] = request.headers.get(
-            'Access-Control-Request-Headers', 'Content-Type, Authorization, X-Origin')
-        response.headers.add('Vary', 'Origin')
+        response.headers['Access-Control-Allow-Methods'] = 'GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Origin, X-Requested-With, Accept'
     return response
 
 

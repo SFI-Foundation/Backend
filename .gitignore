@@ -20,3 +20,5 @@ instance/data.json
 instance/data.json.*.bak
 instance/data/jokes.json
 instance/sfi_pdf_cache/
+
+!.env.example
