@@ -50,6 +50,12 @@ Implemented endpoints:
 | `GET` | `/api/sfi/gear` | List current authenticated user's gear. |
 | `POST` | `/api/sfi/gear` | Add gear for the current authenticated user. |
 | `DELETE` | `/api/sfi/gear/<id>` | Delete one current-user gear item. |
+| `GET` | `/api/sfi/gear/pending` | Admin-only pending queue, oldest first, with owner metadata. |
+| `GET` | `/api/sfi/gear/all` | Admin-only gear list; optional `status` and numeric owner `user` filters. |
+| `PUT` | `/api/sfi/gear/<id>/review` | Admin approves/rejects with `status` and `notes`; rejection requires notes. |
+| `PATCH` | `/api/sfi/gear/<id>/status` | Compatible status action using `note`; admin or delegated approval permission. |
+
+See [gear review API contracts, diagrams, and verification](docs/capstone/gear-review-api.md).
 
 Partially implemented or prototype-only behavior:
 
@@ -211,17 +217,16 @@ See [the feature diagram and capstone notes](docs/sfi-config.md).
 
 - No implemented admin/group endpoints for the standalone frontend `/admin/` page.
 - Spec create, update, and delete endpoints are not currently restricted to admin users.
-- Gear API does not support pending, approved, rejected, owner metadata, reviewer notes, or all-user admin views.
+- Gear review backend is implemented; frontend review/status integration is tracked in Frontend #3.
 - Chatbot does not yet retrieve PDF chunks or crawl the website; it only receives compact spec rows from the database.
 - PDF extraction and chunk storage are implemented; PDF summaries, search, and chatbot retrieval remain future work.
 - `/api/sfi/detect` is keyword-based and separate from the frontend's TensorFlow.js image detector.
-- There are no focused automated tests for the SFI API endpoints yet.
+- Focused gear review/model/migration tests are in `tests/`; full-application regression tests are in `testing/test_sfi_profile.py`.
 
 ## Future Roadmap
 
 - Add admin-auth-protected SFI management endpoints.
-- Implement `/api/sfi/me`, `/api/sfi/users`, `/api/sfi/groups`, `/api/sfi/gear/pending`, and `/api/sfi/gear/all` or update the frontend admin page to use existing APIs.
-- Extend `UserGear` with status, source, owner/admin review fields, reviewer notes, and timestamps.
+- Complete frontend admin integration with the existing user/group and gear review APIs.
 - Add a PDF ingestion pipeline that downloads or reads SFI PDFs, extracts text, chunks/indexes content, and exposes summary/search endpoints.
 - Upgrade the chatbot to retrieve from specs, site pages, and PDF chunks before calling Gemini.
 - Add route/API tests for SFI specs, classifier, chat error handling, and gear CRUD.

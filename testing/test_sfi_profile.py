@@ -305,6 +305,40 @@ class ProfileTests(unittest.TestCase):
         self.assertEqual(admin_client.patch(f'/api/sfi/gear/{gear_id}/status', json={'status': 'approved'}).status_code, 200)
         self.assertEqual(self.client.get('/api/sfi/gear').json[0]['status'], 'approved')
 
+    def test_admin_gear_review_end_to_end(self):
+        self.login()
+        first = self.client.post('/api/sfi/gear', json={'name': 'Review helmet'})
+        second = self.client.post('/api/sfi/gear', json={'name': 'Review suit'})
+        self.assertEqual(first.status_code, 200)
+        self.assertEqual(second.status_code, 200)
+        first_id, second_id = first.json['id'], second.json['id']
+        self.assertEqual(self.client.get('/api/sfi/gear/pending').status_code, 403)
+        self.assertEqual(self.client.put(f'/api/sfi/gear/{first_id}/review', json={'status': 'approved'}).status_code, 403)
+        admin = User(name='Review administrator', uid='review_admin_' + secrets.token_hex(6),
+                     password=self.password, role='Admin')
+        db.session.add(admin)
+        db.session.commit()
+        admin_id, member_id = admin.id, self.user.id
+        admin_client = app.test_client()
+        self.login(admin_client, admin.uid)
+        queue = admin_client.get('/api/sfi/gear/pending')
+        self.assertEqual(queue.status_code, 200)
+        self.assertTrue({first_id, second_id} <= {item['id'] for item in queue.json})
+        approved = admin_client.put(f'/api/sfi/gear/{first_id}/review', json={'status': 'approved'})
+        self.assertEqual(approved.status_code, 200)
+        self.assertEqual(approved.json['reviewer_id'], admin_id)
+        self.assertEqual(admin_client.put(f'/api/sfi/gear/{second_id}/review', json={'status': 'rejected'}).status_code, 400)
+        rejected = admin_client.put(f'/api/sfi/gear/{second_id}/review', json={'status': 'rejected', 'notes': 'Expired certification'})
+        self.assertEqual(rejected.status_code, 200)
+        db.session.remove()
+        records = admin_client.get(f'/api/sfi/gear/all?user={member_id}').json
+        self.assertEqual({item['id'] for item in records}, {first_id, second_id})
+        filtered = admin_client.get(f'/api/sfi/gear/all?user={member_id}&status=rejected').json
+        self.assertEqual([item['id'] for item in filtered], [second_id])
+        own = self.client.get('/api/sfi/gear').json
+        self.assertEqual(next(item for item in own if item['id'] == second_id)['reviewer_notes'], 'Expired certification')
+        self.assertEqual(self.client.get('/api/sfi/gear/all').status_code, 403)
+
     def test_startup_groups_never_grant_admin_based_on_username(self):
         untrusted = User(name='Untrusted identity', uid='admin', password=self.password, role='User')
         trusted = User(name='Trusted administrator', uid='trusted_' + secrets.token_hex(6), password=self.password, role='Admin')
