@@ -93,14 +93,19 @@ class UserGear(db.Model):
                 .all())
 
     @staticmethod
-    def get_all():
-        return UserGear.query.order_by(UserGear.created_at.desc()).all()
+    def get_all(status=None, user_id=None):
+        query = UserGear.query
+        if status is not None:
+            query = query.filter_by(status=status)
+        if user_id is not None:
+            query = query.filter_by(user_id=user_id)
+        return query.order_by(UserGear.created_at.desc(), UserGear.id.desc()).all()
 
     @staticmethod
     def get_pending():
         return (UserGear.query
                 .filter_by(status=STATUS_PENDING)
-                .order_by(UserGear.created_at.asc())
+                .order_by(UserGear.created_at.asc(), UserGear.id.asc())
                 .all())
 
     def set_status(self, new_status, reviewer_id, note=''):

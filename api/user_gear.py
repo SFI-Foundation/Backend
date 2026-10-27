@@ -5,15 +5,19 @@ Endpoints:
     GET    /api/sfi/gear                — current user's gear
     POST   /api/sfi/gear                — record a gear item (status=pending unless auto-approved)
     DELETE /api/sfi/gear/<id>           — remove a gear item (owner or admin)
-    GET    /api/sfi/gear/all            — all gear (requires can_view_all_gear)
-    GET    /api/sfi/gear/pending        — all pending gear (requires can_approve_gear)
-    PATCH  /api/sfi/gear/<id>/status    — approve/reject (requires can_approve_gear)
+    GET    /api/sfi/gear/all            — all gear, optional status/user filters (admin)
+    GET    /api/sfi/gear/pending        — pending gear, oldest first (admin)
+    PUT    /api/sfi/gear/<id>/review    — approve/reject with notes (admin)
+    PATCH  /api/sfi/gear/<id>/status    — legacy status action (admin or can_approve_gear)
 """
 
-from flask import Blueprint, request, jsonify, g
+from flask import Blueprint, request, jsonify, g, current_app
 from flask_restful import Api, Resource
+from sqlalchemy.exc import SQLAlchemyError
 
+from __init__ import db
 from api.authorize import token_required
+from api.auth_utils import admin_required, is_admin
 from model.user import User
 from model.user_gear import UserGear, ALLOWED_STATUSES, STATUS_APPROVED, STATUS_REJECTED
 from model.group import user_has_permission, user_is_admin
@@ -23,8 +27,36 @@ api = Api(user_gear_api)
 
 
 def _dict_with_owner(gear):
-    owner = User.query.get(gear.user_id)
+    owner = db.session.get(User, gear.user_id)
     return gear.to_dict(owner=owner)
+
+
+def _save_review(gear_id, allowed_statuses, notes_key):
+    """Validate both review routes before updating any persisted review fields."""
+    gear = db.session.get(UserGear, gear_id)
+    if gear is None:
+        return {'error': 'not found'}, 404
+    body = request.get_json(silent=True)
+    if not isinstance(body, dict):
+        return {'error': 'JSON object required'}, 400
+    status = body.get('status')
+    if not isinstance(status, str) or status.strip().lower() not in allowed_statuses:
+        return {'error': f'status must be one of {allowed_statuses}'}, 400
+    status = status.strip().lower()
+    notes = body.get(notes_key, '')
+    if not isinstance(notes, str):
+        return {'error': f'{notes_key} must be text'}, 400
+    notes = notes.strip()
+    if status == STATUS_REJECTED and not notes:
+        return {'error': f'{notes_key} are required when rejecting gear'}, 400
+    try:
+        # Reviewer identity and audit timestamps always come from the server.
+        gear.set_status(status, g.current_user.id, notes)
+    except SQLAlchemyError:
+        db.session.rollback()
+        current_app.logger.exception('Unable to save gear review')
+        return {'error': 'Unable to save gear review'}, 500
+    return jsonify(_dict_with_owner(gear))
 
 
 class UserGearAPI:
@@ -64,38 +96,47 @@ class UserGearAPI:
             return jsonify({'message': 'deleted'})
 
     class _GearAll(Resource):
-        @token_required()
+        @admin_required
         def get(self):
-            if not user_has_permission(g.current_user, 'can_view_all_gear'):
-                return {'error': 'forbidden'}, 403
-            items = UserGear.get_all()
+            if any(len(request.args.getlist(key)) > 1 for key in ('status', 'user')):
+                return {'error': 'Supply each filter only once'}, 400
+            status = request.args.get('status')
+            if status is not None:
+                status = status.strip().lower()
+                if status not in ALLOWED_STATUSES:
+                    return {'error': f'status must be one of {ALLOWED_STATUSES}'}, 400
+            user_id = request.args.get('user')
+            if user_id is not None:
+                user_id = user_id.strip()
+                if (not user_id.isascii() or not user_id.isdecimal() or
+                        len(user_id) > 19 or not 0 < int(user_id) <= 2**63 - 1):
+                    return {'error': 'user must be a positive integer owner ID'}, 400
+                user_id = int(user_id)
+            items = UserGear.get_all(status=status, user_id=user_id)
             return jsonify([_dict_with_owner(i) for i in items])
 
     class _GearPending(Resource):
-        @token_required()
+        @admin_required
         def get(self):
-            if not user_has_permission(g.current_user, 'can_approve_gear'):
-                return {'error': 'forbidden'}, 403
             items = UserGear.get_pending()
             return jsonify([_dict_with_owner(i) for i in items])
+
+    class _GearReview(Resource):
+        @admin_required
+        def put(self, gear_id):
+            return _save_review(gear_id, (STATUS_APPROVED, STATUS_REJECTED), 'notes')
 
     class _GearStatus(Resource):
         @token_required()
         def patch(self, gear_id):
-            if not user_has_permission(g.current_user, 'can_approve_gear'):
+            if not (is_admin(g.current_user) or
+                    user_has_permission(g.current_user, 'can_approve_gear')):
                 return {'error': 'forbidden'}, 403
-            gear = UserGear.query.get(gear_id)
-            if not gear:
-                return {'error': 'not found'}, 404
-            body = request.get_json(silent=True) or {}
-            new_status = (body.get('status') or '').strip().lower()
-            if new_status not in ALLOWED_STATUSES:
-                return {'error': f'status must be one of {ALLOWED_STATUSES}'}, 400
-            gear.set_status(new_status, g.current_user.id, body.get('note', ''))
-            return jsonify(_dict_with_owner(gear))
+            return _save_review(gear_id, ALLOWED_STATUSES, 'note')
 
     api.add_resource(_GearCollection, '/gear')
     api.add_resource(_GearItem, '/gear/<int:gear_id>')
     api.add_resource(_GearAll, '/gear/all')
     api.add_resource(_GearPending, '/gear/pending')
+    api.add_resource(_GearReview, '/gear/<int:gear_id>/review')
     api.add_resource(_GearStatus, '/gear/<int:gear_id>/status')
