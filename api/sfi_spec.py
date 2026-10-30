@@ -18,7 +18,7 @@ from flask import Blueprint, request, jsonify
 from flask_restful import Api, Resource
 from sqlalchemy import or_, func
 from __init__ import db
-from model.sfi_spec import SfiSpec
+from model.sfi_spec import SfiSpec, search_sfi_specs
 
 sfi_spec_api = Blueprint('sfi_spec_api', __name__, url_prefix='/api/sfi')
 api = Api(sfi_spec_api)
@@ -36,14 +36,7 @@ class SfiSpecAPI:
             if not query:
                 return {"error": "Missing 'q' query parameter"}, 400
 
-            keyword = f"%{query}%"
-            results = SfiSpec.query.filter(
-                (SfiSpec.product_name.ilike(keyword)) |
-                (SfiSpec.spec_number.ilike(keyword)) |
-                (SfiSpec.category.ilike(keyword)) |
-                (SfiSpec.subcategory.ilike(keyword))
-            ).all()
-
+            results = search_sfi_specs(query)
             return jsonify([spec.to_dict() for spec in results])
 
     # ── List (GET) + Create (POST) on /specs ───────────────
