@@ -1,0 +1,2087 @@
+[
+  {
+    "product_name": "Replacement Flywheels and Clutch Assemblies",
+    "category": "Auto Racing",
+    "subcategory": "Misc. Auto Racing",
+    "spec_numbers": [
+      "1.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_1.1.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "1.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Nov. 9, 2001"
+  },
+  {
+    "product_name": "Replacement Flywheels and Clutch Assemblies",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "1.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_1.1.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "1.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Nov. 9, 2001"
+  },
+  {
+    "product_name": "Multiple Disc Clutch Assemblies for Vehicles with Naturally Aspirated Engines",
+    "category": "Auto Racing",
+    "subcategory": "Misc. Auto Racing",
+    "spec_numbers": [
+      "1.2"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_1.2.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "1.2 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Feb. 9, 2006"
+  },
+  {
+    "product_name": "Multiple Disc Clutch Assemblies for Vehicles with Naturally Aspirated Engines",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "1.2"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_1.2.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "1.2 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Feb. 9, 2006"
+  },
+  {
+    "product_name": "Nitro-Methane Drag Race Multiple Disc Clutch Assemblies",
+    "category": "Auto Racing",
+    "subcategory": "Misc. Auto Racing",
+    "spec_numbers": [
+      "1.3"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_1.3.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "1.3 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "May 23, 2000 (edited Feb. 23, 2016"
+  },
+  {
+    "product_name": "Nitro-Methane Drag Race Multiple Disc Clutch Assemblies",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "1.3"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_1.3.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "1.3 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "May 23, 2000"
+  },
+  {
+    "product_name": "Methanol Drag Race Multiple Disc Clutch Assemblies",
+    "category": "Auto Racing",
+    "subcategory": "Misc. Auto Racing",
+    "spec_numbers": [
+      "1.4"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_1.4.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "1.4 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "May 23, 2000"
+  },
+  {
+    "product_name": "Methanol Drag Race Multiple Disc Clutch Assemblies",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "1.4"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_1.4.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "1.4 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "May 23, 2000"
+  },
+  {
+    "product_name": "Multiple Disc Clutch Assemblies for Supercharged, Nitrous Oxide-injected, and Turbocharged Vehicles",
+    "category": "Auto Racing",
+    "subcategory": "Misc. Auto Racing",
+    "spec_numbers": [
+      "1.5"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_1.5.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "1.5 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Feb. 9, 2006"
+  },
+  {
+    "product_name": "Multiple Disc Clutch Assemblies for Supercharged, Nitrous Oxide-injected, and Turbocharged Vehicles",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "1.5"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_1.5.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "1.5 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Feb. 9, 2006"
+  },
+  {
+    "product_name": "Rear Engine Dragster (Top Alcohol/Methanol) – 5.99 Seconds & Quicker",
+    "category": "Drag Racing Chassis",
+    "subcategory": "DRAGSTERS",
+    "spec_numbers": [
+      "2.1C"
+    ],
+    "spec_pdfs": [],
+    "manufacturer_pdfs": [],
+    "products_pdfs": [],
+    "effective_date": "December 3, 2021"
+  },
+  {
+    "product_name": "Front Engine Dragster – 5.99 Seconds & Quicker",
+    "category": "Drag Racing Chassis",
+    "subcategory": "DRAGSTERS",
+    "spec_numbers": [
+      "2.2D"
+    ],
+    "spec_pdfs": [],
+    "manufacturer_pdfs": [],
+    "products_pdfs": [],
+    "effective_date": "December 3, 2021"
+  },
+  {
+    "product_name": "Rear Engine Dragster (Top Fuel) – 4.99 Seconds & Quicker",
+    "category": "Drag Racing Chassis",
+    "subcategory": "DRAGSTERS",
+    "spec_numbers": [
+      "2.3V"
+    ],
+    "spec_pdfs": [],
+    "manufacturer_pdfs": [],
+    "products_pdfs": [],
+    "effective_date": "August 7, 2024"
+  },
+  {
+    "product_name": "Front Engine Dragster – 6.00 to 7.49 Seconds",
+    "category": "Drag Racing Chassis",
+    "subcategory": "DRAGSTERS",
+    "spec_numbers": [
+      "2.4D"
+    ],
+    "spec_pdfs": [],
+    "manufacturer_pdfs": [],
+    "products_pdfs": [],
+    "effective_date": "December 3, 2021"
+  },
+  {
+    "product_name": "Rear Engine Dragster – 6.00 to 7.49 Seconds",
+    "category": "Drag Racing Chassis",
+    "subcategory": "DRAGSTERS",
+    "spec_numbers": [
+      "2.5E"
+    ],
+    "spec_pdfs": [],
+    "manufacturer_pdfs": [],
+    "products_pdfs": [],
+    "effective_date": "December 3, 2021"
+  },
+  {
+    "product_name": "Front Engine Dragster – 7.50 Seconds & Slower",
+    "category": "Drag Racing Chassis",
+    "subcategory": "DRAGSTERS",
+    "spec_numbers": [
+      "2.6C"
+    ],
+    "spec_pdfs": [],
+    "manufacturer_pdfs": [],
+    "products_pdfs": [],
+    "effective_date": "December 3, 2021"
+  },
+  {
+    "product_name": "Rear Engine Dragster – 7.50 Seconds & Slower",
+    "category": "Drag Racing Chassis",
+    "subcategory": "DRAGSTERS",
+    "spec_numbers": [
+      "2.7E"
+    ],
+    "spec_pdfs": [],
+    "manufacturer_pdfs": [],
+    "products_pdfs": [],
+    "effective_date": "December 3, 2021"
+  },
+  {
+    "product_name": "Driver Suits",
+    "category": "Personal Protective Gear, Restraints & Nets",
+    "subcategory": "Misc. Personal Protective Gear, Restraints &amp; Nets",
+    "spec_numbers": [
+      "3.2A"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_3.2A_062620.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "3.2A Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Jun. 26, 2020"
+  },
+  {
+    "product_name": "Advanced Driver Suits",
+    "category": "Personal Protective Gear, Restraints & Nets",
+    "subcategory": "Misc. Personal Protective Gear, Restraints &amp; Nets",
+    "spec_numbers": [
+      "3.2A",
+      "3.4"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_3.4_101819.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "3.4 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [
+      "Current3.41Products.pdf",
+      "Current3.45Products.pdf"
+    ],
+    "effective_date": "Oct. 19, 2019"
+  },
+  {
+    "product_name": "Driver Accessories",
+    "category": "Personal Protective Gear, Restraints & Nets",
+    "subcategory": "Misc. Personal Protective Gear, Restraints &amp; Nets",
+    "spec_numbers": [
+      "3.3"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_3.3.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "3.3 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Apr. 1, 2022"
+  },
+  {
+    "product_name": "Automatic Transmission Shields (Flexible Type)",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "4.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_4.1.pdf"
+    ],
+    "manufacturer_pdfs": [],
+    "products_pdfs": [],
+    "effective_date": "May 27, 2013"
+  },
+  {
+    "product_name": "Automatic Transmission Shields (Rigid Type)",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "4.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_4.1.pdf"
+    ],
+    "manufacturer_pdfs": [],
+    "products_pdfs": [],
+    "effective_date": "May 27, 2013"
+  },
+  {
+    "product_name": "Tractor Blankets",
+    "category": "Tractor Pulling & Chassis",
+    "subcategory": "Misc. Tractor Pulling",
+    "spec_numbers": [
+      "4.2"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_4.2.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "4.2 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Oct. 26, 1994"
+  },
+  {
+    "product_name": "Centrifugal Supercharger Blankets",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "4.3"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_4.3.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "4.3 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "July 24, 2023"
+  },
+  {
+    "product_name": "Containment Bellhousing for SFI 1.1 & 1.2 Clutch Assemblies for limited normally aspirated applications, and forced induction applications with torque converters",
+    "category": "Auto Racing",
+    "subcategory": "Misc. Auto Racing",
+    "spec_numbers": [
+      "6.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_6.1.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "6.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "May 5, 2024"
+  },
+  {
+    "product_name": "Passenger Car Replacement Containment Bellhousings with Adjustable Clutch Window for SFI 1.1 & 1.2 Clutch Assemblies for limited normally aspirated applications, and forced induction applications with torque converters",
+    "category": "Auto Racing",
+    "subcategory": "Misc. Auto Racing",
+    "spec_numbers": [
+      "6.1W",
+      "6.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_6.1.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "6.1W Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "May 5, 2024"
+  },
+  {
+    "product_name": "Containment Bellhousing for SFI 1.1 & 1.2 Clutch Assemblies for limited normally aspirated applications, and forced induction applications with torque converters",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "6.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_6.1.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "6.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "May 5, 2024"
+  },
+  {
+    "product_name": "Passenger Car Replacement Containment Bellhousings with Adjustable Clutch Window for SFI 1.1 & 1.2 Clutch Assemblies for limited normally aspirated applications, and forced induction applications with torque converters",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "6.1W",
+      "6.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_6.1.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "6.1W Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "May 5, 2024"
+  },
+  {
+    "product_name": "Containment Bellhousing for SFI 1.1 & 1.2 Clutch Assemblies for limited normally aspirated applications, and forced induction applications with torque converters",
+    "category": "Tractor Pulling & Chassis",
+    "subcategory": "Misc. Tractor Pulling",
+    "spec_numbers": [
+      "6.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_6.1.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "6.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "May 5, 2024"
+  },
+  {
+    "product_name": "Passenger Car Replacement Containment Bellhousings with Adjustable Clutch Window for SFI 1.1 & 1.2 Clutch Assemblies for limited normally aspirated applications, and forced induction applications with torque converters",
+    "category": "Tractor Pulling & Chassis",
+    "subcategory": "Misc. Tractor Pulling",
+    "spec_numbers": [
+      "6.1W",
+      "6.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_6.1.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "6.1W Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "May 5, 2024"
+  },
+  {
+    "product_name": "Containment Bellhousing for SFI 1.3 & 1.4 Clutch Assemblies for Nitro-methane, Top Alcohol, and heavy-duty tractor applications",
+    "category": "Auto Racing",
+    "subcategory": "Misc. Auto Racing",
+    "spec_numbers": [
+      "6.2"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_6.2.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "6.2 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "May 5, 2024"
+  },
+  {
+    "product_name": "Containment Bellhousing for SFI 1.3 & 1.4 Clutch Assemblies for Nitro-methane, Top Alcohol, and heavy-duty tractor applications",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "6.2"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_6.2.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "6.2 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "May 5, 2024"
+  },
+  {
+    "product_name": "Containment Bellhousing for SFI 1.3 & 1.4 Clutch Assemblies for Nitro-methane, Top Alcohol, and heavy-duty tractor applications",
+    "category": "Tractor Pulling & Chassis",
+    "subcategory": "Misc. Tractor Pulling",
+    "spec_numbers": [
+      "6.2"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_6.2.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "6.2 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "May 5, 2024"
+  },
+  {
+    "product_name": "Containment Bellhousing for SFI Clutch Assemblies for supercharged and nitrous-oxide applications",
+    "category": "Auto Racing",
+    "subcategory": "Misc. Auto Racing",
+    "spec_numbers": [
+      "6.3"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_6.3.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "6.3 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "May 5, 2024"
+  },
+  {
+    "product_name": "Containment Bellhousing for SFI Clutch Assemblies for supercharged and nitrous-oxide applications",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "6.3"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_6.3.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "6.3 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "May 5, 2024"
+  },
+  {
+    "product_name": "Containment Bellhousing for SFI Clutch Assemblies for supercharged and nitrous-oxide applications",
+    "category": "Tractor Pulling & Chassis",
+    "subcategory": "Misc. Tractor Pulling",
+    "spec_numbers": [
+      "6.3"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_6.3.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "6.3 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "May 5, 2024"
+  },
+  {
+    "product_name": "Pulling and Diesel Drag Racing Bellhousing",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "6.4"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_6.4.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "6.4 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "May 5, 2024"
+  },
+  {
+    "product_name": "Pulling and Diesel Drag Racing Bellhousing",
+    "category": "Tractor Pulling & Chassis",
+    "subcategory": "Misc. Tractor Pulling",
+    "spec_numbers": [
+      "6.4"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_6.4.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "6.4 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "May 5, 2024"
+  },
+  {
+    "product_name": "Lower Engine Containment Device",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "7.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_7.1.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "7.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Feb. 13, 1998"
+  },
+  {
+    "product_name": "Sportsman Lower Engine Containment Device",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "7.2"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_7.2.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "7.2 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Dec. 15, 2006"
+  },
+  {
+    "product_name": "Funny Car Roll Cage (Alcohol, Advanced ET, Nostalgia, etc.)",
+    "category": "Drag Racing Chassis",
+    "subcategory": "FUNNY CARS, ALTEREDS AND ROADSTERS",
+    "spec_numbers": [
+      "10.1G"
+    ],
+    "spec_pdfs": [],
+    "manufacturer_pdfs": [],
+    "products_pdfs": [],
+    "effective_date": "December 3, 2021"
+  },
+  {
+    "product_name": "Altered Car Roll Cage – 6.00 to 7.49 Seconds",
+    "category": "Drag Racing Chassis",
+    "subcategory": "FUNNY CARS, ALTEREDS AND ROADSTERS",
+    "spec_numbers": [
+      "10.2A"
+    ],
+    "spec_pdfs": [],
+    "manufacturer_pdfs": [],
+    "products_pdfs": [],
+    "effective_date": "December 3, 2021"
+  },
+  {
+    "product_name": "Altered and Funny Car Roll Cage – 7.50 Seconds & Slower",
+    "category": "Drag Racing Chassis",
+    "subcategory": "FUNNY CARS, ALTEREDS AND ROADSTERS",
+    "spec_numbers": [
+      "10.3B"
+    ],
+    "spec_pdfs": [],
+    "manufacturer_pdfs": [],
+    "products_pdfs": [],
+    "effective_date": "December 3, 2021 (edited Apr. 17, 2024"
+  },
+  {
+    "product_name": "Side Steer Roadster Roll Cage – 7.50 Seconds & Slower",
+    "category": "Drag Racing Chassis",
+    "subcategory": "FUNNY CARS, ALTEREDS AND ROADSTERS",
+    "spec_numbers": [
+      "10.4B"
+    ],
+    "spec_pdfs": [],
+    "manufacturer_pdfs": [],
+    "products_pdfs": [],
+    "effective_date": "December 3, 2021"
+  },
+  {
+    "product_name": "Nitro Fuel Funny Car Chassis – 4.99 Seconds & Quicker",
+    "category": "Drag Racing Chassis",
+    "subcategory": "FUNNY CARS, ALTEREDS AND ROADSTERS",
+    "spec_numbers": [
+      "10.5A"
+    ],
+    "spec_pdfs": [],
+    "manufacturer_pdfs": [],
+    "products_pdfs": [],
+    "effective_date": "October 31, 2013 (edited Oct. 1, 2014"
+  },
+  {
+    "product_name": "Side Steer Roadster Roll Cage – 7.49 Seconds & Quicker",
+    "category": "Drag Racing Chassis",
+    "subcategory": "FUNNY CARS, ALTEREDS AND ROADSTERS",
+    "spec_numbers": [
+      "10.6"
+    ],
+    "spec_pdfs": [],
+    "manufacturer_pdfs": [],
+    "products_pdfs": [],
+    "effective_date": "December 20, 2023"
+  },
+  {
+    "product_name": "Supercharger Restraint Devices",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "14.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_14.1_012992.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "14.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Jan. 29, 1992"
+  },
+  {
+    "product_name": "Methanol Fuel Supercharger Restraint Devices",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "14.2"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_14.2.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "14.2 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "April 1, 2022"
+  },
+  {
+    "product_name": "Nitro-Methane Fuel Supercharger Restraint Devices",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "14.3"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_14.3_082517.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "14.3 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Aug. 25, 2017"
+  },
+  {
+    "product_name": "Containment Valve Covers/Valve Cover Shields",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "14.4"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_14.4_032304.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "14.4 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Mar. 23, 2004"
+  },
+  {
+    "product_name": "Manifold Blankets",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "14.5"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_14.5_082914.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "14.5 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Aug. 29, 2014"
+  },
+  {
+    "product_name": "Engine Blankets – Rear",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "14.6"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_14.6_031615.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "14.6 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Mar. 16, 2015"
+  },
+  {
+    "product_name": "Nitro-Methane Fuel Supercharger Restraint Strap Engine Brackets",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "14.8"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_14.8_041919.pdf"
+    ],
+    "manufacturer_pdfs": [],
+    "products_pdfs": [],
+    "effective_date": "Apr. 19, 2019"
+  },
+  {
+    "product_name": "Screw-Type Supercharger Restraint Devices",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "14.21"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_14.21.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "14.21 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Jun. 18, 2024"
+  },
+  {
+    "product_name": "Drag Race Drive Wheels",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "15.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_15.1_030819.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "15.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Mar. 8, 2019"
+  },
+  {
+    "product_name": "Drag Race Front Wheels",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "15.2"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_15.2_030819.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "15.2 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Mar. 8, 2019"
+  },
+  {
+    "product_name": "High Horsepower Drag Race Drive Wheels",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "15.3"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_15.3_030819.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "15.3 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Mar. 8, 2019"
+  },
+  {
+    "product_name": "Top Fuel and Funny Car Drag Race Drive Beadlock Wheels",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "15.4"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_15.4_030819.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "15.4 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Mar. 8, 2019"
+  },
+  {
+    "product_name": "Driver Restraint Assemblies",
+    "category": "Personal Protective Gear, Restraints & Nets",
+    "subcategory": "Misc. Personal Protective Gear, Restraints &amp; Nets",
+    "spec_numbers": [
+      "16.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_16.1_022614.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "16.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Feb. 26, 2014"
+  },
+  {
+    "product_name": "Restraint Assemblies for Youth Drivers",
+    "category": "Personal Protective Gear, Restraints & Nets",
+    "subcategory": "Misc. Personal Protective Gear, Restraints &amp; Nets",
+    "spec_numbers": [
+      "16.2"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_16.2_022614.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "16.2 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Feb. 26, 2014"
+  },
+  {
+    "product_name": "Stock Car Driver Restraint Assemblies",
+    "category": "Personal Protective Gear, Restraints & Nets",
+    "subcategory": "Misc. Personal Protective Gear, Restraints &amp; Nets",
+    "spec_numbers": [
+      "16.5"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_16.5_122914.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "16.5 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Dec. 29, 2014"
+  },
+  {
+    "product_name": "Advanced Motorsport Driver Restraint Assemblies",
+    "category": "Personal Protective Gear, Restraints & Nets",
+    "subcategory": "Misc. Personal Protective Gear, Restraints &amp; Nets",
+    "spec_numbers": [
+      "16.6"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_16.6_042018.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "16.6 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Apr. 20, 2018"
+  },
+  {
+    "product_name": "Reclined Driver Advanced Motorsport Restraint Assemblies",
+    "category": "Personal Protective Gear, Restraints & Nets",
+    "subcategory": "Misc. Personal Protective Gear, Restraints &amp; Nets",
+    "spec_numbers": [
+      "16.7"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_16.7.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "16.7 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Apr. 14, 2025"
+  },
+  {
+    "product_name": "On Board Fire Suppression Systems",
+    "category": "Auto Racing",
+    "subcategory": "Misc. Auto Racing",
+    "spec_numbers": [
+      "17.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_17.1_062620.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "17.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [
+      "Current17.1Products.pdf"
+    ],
+    "effective_date": "Jun. 26, 2020"
+  },
+  {
+    "product_name": "On Board Fire Suppression Systems",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "17.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_17.1_062620.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "17.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [
+      "Current17.1Products.pdf"
+    ],
+    "effective_date": "Jun. 26, 2020"
+  },
+  {
+    "product_name": "On Board Fire Suppression Systems",
+    "category": "Fuel Related",
+    "subcategory": "Misc. Fuel Related",
+    "spec_numbers": [
+      "17.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_17.1_062620.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "17.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [
+      "Current17.1Products.pdf"
+    ],
+    "effective_date": "Jun. 26, 2020"
+  },
+  {
+    "product_name": "Single Seat Open Wheel Rear Engine On Board Fire Suppression Systems",
+    "category": "Auto Racing",
+    "subcategory": "Misc. Auto Racing",
+    "spec_numbers": [
+      "17.2"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_17.2_041919.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "17.2 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Apr. 19, 2019"
+  },
+  {
+    "product_name": "Single Seat Open Wheel Rear Engine On Board Fire Suppression Systems",
+    "category": "Fuel Related",
+    "subcategory": "Misc. Fuel Related",
+    "spec_numbers": [
+      "17.2"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_17.2_041919.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "17.2 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Apr. 19, 2019"
+  },
+  {
+    "product_name": "Single Seat Open Wheel Front Engine On Board Fire Suppression Systems",
+    "category": "Auto Racing",
+    "subcategory": "Misc. Auto Racing",
+    "spec_numbers": [
+      "17.3"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_17.3.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "17.3 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Apr. 1, 2022"
+  },
+  {
+    "product_name": "Single Seat Open Wheel Front Engine On Board Fire Suppression Systems",
+    "category": "Fuel Related",
+    "subcategory": "Misc. Fuel Related",
+    "spec_numbers": [
+      "17.3"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_17.3.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "17.3 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Apr. 1, 2022"
+  },
+  {
+    "product_name": "Crankshaft Hub Harmonic Dampers",
+    "category": "Auto Racing",
+    "subcategory": "Misc. Auto Racing",
+    "spec_numbers": [
+      "18.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_18.1_082616.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "18.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Aug. 26, 2016"
+  },
+  {
+    "product_name": "Crankshaft Hub Harmonic Dampers",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "18.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_18.1_082616.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "18.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Aug. 26, 2016"
+  },
+  {
+    "product_name": "Go-Kart Chest Protector (Youth Driver)",
+    "category": "Personal Protective Gear, Restraints & Nets",
+    "subcategory": "Misc. Personal Protective Gear, Restraints &amp; Nets",
+    "spec_numbers": [
+      "20.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_20.1_072610.pdf"
+    ],
+    "manufacturer_pdfs": [],
+    "products_pdfs": [],
+    "effective_date": "Jul. 26, 2010"
+  },
+  {
+    "product_name": "Supercharger Pressure Relief Assemblies",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "23.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_23.1_050108.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "23.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "May 1, 2008"
+  },
+  {
+    "product_name": "Youth Full Face Helmets",
+    "category": "Personal Protective Gear, Restraints & Nets",
+    "subcategory": "Misc. Personal Protective Gear, Restraints &amp; Nets",
+    "spec_numbers": [
+      "24.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_24.1.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "24.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Mar. 12, 2021"
+  },
+  {
+    "product_name": "Full Bodied Car Tube Chassis – 7.49 Seconds & Quicker; 2,800 lbs. Maximum",
+    "category": "Drag Racing Chassis",
+    "subcategory": "FULL BODIED CARS",
+    "spec_numbers": [
+      "25.1K"
+    ],
+    "spec_pdfs": [],
+    "manufacturer_pdfs": [],
+    "products_pdfs": [],
+    "effective_date": "July 2, 2021"
+  },
+  {
+    "product_name": "Full Bodied Car Tube Chassis – 6.00 to 7.49 Seconds ET; 3,200 lbs. Maximum",
+    "category": "Drag Racing Chassis",
+    "subcategory": "FULL BODIED CARS",
+    "spec_numbers": [
+      "25.2E"
+    ],
+    "spec_pdfs": [],
+    "manufacturer_pdfs": [],
+    "products_pdfs": [],
+    "effective_date": "July 2, 2021"
+  },
+  {
+    "product_name": "Full Bodied Car with Aftermarket Body Shell and Tube Frame, OEM Body Shell and OEM Frame with OEM or Modified Floorpan and Firewall, or Uni-Body with OEM or",
+    "category": "Drag Racing Chassis",
+    "subcategory": "FULL BODIED CARS",
+    "spec_numbers": [
+      "25.3D"
+    ],
+    "spec_pdfs": [],
+    "manufacturer_pdfs": [],
+    "products_pdfs": [],
+    "effective_date": "July 2, 2021"
+  },
+  {
+    "product_name": "Full Bodied Car Tube Chassis – 7.50 to 8.49 Seconds; 3,600 lbs. Maximum",
+    "category": "Drag Racing Chassis",
+    "subcategory": "FULL BODIED CARS",
+    "spec_numbers": [
+      "25.4D"
+    ],
+    "spec_pdfs": [],
+    "manufacturer_pdfs": [],
+    "products_pdfs": [],
+    "effective_date": "July 2, 2021"
+  },
+  {
+    "product_name": "Full Bodied Car Stock or Modified/OEM Floorpan and Firewall with OEM Frame or Uni-Body Construction – 7.50 to 8.49 Seconds; 3,600 lbs. Maximum",
+    "category": "Drag Racing Chassis",
+    "subcategory": "FULL BODIED CARS",
+    "spec_numbers": [
+      "25.5E"
+    ],
+    "spec_pdfs": [],
+    "manufacturer_pdfs": [],
+    "products_pdfs": [],
+    "effective_date": "July 2, 2021"
+  },
+  {
+    "product_name": "Full Bodied Car Stock / Truck or Modified/OEM Floorpan and Firewall with OEM Frame or Uni-Body Construction – 7.99 to 8.49 Seconds; 5,000 lbs. Maximum",
+    "category": "Drag Racing Chassis",
+    "subcategory": "FULL BODIED CARS",
+    "spec_numbers": [
+      "25.6A"
+    ],
+    "spec_pdfs": [],
+    "manufacturer_pdfs": [],
+    "products_pdfs": [],
+    "effective_date": "July 2, 2021"
+  },
+  {
+    "product_name": "Window Nets",
+    "category": "Personal Protective Gear, Restraints & Nets",
+    "subcategory": "Misc. Personal Protective Gear, Restraints &amp; Nets",
+    "spec_numbers": [
+      "27.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_27.1_101106.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "27.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Oct. 11, 2006"
+  },
+  {
+    "product_name": "Polymer (Foam-Filled) Fuel Cells",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "28.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_28.1_082517.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "28.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Aug. 25, 2017"
+  },
+  {
+    "product_name": "Polymer (Foam-Filled) Fuel Cells",
+    "category": "Fuel Related",
+    "subcategory": "Misc. Fuel Related",
+    "spec_numbers": [
+      "28.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_28.1_082517.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "28.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Aug. 25, 2017"
+  },
+  {
+    "product_name": "Crash Resistant Fuel Cells",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "28.2"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_28.2_071400.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "28.2 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Jul. 14, 2000"
+  },
+  {
+    "product_name": "Crash Resistant Fuel Cells",
+    "category": "Fuel Related",
+    "subcategory": "Misc. Fuel Related",
+    "spec_numbers": [
+      "28.2"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_28.2_071400.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "28.2 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Jul. 14, 2000"
+  },
+  {
+    "product_name": "Competition Fuel Cell Bladder",
+    "category": "Auto Racing",
+    "subcategory": "Misc. Auto Racing",
+    "spec_numbers": [
+      "28.3"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_28.3.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "28.3 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "June 17, 2022"
+  },
+  {
+    "product_name": "Competition Fuel Cell Bladder",
+    "category": "Fuel Related",
+    "subcategory": "Misc. Fuel Related",
+    "spec_numbers": [
+      "28.3"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_28.3.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "28.3 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "June 17, 2022"
+  },
+  {
+    "product_name": "Open Wheel Front Engine Fuel Cells",
+    "category": "Auto Racing",
+    "subcategory": "Misc. Auto Racing",
+    "spec_numbers": [
+      "28.4"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_28.4.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "28.4 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "March 20, 2025"
+  },
+  {
+    "product_name": "Open Wheel Front Engine Fuel Cells",
+    "category": "Fuel Related",
+    "subcategory": "Misc. Fuel Related",
+    "spec_numbers": [
+      "28.4"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_28.4.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "28.4 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "March 20, 2025"
+  },
+  {
+    "product_name": "Automatic Transmission Flexplates",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "29.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_29.1.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "29.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Aug. 26, 2016"
+  },
+  {
+    "product_name": "High Horsepower Automatic Transmission Flexplates",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "29.2"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_29.2.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "29.2 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Aug. 26, 2016"
+  },
+  {
+    "product_name": "Automatic Transmission Flexplates for Diesel Applications",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "29.3"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_29.3.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "29.3 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Feb. 26, 2014"
+  },
+  {
+    "product_name": "Automatic Transmission Flexplate Shields",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "30.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_30.1.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "30.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Jun. 17, 1999"
+  },
+  {
+    "product_name": "Flame Resistant Motorsports Helmets",
+    "category": "Personal Protective Gear, Restraints & Nets",
+    "subcategory": "Misc. Personal Protective Gear, Restraints &amp; Nets",
+    "spec_numbers": [
+      "31.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_31.1_032713.pdf"
+    ],
+    "manufacturer_pdfs": [],
+    "products_pdfs": [],
+    "effective_date": "Mar. 27, 2013"
+  },
+  {
+    "product_name": "Stock Car Fuel Cell Bladder",
+    "category": "Auto Racing",
+    "subcategory": "Misc. Auto Racing",
+    "spec_numbers": [
+      "32.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_32.1.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "32.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Jun. 26, 2020, edited Jan. 31, 2025"
+  },
+  {
+    "product_name": "Stock Car Fuel Cell Bladder",
+    "category": "Fuel Related",
+    "subcategory": "Misc. Fuel Related",
+    "spec_numbers": [
+      "32.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_32.1.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "32.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Jun. 26, 2020, edited Jan. 31, 2025"
+  },
+  {
+    "product_name": "Stock Car Fill/Vent Check Valve Assembly",
+    "category": "Auto Racing",
+    "subcategory": "Misc. Auto Racing",
+    "spec_numbers": [
+      "32.2"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_32.2_032409.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "32.2 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Mar. 24, 2009"
+  },
+  {
+    "product_name": "Stock Car Fill/Vent Check Valve Assembly",
+    "category": "Fuel Related",
+    "subcategory": "Misc. Fuel Related",
+    "spec_numbers": [
+      "32.2"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_32.2_032409.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "32.2 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Mar. 24, 2009"
+  },
+  {
+    "product_name": "Screw-Type Superchargers",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "34.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_34.1.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "34.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Jul. 24, 2023"
+  },
+  {
+    "product_name": "Stock Car Steel Wheels",
+    "category": "Auto Racing",
+    "subcategory": "Misc. Auto Racing",
+    "spec_numbers": [
+      "35.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_35.1_082608.pdf"
+    ],
+    "manufacturer_pdfs": [],
+    "products_pdfs": [],
+    "effective_date": "Aug. 26, 2008"
+  },
+  {
+    "product_name": "Heavy Duty Stock Car Steel Wheels",
+    "category": "Auto Racing",
+    "subcategory": "Misc. Auto Racing",
+    "spec_numbers": [
+      "35.2"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_35.2.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "35.2 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Nov. 11, 2022"
+  },
+  {
+    "product_name": "Alloy Stock Car Wheels",
+    "category": "Auto Racing",
+    "subcategory": "Misc. Auto Racing",
+    "spec_numbers": [
+      "35.3"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_35.3.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "35.3 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Oct. 22, 2020"
+  },
+  {
+    "product_name": "Drag Boat Capsule Shell Material",
+    "category": "Boat Racing",
+    "subcategory": "Misc. Boat Racing",
+    "spec_numbers": [
+      "36.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_36.1_060519.pdf"
+    ],
+    "manufacturer_pdfs": [],
+    "products_pdfs": [],
+    "effective_date": ""
+  },
+  {
+    "product_name": "Drag Boat Capsule Canopy Material",
+    "category": "Boat Racing",
+    "subcategory": "Misc. Boat Racing",
+    "spec_numbers": [
+      "36.2"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_36.2_060519.pdf"
+    ],
+    "manufacturer_pdfs": [],
+    "products_pdfs": [],
+    "effective_date": ""
+  },
+  {
+    "product_name": "Drag Boat Capsule Roll Cage",
+    "category": "Boat Racing",
+    "subcategory": "Misc. Boat Racing",
+    "spec_numbers": [
+      "36.3"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_36.3_013097.pdf"
+    ],
+    "manufacturer_pdfs": [],
+    "products_pdfs": [],
+    "effective_date": "Jan. 20, 1997"
+  },
+  {
+    "product_name": "Roll Cage Nets",
+    "category": "Personal Protective Gear, Restraints & Nets",
+    "subcategory": "Misc. Personal Protective Gear, Restraints &amp; Nets",
+    "spec_numbers": [
+      "37.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_37.1_101106.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "37.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Oct. 11, 2006"
+  },
+  {
+    "product_name": "Head and Neck Restraint Systems",
+    "category": "Personal Protective Gear, Restraints & Nets",
+    "subcategory": "Misc. Personal Protective Gear, Restraints &amp; Nets",
+    "spec_numbers": [
+      "38.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_38.1_041919.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "38.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Apr. 19, 2019"
+  },
+  {
+    "product_name": "Stock Car Type Racing Seats (Custom)",
+    "category": "Auto Racing",
+    "subcategory": "Misc. Auto Racing",
+    "spec_numbers": [
+      "39.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_39.1.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "39.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Jul. 24, 2023"
+  },
+  {
+    "product_name": "Racing Seats (Standard)",
+    "category": "Auto Racing",
+    "subcategory": "Misc. Auto Racing",
+    "spec_numbers": [
+      "39.2"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_39.2.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "39.2 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Jul. 24, 2023"
+  },
+  {
+    "product_name": "Abrasion Resistant Driver/Rider Suits",
+    "category": "Personal Protective Gear, Restraints & Nets",
+    "subcategory": "Misc. Personal Protective Gear, Restraints &amp; Nets",
+    "spec_numbers": [
+      "40.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_40.1_110493.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "40.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Nov. 4, 1993"
+  },
+  {
+    "product_name": "Motorsports Helmet",
+    "category": "Personal Protective Gear, Restraints & Nets",
+    "subcategory": "Misc. Personal Protective Gear, Restraints &amp; Nets",
+    "spec_numbers": [
+      "41.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_41.1_032713.pdf"
+    ],
+    "manufacturer_pdfs": [],
+    "products_pdfs": [],
+    "effective_date": "Mar. 27, 2013"
+  },
+  {
+    "product_name": "Steering Wheel Quick Disconnect/Release",
+    "category": "Auto Racing",
+    "subcategory": "Misc. Auto Racing",
+    "spec_numbers": [
+      "42.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_42.1_021596.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "42.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Feb. 15, 1996"
+  },
+  {
+    "product_name": "Steering Wheel Quick Disconnect/Release",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "42.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_42.1_021596.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "42.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Feb. 15, 1996"
+  },
+  {
+    "product_name": "Drive Shafts",
+    "category": "Auto Racing",
+    "subcategory": "Misc. Auto Racing",
+    "spec_numbers": [
+      "43.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_43.1_082517.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "43.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Aug. 25, 2017"
+  },
+  {
+    "product_name": "Drive Shafts",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "43.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_43.1_082517.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "43.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Aug. 25, 2017"
+  },
+  {
+    "product_name": "Stock Car Wheel Spacers",
+    "category": "Auto Racing",
+    "subcategory": "Misc. Auto Racing",
+    "spec_numbers": [
+      "44.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_44.1_081105.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "44.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Aug. 11, 2005"
+  },
+  {
+    "product_name": "Roll Bar Padding",
+    "category": "Auto Racing",
+    "subcategory": "Misc. Auto Racing",
+    "spec_numbers": [
+      "45.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_45.1_081105.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "45.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Aug. 11, 2005"
+  },
+  {
+    "product_name": "Roll Bar Padding",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "45.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_45.1_081105.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "45.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Aug. 11, 2005"
+  },
+  {
+    "product_name": "Impact Padding",
+    "category": "Auto Racing",
+    "subcategory": "Misc. Auto Racing",
+    "spec_numbers": [
+      "45.2"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_45.2_032713.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "45.2 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Mar. 27, 2013"
+  },
+  {
+    "product_name": "Impact Padding",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "45.2"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_45.2_032713.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "45.2 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Mar. 27, 2013"
+  },
+  {
+    "product_name": "Nitro-Methane Fuel Motorcycle Engine Restraint Devices",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "46.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_46.1_021398.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "46.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Feb. 13, 1998"
+  },
+  {
+    "product_name": "Driver Roll Cage for Use on 7,000 to 10,000 lbs. Tractors",
+    "category": "Tractor Pulling & Chassis",
+    "subcategory": "Misc. Tractor Pulling",
+    "spec_numbers": [
+      "47.1A"
+    ],
+    "spec_pdfs": [
+      "Spec Order Form.pdf"
+    ],
+    "manufacturer_pdfs": [],
+    "products_pdfs": [],
+    "effective_date": "July 24, 2023 |"
+  },
+  {
+    "product_name": "Driver Roll Cage for Use on Tractors, Less Than 6,300 lbs.",
+    "category": "Tractor Pulling & Chassis",
+    "subcategory": "Misc. Tractor Pulling",
+    "spec_numbers": [
+      "47.2A"
+    ],
+    "spec_pdfs": [
+      "Spec Order Form.pdf"
+    ],
+    "manufacturer_pdfs": [],
+    "products_pdfs": [],
+    "effective_date": "July 24, 2023 |"
+  },
+  {
+    "product_name": "Driver Roll Cage for Use on &#8220;Mini-Rod&#8221; Tractors, Less Than 2,050 lbs.",
+    "category": "Tractor Pulling & Chassis",
+    "subcategory": "Misc. Tractor Pulling",
+    "spec_numbers": [
+      "47.3A"
+    ],
+    "spec_pdfs": [
+      "Spec Order Form.pdf"
+    ],
+    "manufacturer_pdfs": [],
+    "products_pdfs": [],
+    "effective_date": "July 24, 2023 |"
+  },
+  {
+    "product_name": "Shift Boot Covers",
+    "category": "Auto Racing",
+    "subcategory": "Misc. Auto Racing",
+    "spec_numbers": [
+      "48.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_48.1_071907.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "48.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Jul. 19, 2007"
+  },
+  {
+    "product_name": "Top Fuel Rear Wing",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "49.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_49.1_032211.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "49.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Mar. 22, 2011"
+  },
+  {
+    "product_name": "Top Fuel Front Wing",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "49.2"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_49.2_032211.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "49.2 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Mar. 22, 2011"
+  },
+  {
+    "product_name": "Fueler Apron",
+    "category": "Personal Protective Gear, Restraints & Nets",
+    "subcategory": "Misc. Personal Protective Gear, Restraints &amp; Nets",
+    "spec_numbers": [
+      "52.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_52.1_060512.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "52.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Jun. 5, 2012"
+  },
+  {
+    "product_name": "Fueler Apron",
+    "category": "Auto Racing",
+    "subcategory": "Misc. Auto Racing",
+    "spec_numbers": [
+      "52.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_52.1_060512.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "52.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Jun. 5, 2012"
+  },
+  {
+    "product_name": "Fueler Apron",
+    "category": "Fuel Related",
+    "subcategory": "Misc. Fuel Related",
+    "spec_numbers": [
+      "52.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_52.1_060512.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "52.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Jun. 5, 2012"
+  },
+  {
+    "product_name": "Non Flammable, Thermal Barrier / Fire Extinguishing Coatings",
+    "category": "Auto Racing",
+    "subcategory": "Misc. Auto Racing",
+    "spec_numbers": [
+      "54.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_54.1_011708.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "54.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Jan. 17, 2008"
+  },
+  {
+    "product_name": "Non Flammable, Thermal Barrier / Fire Extinguishing Coatings",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "54.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_54.1_011708.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "54.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Jan. 17, 2008"
+  },
+  {
+    "product_name": "NASCAR-Type Tethers",
+    "category": "Auto Racing",
+    "subcategory": "Misc. Auto Racing",
+    "spec_numbers": [
+      "55.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_55.1.pdf"
+    ],
+    "manufacturer_pdfs": [],
+    "products_pdfs": [],
+    "effective_date": "Mar. 24, 2009"
+  },
+  {
+    "product_name": "NASCAR Dashboard and Other Carbon Fiber Components",
+    "category": "Auto Racing",
+    "subcategory": "Misc. Auto Racing",
+    "spec_numbers": [
+      "56.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_56.1_022614.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "56.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Feb. 26, 2014"
+  },
+  {
+    "product_name": "Turbochargers",
+    "category": "Drag Racing",
+    "subcategory": "Misc. Drag Racing",
+    "spec_numbers": [
+      "61.1"
+    ],
+    "spec_pdfs": [
+      "specs/Spec_61.1_062620.pdf"
+    ],
+    "manufacturer_pdfs": [
+      "61.1 Manufacturers List.pdf"
+    ],
+    "products_pdfs": [],
+    "effective_date": "Jun. 26, 2020"
+  }
+]

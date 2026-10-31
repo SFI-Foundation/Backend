@@ -13,6 +13,7 @@ import os
 import re
 from sqlalchemy import or_
 from sqlalchemy.orm import synonym
+from sfi_config import load_specs
 from __init__ import app, db
 
 
@@ -66,6 +67,12 @@ class SfiSpec(db.Model):
     manufacturer_pdf = db.Column(db.String(255), default='')
     products_pdf = db.Column(db.String(255), default='')
     effective_date = db.Column(db.String(50), default='')
+
+    chunks = db.relationship(
+        'SfiSpecChunk',
+        back_populates='spec',
+        cascade='all, delete-orphan',
+    )
 
     def to_dict(self):
         """Convert this spec to a JSON-serializable dictionary."""
@@ -156,6 +163,21 @@ def search_sfi_spec_chunks(query, spec_ids, limit=5):
         ),
     )
     return [chunk for chunk, _spec in ranked[:limit]]
+    """An extracted, page-cited text chunk belonging to an SFI spec."""
+    __tablename__ = 'sfi_spec_chunks'
+
+    id = db.Column(db.Integer, primary_key=True)
+    spec_id = db.Column(
+        db.Integer,
+        db.ForeignKey('sfi_specs.id', ondelete='CASCADE'),
+        nullable=False,
+        index=True,
+    )
+    page = db.Column(db.Integer, nullable=False)
+    chunk_index = db.Column(db.Integer, nullable=False)
+    text = db.Column(db.Text, nullable=False)
+
+    spec = db.relationship('SfiSpec', back_populates='chunks')
 
 
 def initSfiSpecs():
@@ -164,18 +186,7 @@ def initSfiSpecs():
     Clears existing data and re-imports so the DB always matches
     the latest extraction. Safe to call on every server start.
     """
-    # Path to the JSON produced by extract_sfi_specs.py
-    json_path = os.path.join(
-        os.path.dirname(__file__), "..", "..",
-        "greppers", "_data", "sfi_specs.json"
-    )
-
-    if not os.path.exists(json_path):
-        print(f"[SFI] WARNING: {json_path} not found — skipping spec import")
-        return
-
-    with open(json_path, "r", encoding="utf-8") as f:
-        specs_data = json.load(f)
+    specs_data = load_specs()  # validate before deleting any existing rows
 
     # Clear old data
     db.session.query(SfiSpec).delete()

@@ -25,6 +25,7 @@ The Flask backend provides:
 | `api/sfi_chat.py` | Gemini-backed chatbot endpoint. |
 | `api/user_gear.py` | Authenticated user gear CRUD endpoints. |
 | `model/sfi_spec.py` | SQLAlchemy model for SFI specs and import from frontend JSON. |
+| `scripts/ingest_sfi_pdfs.py` | Downloads and indexes text chunks from official SFI spec PDFs. |
 | `model/sfi_classifier.py` | TF-IDF plus LinearSVC classifier for part/spec prediction. |
 | `model/user_gear.py` | SQLAlchemy model for user equipment tracking. |
 | `__init__.py` | Flask app setup, CORS, environment config, and database configuration. |
@@ -57,23 +58,72 @@ Partially implemented or prototype-only behavior:
 
 ## Data Flow
 
-The SFI spec source data lives in the frontend repo:
+The importer and classifier JSON fallback share `sfi_config.load_specs()`.
+The default source is sibling `Frontend/_data/sfi_specs.json`:
 
 ```text
-../greppers/_data/sfi_specs.json
+sfi-foundation/
+  Frontend/_data/sfi_specs.json
+  Backend/
 ```
 
-`model/sfi_spec.py` imports that JSON into the backend database. `model/sfi_classifier.py` also trains from the same JSON file.
+Set `SFI_SPECS_PATH` for a different layout (for example this workspace's
+`../SFI-Frontend/_data/sfi_specs.json`). Relative overrides resolve from the
+Backend repository, never the shell's working directory; absolute paths and
+`~` are supported. Empty uses the default. Missing files, malformed JSON and
+invalid entries raise `SpecDataError` with the resolved path. Validation occurs
+before the importer clears rows. Classifier retraining still prefers current
+DB rows so admin edits remain supported; JSON fallback uses the same loader.
+Saved classifiers are retrained when the training-data fingerprint changes.
 
-Expected local repo layout:
+## SFI PDF Text Ingestion
 
-```text
-greppers/
-  greppers/   # frontend repo
-  flask/      # this backend repo
+Run the ingestion pipeline from the repository root:
+
+```bash
+python scripts/ingest_sfi_pdfs.py
 ```
 
-If the frontend repo is not beside this backend repo, SFI spec import and classifier training may fail unless the path logic is updated.
+The script reads unique `spec_pdfs` paths from `sfi_specs.json`, resolves relative
+paths against `https://sfifoundation.com/wp-content/pdfs/`, and stores downloaded
+PDFs in the ignored `instance/sfi_pdf_cache/` directory. Set `SFI_PDF_BASE_URL`
+to override that base. Cached valid PDFs are reused on later runs. Text is
+extracted page-by-page and stored as overlapping 800-character chunks in
+`sfi_spec_chunks`; each row has a `spec_id`, one-based `page`, and per-spec
+`chunk_index`. A successful re-run replaces that spec's chunks rather than
+duplicating them. Failed downloads, scanned/no-text PDFs, and parse errors are
+logged and skipped without discarding existing chunks.
+
+```mermaid
+flowchart TD
+    A["scripts/ingest_sfi_pdfs.py"] --> B["Read spec_pdfs from sfi_specs.json"]
+    B --> C{"Cached valid PDF?"}
+    C -->|No| D["Download once to instance/sfi_pdf_cache"]
+    C -->|Yes| E["Reuse cached PDF"]
+    D --> F["Extract text page-by-page"]
+    E --> F
+    D -.->|Download error| H["Log failure and keep existing chunks"]
+    F -.->|Parse error| H
+    F --> G{"Any extractable text?"}
+    G -->|No| H["Log failure and keep existing chunks"]
+    G -->|Yes| I["Create overlapping page-aware chunks"]
+    I --> J[("sfi_spec_chunks")]
+    J --> K["Replace chunks linked by spec_id"]
+    H --> L["Print succeeded/failed summary"]
+    K --> L
+```
+
+```mermaid
+erDiagram
+    SFI_SPECS ||--o{ SFI_SPEC_CHUNKS : "split into"
+    SFI_SPEC_CHUNKS {
+        int id PK
+        int spec_id FK
+        int page
+        int chunk_index
+        text text
+    }
+```
 
 ## Local Setup
 
@@ -90,29 +140,30 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-Create a local `.env` file. At minimum, include auth defaults and Gemini settings if the chatbot should work:
+Copy the placeholder-only example and replace passwords and the session secret:
 
-```env
-DEFAULT_PASSWORD='password'
-ADMIN_USER='Admin Name'
-ADMIN_UID='admin'
-ADMIN_PASSWORD='password'
-ADMIN_PFP='default.png'
-
-USER_NAME='User Name'
-USER_UID='user'
-USER_PASSWORD='password'
-USER_PFP='default.png'
-
-GEMINI_API_KEY='your-key-here'
-GEMINI_SERVER='https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent'
+```bash
+cp .env.example .env
 ```
 
-Initialize or refresh the database:
+The app loads Backend's `.env` independently of the current directory. Existing
+environment variables take precedence. Gemini is optional; database credentials
+are optional (blank selects local SQLite). `FLASK_PORT` defaults to 8423.
+`IS_PRODUCTION=true` retains the existing HTTPS credential-cookie behavior for
+the current Open Coding Society service; its cookie domain is still
+`.opencodingsociety.com`. A replacement host needs cookie/deployment verification.
+
+Initialize **only a disposable local database**:
 
 ```bash
 python scripts/db_init.py
 ```
+
+This initializer drops tables after confirmation. Do not run it against an
+existing/shared database to apply this configuration change; no schema migration
+is required. The repository includes prototype SQLite files: in a disposable
+clone only, use a new empty `instance/volumes/user_management.db` and accept the
+initializer prompt (main imports create tables before that prompt).
 
 Run the backend:
 
@@ -141,7 +192,20 @@ The frontend pages that depend on this backend include:
 - Site-wide chatbot widget for `/api/sfi/chat`.
 - `/admin/`, although the required admin endpoints are currently missing.
 
-CORS settings in `__init__.py` include local frontend ports and Open Coding Society domains. If testing from a new origin, update `allowed_origins`.
+Flask owns credentialed CORS, including OPTIONS; both checked-in nginx templates
+forward requests without adding CORS headers. Exact allowed origins are
+`https://sfi-foundation.github.io` and HTTP localhost/127.0.0.1 ports
+4000, 4100, 4500, 4600, 8000, 8080 and 8423. Origins have no `/Frontend` path.
+Unapproved Origin headers receive 403 without allow-origin headers; requests
+without Origin remain usable by CLI clients. `Vary: Origin` separates caches.
+Authentication/authorization remain required independently of CORS.
+
+Frontend `sfi_api_base` in `_config.yml` configures the shared API base for
+SFI pages and auth. Blank preserves the current service listed above; no new
+production URL is confirmed. Deployment/nginx reload, browser authentication
+on Pages, and production CORS verification remain pending.
+
+See [the feature diagram and capstone notes](docs/sfi-config.md).
 
 ## Known Gaps
 
@@ -150,6 +214,8 @@ CORS settings in `__init__.py` include local frontend ports and Open Coding Soci
 - Gear API does not support pending, approved, rejected, owner metadata, reviewer notes, or all-user admin views.
 - Chatbot retrieval includes relevant spec rows, PDF chunks, and indexed SFI website pages.
 - No PDF extraction, summarization, vector search, or RAG layer exists yet.
+- Chatbot does not yet retrieve PDF chunks or crawl the website; it only receives compact spec rows from the database.
+- PDF extraction and chunk storage are implemented; PDF summaries, search, and chatbot retrieval remain future work.
 - `/api/sfi/detect` is keyword-based and separate from the frontend's TensorFlow.js image detector.
 - There are no focused automated tests for the SFI API endpoints yet.
 
@@ -167,9 +233,25 @@ CORS settings in `__init__.py` include local frontend ports and Open Coding Soci
 
 Before continuing backend work:
 
-- Confirm `../greppers/_data/sfi_specs.json` exists and is current.
-- Run `python scripts/db_init.py`.
+- Confirm sibling `Frontend/_data/sfi_specs.json` exists, or set `SFI_SPECS_PATH`.
+- Initialize only a disposable database with `python scripts/db_init.py`; preserve existing data.
 - Start the backend and test `GET /api/sfi/specs`.
 - Test `GET /api/sfi/classifier/status` to confirm the classifier trained.
 - Configure `GEMINI_API_KEY` before testing `POST /api/sfi/chat`.
+- Run `python scripts/ingest_sfi_pdfs.py` to refresh the local SFI PDF chunk index.
 - Treat the `/admin/` frontend as unfinished until the backend admin endpoints and permission checks are added.
+
+## SFI spec write access (admin only)
+
+`POST/PUT/DELETE /api/sfi/specs[/<id>]` are protected by `@admin_required` (`api/auth_utils.py`). GET routes stay public. The `/sfi-specs/` admin panel is only shown when `/api/sfi/me` reports an admin.
+
+```mermaid
+flowchart TD
+    R["POST/PUT/DELETE /api/sfi/specs"] --> D{"@admin_required"}
+    D -->|no session or token| E1["401 Unauthorized"]
+    D -->|user, not admin| E2["403 Forbidden"]
+    D -->|admin| V{"required fields present?"}
+    V -->|missing/blank| E3["400 Bad Request"]
+    V -->|ok| H["Route handler"] --> DB[("SQLite")]
+    G["GET spec routes"] -->|public| H2["Read handler"]
+```

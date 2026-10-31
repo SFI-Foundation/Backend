@@ -19,6 +19,8 @@ from flask_restful import Api, Resource
 from sqlalchemy import or_, func
 from __init__ import db
 from model.sfi_spec import SfiSpec, search_sfi_specs
+from model.sfi_spec import SfiSpec
+from api.auth_utils import admin_required
 
 sfi_spec_api = Blueprint('sfi_spec_api', __name__, url_prefix='/api/sfi')
 api = Api(sfi_spec_api)
@@ -55,13 +57,14 @@ class SfiSpecAPI:
                 results = SfiSpec.query.all()
             return jsonify([spec.to_dict() for spec in results])
 
+        @admin_required
         def post(self):
-            data = request.get_json()
+            data = request.get_json(silent=True)
             if not data:
                 return {"error": "Missing JSON body"}, 400
 
             required = ['product_name', 'category', 'spec_number']
-            missing = [f for f in required if not data.get(f)]
+            missing = [f for f in required if not str(data.get(f) or '').strip()]
             if missing:
                 return {"error": f"Missing required fields: {', '.join(missing)}"}, 400
 
@@ -89,14 +92,20 @@ class SfiSpecAPI:
                 return {"error": "Spec not found"}, 404
             return jsonify(spec.to_dict())
 
+        @admin_required
         def put(self, id):
             spec = SfiSpec.query.get(id)
             if not spec:
                 return {"error": "Spec not found"}, 404
 
-            data = request.get_json()
+            data = request.get_json(silent=True)
             if not data:
                 return {"error": "Missing JSON body"}, 400
+
+            blank = [f for f in ('product_name', 'category', 'spec_number')
+                     if f in data and not str(data[f] or '').strip()]
+            if blank:
+                return {"error": f"Required fields cannot be empty: {', '.join(blank)}"}, 400
 
             for field in ['product_name', 'category', 'subcategory',
                           'spec_number', 'spec_pdf', 'manufacturer_pdf',
@@ -107,6 +116,7 @@ class SfiSpecAPI:
             db.session.commit()
             return jsonify(spec.to_dict())
 
+        @admin_required
         def delete(self, id):
             spec = SfiSpec.query.get(id)
             if not spec:

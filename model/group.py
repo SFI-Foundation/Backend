@@ -115,15 +115,16 @@ def initSfiGroups():
     admin_group = SfiGroup.by_name('administrators')
     members_group = SfiGroup.by_name('members')
 
-    admin_user = User.query.filter_by(_uid='admin').first()
-    if admin_user is not None and admin_group is not None:
-        if admin_user not in admin_group.members.all():
-            admin_group.members.append(admin_user)
+    # A chosen username is not evidence of administrator authority. Preserve
+    # existing group memberships and seed only users with the trusted Admin role.
+    # This also avoids case/accent/whitespace collisions under MySQL collations.
+    if admin_group is not None:
+        for admin_user in User.query.filter_by(_role='Admin').all():
+            if admin_user not in admin_group.members.all():
+                admin_group.members.append(admin_user)
 
     if members_group is not None:
         for u in User.query.all():
-            if u._uid == 'admin':
-                continue
             if u not in members_group.members.all() and u not in admin_group.members.all():
                 members_group.members.append(u)
 
