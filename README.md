@@ -46,7 +46,7 @@ Implemented endpoints:
 | `GET` | `/api/sfi/stats` | Return total specs, categories, subcategories, and category counts. |
 | `POST` | `/api/sfi/classify` | Classify a free-text part description into likely SFI specs. |
 | `GET` | `/api/sfi/classifier/status` | Return classifier training/status metadata. |
-| `POST` | `/api/sfi/chat` | Send a chatbot message and receive a Gemini-generated response. |
+| `POST` | `/api/sfi/chat` | Send a chatbot message and receive a Gemini-generated response with `sources` (`spec_number`, `page`, `url`). Website citations use `null` for unavailable spec/page fields. |
 | `GET` | `/api/sfi/gear` | List current authenticated user's gear. |
 | `POST` | `/api/sfi/gear` | Add gear for the current authenticated user. |
 | `DELETE` | `/api/sfi/gear/<id>` | Delete one current-user gear item. |
@@ -212,6 +212,8 @@ See [the feature diagram and capstone notes](docs/sfi-config.md).
 - No implemented admin/group endpoints for the standalone frontend `/admin/` page.
 - Spec create, update, and delete endpoints are not currently restricted to admin users.
 - Gear API does not support pending, approved, rejected, owner metadata, reviewer notes, or all-user admin views.
+- Chatbot retrieval includes relevant spec rows, PDF chunks, and indexed SFI website pages.
+- No PDF extraction, summarization, vector search, or RAG layer exists yet.
 - Chatbot does not yet retrieve PDF chunks or crawl the website; it only receives compact spec rows from the database.
 - PDF extraction and chunk storage are implemented; PDF summaries, search, and chatbot retrieval remain future work.
 - `/api/sfi/detect` is keyword-based and separate from the frontend's TensorFlow.js image detector.
@@ -223,7 +225,8 @@ See [the feature diagram and capstone notes](docs/sfi-config.md).
 - Implement `/api/sfi/me`, `/api/sfi/users`, `/api/sfi/groups`, `/api/sfi/gear/pending`, and `/api/sfi/gear/all` or update the frontend admin page to use existing APIs.
 - Extend `UserGear` with status, source, owner/admin review fields, reviewer notes, and timestamps.
 - Add a PDF ingestion pipeline that downloads or reads SFI PDFs, extracts text, chunks/indexes content, and exposes summary/search endpoints.
-- Upgrade the chatbot to retrieve from specs, site pages, and PDF chunks before calling Gemini.
+- Run `python scripts/index_sfi_site.py` to refresh the chatbot's searchable snapshot of the main SFI Foundation pages.
+- Upgrade the chatbot further with citations and broader PDF retrieval before calling Gemini.
 - Add route/API tests for SFI specs, classifier, chat error handling, and gear CRUD.
 
 ## Handoff Checklist
