@@ -31,11 +31,14 @@ def isolated_run():
                 destination = target / path
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copyfile(source / path, destination)
+        # Explicit fixture source: isolated snapshots have no sibling Frontend.
+        shutil.copyfile(source / 'sfi_specs.json', target / 'sfi_specs.json')
         (target / 'instance/volumes').mkdir(parents=True)
         environment = {
             'PATH': os.defpath, 'PYTHON_DOTENV_DISABLED': '1',
             'MPLCONFIGDIR': str(target / 'matplotlib'),
             'SFI_PROFILE_TEST_ROOT': str(target),
+            'SFI_SPECS_PATH': str(target / 'sfi_specs.json'),
         }
         return subprocess.run(
             [sys.executable, str(target / 'testing/test_sfi_profile.py'), '--isolated']

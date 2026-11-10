@@ -1,5 +1,6 @@
 Flask
 requests
+pdfplumber
 SQLAlchemy
 Werkzeug
 Flask_Login
