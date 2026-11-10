@@ -36,10 +36,10 @@ USER appuser
 
 # Set environment variables
 ENV FLASK_ENV=production \
-    GUNICORN_CMD_ARGS="--workers=5 --threads=2 --bind=0.0.0.0:8423 --timeout=30 --access-logfile -"
+    GUNICORN_CMD_ARGS="--workers=5 --threads=2 --bind=0.0.0.0:8605 --timeout=30 --access-logfile -"
 
 # Expose application port
-EXPOSE 8423
+EXPOSE 8605
 
 # Create any missing DB tables, then start Gunicorn server
 CMD ["bash", "-c", "python -c 'from __init__ import app, db; from main import *; app.app_context().push(); db.create_all()' && gunicorn main:app"]

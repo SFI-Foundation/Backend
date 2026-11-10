@@ -44,14 +44,14 @@ Once your backend is running, these endpoints will be available:
 
 1. **Start your Flask backend** (the posts table will be created automatically)
 2. **Copy `post.md` and `feed.md` to your frontend repository**
-3. **Test the API** by visiting `http://localhost:8423/api/post/all` (after logging in)
+3. **Test the API** by visiting `http://localhost:8605/api/post/all` (after logging in)
 4. **Access social media** from your frontend at the `/social-media` route
 
 ## Testing
 
 ```bash
 # Test if posts API is working
-curl http://localhost:8423/api/post/all -H "Authorization: Bearer YOUR_JWT_TOKEN"
+curl http://localhost:8605/api/post/all -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 
 ## Integration Complete! 🎉

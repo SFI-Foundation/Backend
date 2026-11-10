@@ -74,5 +74,5 @@ echo -e "\n${YELLOW}Or use this shortcut script:${NC}"
 echo -e "  ${GREEN}bash run_backend.sh${NC}"
 
 echo -e "\n${YELLOW}Your social media API will be available at:${NC}"
-echo -e "  ${GREEN}http://localhost:8423/api/post/all${NC}"
+echo -e "  ${GREEN}http://localhost:8605/api/post/all${NC}"
 

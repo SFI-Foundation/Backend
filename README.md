@@ -123,14 +123,14 @@ python main.py
 The expected local backend base URL is:
 
 ```text
-http://localhost:8423
+http://localhost:8605
 ```
 
 ## Frontend Integration
 
 The companion frontend expects the backend at:
 
-- Local: `http://localhost:8423`
+- Local: `http://localhost:8605`
 - Deployed: `https://greppers-be.opencodingsociety.com`
 
 The frontend pages that depend on this backend include:

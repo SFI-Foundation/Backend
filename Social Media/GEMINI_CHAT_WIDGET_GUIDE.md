@@ -244,7 +244,7 @@ Add more suggestion buttons:
 ### **AI doesn't respond:**
 - ✅ Make sure you're logged in
 - ✅ Check Gemini API key is configured
-- ✅ Backend must be running (port 8423)
+- ✅ Backend must be running (port 8605)
 
 ### **"Auth error" message:**
 - ✅ Login first with testuser/123456

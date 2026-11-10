@@ -13,8 +13,8 @@ load_dotenv()
 # Setup of key Flask object (app)
 app = Flask(__name__)
 
-# Configure Flask Port, default to 8423 which is same as Docker setup
-app.config['FLASK_PORT'] = int(os.environ.get('FLASK_PORT') or 8423)
+# Configure Flask Port, default to 8605 which is same as Docker setup
+app.config['FLASK_PORT'] = int(os.environ.get('FLASK_PORT') or 8605)
 
 # Configure Flask to handle JSON with UTF-8 encoding versus default ASCII
 app.config['JSON_AS_ASCII'] = False  # Allow emojis, non-ASCII characters in JSON responses

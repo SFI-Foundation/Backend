@@ -13,9 +13,9 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
     }
 
-    # Proxy all other traffic to Flask app on 8423
+    # Proxy all other traffic to Flask app on 8605
     location / {
-        proxy_pass http://localhost:8423;
+        proxy_pass http://localhost:8605;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
 
