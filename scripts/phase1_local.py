@@ -53,10 +53,6 @@ def create_app(database, demo_accounts=False):
             db.session.execute(text('SELECT 1'))
         return {'status': 'ok', 'mode': 'isolated-local-catalog'}
 
-    @app.get('/api/sfi/classifier/status')
-    def classifier_status():
-        return {'trained': False, 'mode': 'isolated-local-catalog'}
-
     @app.get('/api/id')
     @auth_required()
     def me():
@@ -87,6 +83,12 @@ def create_app(database, demo_accounts=False):
 
         app.register_blueprint(group_api)
         app.register_blueprint(user_gear_api)
+        # Normal password authentication on synthetic users, confined to this
+        # prepared disposable database. No production account is seeded.
+        from flask_restful import Api
+        from api.user import UserAPI
+
+        Api(app).add_resource(UserAPI._Security, '/api/authenticate')
 
         @app.route('/local-demo/', methods=['GET', 'POST'])
         def demo_login():

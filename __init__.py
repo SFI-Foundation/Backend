@@ -3,6 +3,8 @@ from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from dotenv import load_dotenv
+from security_config import settings
+from sqlalchemy.engine import URL
 import os
 
 
@@ -11,6 +13,8 @@ load_dotenv(os.path.join(os.path.dirname(__file__), ".env"))
 
 # Setup of key Flask object (app)
 app = Flask(__name__)
+security = settings()
+app.config.update(security)
 
 # Configure Flask Port, default to 8605 which is same as Docker setup
 app.config['FLASK_PORT'] = int(os.environ.get('FLASK_PORT') or 8605)
@@ -53,31 +57,31 @@ def add_cors_headers(response):
 # Admin Defaults
 app.config['ADMIN_USER'] = os.environ.get('ADMIN_USER') or 'Admin Name'
 app.config['ADMIN_UID'] = os.environ.get('ADMIN_UID') or 'admin'
-app.config['ADMIN_PASSWORD'] = os.environ.get('ADMIN_PASSWORD') or os.environ.get('DEFAULT_PASSWORD') or 'password'
+app.config['ADMIN_PASSWORD'] = security['ADMIN_PASSWORD']
 app.config['ADMIN_PFP'] = os.environ.get('ADMIN_PFP') or 'default.png'
 # Teacher Defaults
 app.config['TEACHER_USER'] = os.environ.get('TEACHER_USER') or 'Teacher Name'
 app.config['TEACHER_UID'] = os.environ.get('TEACHER_UID') or 'teacher'
-app.config['TEACHER_PASSWORD'] = os.environ.get('TEACHER_PASSWORD') or os.environ.get('DEFAULT_PASSWORD') or 'password'
+app.config['TEACHER_PASSWORD'] = security['TEACHER_PASSWORD']
 app.config['TEACHER_PFP'] = os.environ.get('TEACHER_PFP') or 'default.png'
 # Default User Defaults
 app.config['USER_NAME'] = os.environ.get('USER_NAME') or 'User Name'
 app.config['USER_UID'] = os.environ.get('USER_UID') or 'user'
-app.config['USER_PASSWORD'] = os.environ.get('USER_PASSWORD') or os.environ.get('DEFAULT_PASSWORD') or 'password'
+app.config['USER_PASSWORD'] = security['USER_PASSWORD']
 app.config['USER_PFP'] = os.environ.get('USER_PFP') or 'default.png'
 # Defaults
-app.config['DEFAULT_PASSWORD'] = os.environ.get('DEFAULT_PASSWORD') or 'password'
+app.config['DEFAULT_PASSWORD'] = security['DEFAULT_PASSWORD']
 app.config['DEFAULT_PFP'] = os.environ.get('DEFAULT_PFP') or 'default.png'
 # Convenience user
 app.config['MY_NAME'] = os.environ.get('MY_NAME') or 'convenience'
 app.config['MY_UID'] = os.environ.get('MY_UID') or 'convenience'
-app.config['MY_PASSWORD'] = os.environ.get('MY_PASSWORD') or os.environ.get('DEFAULT_PASSWORD') or 'password'
+app.config['MY_PASSWORD'] = security['MY_PASSWORD']
 app.config['MY_PFP'] = os.environ.get('MY_PFP') or 'default.png'
 app.config['MY_ROLE'] = os.environ.get('MY_ROLE') or 'User'
 
 
 # Browser settings
-SECRET_KEY = os.environ.get('SECRET_KEY') or 'SECRET_KEY' # secret key for session management
+SECRET_KEY = security['SECRET_KEY']
 SESSION_COOKIE_NAME = os.environ.get('SESSION_COOKIE_NAME') or 'sess_python_flask'
 JWT_TOKEN_NAME = os.environ.get('JWT_TOKEN_NAME') or 'jwt_python_flask'
 app.config['SECRET_KEY'] = SECRET_KEY
@@ -86,7 +90,7 @@ app.config['JWT_TOKEN_NAME'] = JWT_TOKEN_NAME
 
 
 # Database settings
-IS_PRODUCTION = os.environ.get('IS_PRODUCTION') or None
+IS_PRODUCTION = security['IS_PRODUCTION']
 dbName = 'user_management'
 DB_ENDPOINT = os.environ.get('DB_ENDPOINT') or None
 DB_USERNAME = os.environ.get('DB_USERNAME') or None
@@ -95,8 +99,8 @@ if DB_ENDPOINT and DB_USERNAME and DB_PASSWORD:
    # Production - Use MySQL
    DB_PORT = '3306'
    DB_NAME = dbName
-   dbString = f'mysql+pymysql://{DB_USERNAME}:{DB_PASSWORD}@{DB_ENDPOINT}:{DB_PORT}'
-   dbURI =  dbString + '/' + dbName
+   dbString = URL.create('mysql+pymysql', username=DB_USERNAME, password=DB_PASSWORD, host=DB_ENDPOINT, port=int(DB_PORT))
+   dbURI = dbString.set(database=dbName)
    backupURI = None  # MySQL backup would require a different approach
 else:
    # Development - Use SQLite

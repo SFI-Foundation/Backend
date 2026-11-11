@@ -286,9 +286,10 @@ class ProfileTests(unittest.TestCase):
 
     def test_existing_sfi_gear_moderation_and_public_endpoints(self):
         self.login()
-        for path in ('/api/sfi/specs', '/api/sfi/categories', '/api/sfi/stats', '/api/sfi/classifier/status'):
+        for path in ('/api/sfi/specs', '/api/sfi/categories', '/api/sfi/stats'):
             with self.subTest(path=path):
                 self.assertEqual(self.client.get(path).status_code, 200)
+        self.assertEqual(self.client.get('/api/sfi/classifier/status').status_code, 404)
         response = self.client.post('/api/sfi/gear', json={'name': 'Isolated helmet', 'spec': '31.1', 'category': 'Helmet'})
         self.assertEqual(response.status_code, 200)
         gear_id = response.json['id']

@@ -14,7 +14,7 @@ Endpoints:
     GET    /api/sfi/stats              — dashboard summary stats
 """
 
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app, abort
 from sqlalchemy.exc import OperationalError, IntegrityError
 from functools import wraps
 from flask_restful import Api, Resource
@@ -185,6 +185,10 @@ class SfiSpecAPI:
             # ML mode: route through SfiClassifier if ?mode=ml
             mode = request.args.get('mode', '').strip().lower()
             if mode == 'ml':
+                if current_app.config.get(
+                    'IS_PRODUCTION'
+                ) or not current_app.config.get('SFI_INTERNAL_RESEARCH', False):
+                    abort(404)
                 from model.sfi_classifier import SfiClassifier
 
                 data = request.get_json()

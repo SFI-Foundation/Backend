@@ -36,3 +36,12 @@ instance/phase1*/
 *import-report*.json
 *link-report*.json
 .phase1-local/
+
+# Local secrets and QA artifacts
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+/qa-evidence/

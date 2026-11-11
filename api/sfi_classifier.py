@@ -9,13 +9,19 @@ Endpoints:
 
 from functools import wraps
 from sfi_config import SpecDataError
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app, abort
 from flask_restful import Api, Resource
 from model.sfi_classifier import SfiClassifier
 from api.auth_utils import admin_required
 
 sfi_classifier_api = Blueprint('sfi_classifier_api', __name__, url_prefix='/api/sfi')
 api = Api(sfi_classifier_api)
+
+@sfi_classifier_api.before_request
+def research_only():
+    if current_app.config.get('IS_PRODUCTION') or not current_app.config.get('SFI_INTERNAL_RESEARCH', False):
+        abort(404)
+
 
 
 def spec_data_errors(handler):
