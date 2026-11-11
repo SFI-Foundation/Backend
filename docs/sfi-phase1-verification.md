@@ -9,7 +9,7 @@ existing Backend `venv/bin/python`; `PYTHON_DOTENV_DISABLED=1` was set.
 | Before: `python -m unittest discover -s tests -v` | 10 passed |
 | Before: config + PDF ingestion modules | 14 run, 2 mapper errors documented in audit |
 | Before: Frontend `npm test` | Both existing script suites passed |
-| Final: `python -m unittest discover -s tests -v` | 33 passed |
+| Final: `python -m unittest discover -s tests -v` | 34 passed |
 | Final: `python -m unittest testing.test_sfi_config testing.test_sfi_pdf_ingest -v` | 14 passed |
 | `python testing/test_sfi_profile.py` (its disposable-copy harness) | 13 passed |
 | Frontend `npm test` | Both existing script suites passed |
@@ -27,7 +27,7 @@ existing Backend `venv/bin/python`; `PYTHON_DOTENV_DISABLED=1` was set.
 | `git diff --check` | Passed before commits; final check repeated at delivery |
 
 The Phase 1 unit/integration fixtures cover PDF/DOCX parser accuracy and Word run
-boundaries, explicit technical bulletins, unsafe ZIP paths/symlinks/bombs/duplicate
+boundaries and explicit line breaks, explicit technical bulletins, unsafe ZIP paths/symlinks/bombs/duplicate
 names, conflicts and rating variants, missing/incorrect/old PDFs, literal SQL
 punctuation, exact/case/whitespace/synonym search, name-vs-category ranking,
 category overlap, deduplication, pagination errors, API legacy fields,
