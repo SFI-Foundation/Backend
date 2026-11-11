@@ -114,7 +114,10 @@ app.register_blueprint(sfi_pdf_summary_api)  # Register the SFI PDF summary API
 
 # Jokes file initialization
 with app.app_context():
-    db.create_all()  # idempotent — creates any newly defined tables (sfi_groups, sfi_user_groups, user_gear, ...)
+    # Phase 1 catalog metadata has an explicit additive migration.
+    db.metadata.create_all(bind=db.engine, tables=[
+        table for table in db.metadata.sorted_tables if table.name != 'sfi_catalog_entries'
+    ])  # preserve existing startup behavior for other legacy tables
     initJokes()
     try:
         initSfiGroups()  # ensure baseline groups exist (administrators, members) + admin membership

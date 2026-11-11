@@ -33,6 +33,7 @@ def isolated_run():
                 shutil.copyfile(source / path, destination)
         # Explicit fixture source: isolated snapshots have no sibling Frontend.
         shutil.copyfile(source / 'sfi_specs.json', target / 'sfi_specs.json')
+        shutil.copyfile(source / 'sfi_search_terms.json', target / 'sfi_search_terms.json')
         (target / 'instance/volumes').mkdir(parents=True)
         environment = {
             'PATH': os.defpath, 'PYTHON_DOTENV_DISABLED': '1',

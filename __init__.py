@@ -109,7 +109,8 @@ app.config['DB_USERNAME'] = DB_USERNAME
 app.config['DB_PASSWORD'] = DB_PASSWORD
 app.config['SQLALCHEMY_DATABASE_NAME'] = dbName
 app.config['SQLALCHEMY_DATABASE_STRING'] = dbString
-app.config['SQLALCHEMY_DATABASE_URI'] = dbURI
+# Explicit local/test override; never print credentials from this URI.
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SFI_DATABASE_URI') or dbURI
 app.config['SQLALCHEMY_BACKUP_URI'] = backupURI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)

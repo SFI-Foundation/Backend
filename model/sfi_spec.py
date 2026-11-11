@@ -74,7 +74,7 @@ class SfiSpec(db.Model):
         cascade='all, delete-orphan',
     )
 
-    def to_dict(self):
+    def legacy_dict(self):
         """Convert this spec to a JSON-serializable dictionary."""
         return {
             "id": self.id,
@@ -88,6 +88,17 @@ class SfiSpec(db.Model):
             "effective_date": self.effective_date,
         }
 
+    def to_dict(self):
+        from catalog import canonical_specs
+        return next(item for item in canonical_specs() if self.id in item['legacy_ids'])
+
+
+class SfiCatalogEntry(db.Model):
+    """Additive metadata overlay; legacy rows and foreign keys remain intact."""
+    __tablename__ = 'sfi_catalog_entries'
+    spec_number = db.Column(db.String(20), primary_key=True)
+    payload = db.Column(db.Text, nullable=False)
+
 
 class SfiSpecChunk(db.Model):
     """A page-scoped text chunk extracted from an SFI spec PDF."""
@@ -99,35 +110,16 @@ class SfiSpecChunk(db.Model):
     chunk_index = db.Column(db.Integer, nullable=False)
     text = db.Column(db.Text, nullable=False)
     content = synonym('text')
+    spec = db.relationship('SfiSpec', back_populates='chunks')
 
 
 def search_sfi_specs(query, limit=None):
-    """Return specs matching query terms, ranked by metadata relevance."""
-    terms = _search_terms(query)
-    if not terms:
-        return []
-
-    fields = (
-        SfiSpec.spec_number,
-        SfiSpec.product_name,
-        SfiSpec.subcategory,
-        SfiSpec.category,
-    )
-    matches = SfiSpec.query.filter(or_(*(
-        field.ilike(f'%{term}%') for term in terms for field in fields
-    ))).all()
-
-    ranked = sorted(
-        matches,
-        key=lambda spec: (
-            -_field_match_score(
-                terms, spec.spec_number, spec.product_name,
-                spec.subcategory, spec.category
-            ),
-            spec.spec_number,
-        ),
-    )
-    return ranked[:limit] if limit is not None else ranked
+    """Compatibility adapter for existing chatbot callers expecting ORM rows."""
+    from catalog import find_specs
+    results = find_specs(query)
+    if limit is not None:
+        results = results[:limit]
+    return [db.session.get(SfiSpec, item['id']) for item in results]
 
 
 def search_sfi_spec_chunks(query, spec_ids, limit=5):
@@ -163,50 +155,33 @@ def search_sfi_spec_chunks(query, spec_ids, limit=5):
         ),
     )
     return [chunk for chunk, _spec in ranked[:limit]]
-    """An extracted, page-cited text chunk belonging to an SFI spec."""
-    __tablename__ = 'sfi_spec_chunks'
-
-    id = db.Column(db.Integer, primary_key=True)
-    spec_id = db.Column(
-        db.Integer,
-        db.ForeignKey('sfi_specs.id', ondelete='CASCADE'),
-        nullable=False,
-        index=True,
-    )
-    page = db.Column(db.Integer, nullable=False)
-    chunk_index = db.Column(db.Integer, nullable=False)
-    text = db.Column(db.Text, nullable=False)
-
-    spec = db.relationship('SfiSpec', back_populates='chunks')
 
 
 def initSfiSpecs():
-    """Load SFI specs from the extracted JSON into the database.
+    """Explicit legacy seed: insert missing full numbers without deleting rows.
 
-    Clears existing data and re-imports so the DB always matches
-    the latest extraction. Safe to call on every server start.
+    Rich metadata imports use scripts/import_sfi_catalog.py instead.
     """
-    specs_data = load_specs()  # validate before deleting any existing rows
-
-    # Clear old data
-    db.session.query(SfiSpec).delete()
-
-    count = 0
-    for entry in specs_data:
-        # Each entry can have multiple spec numbers — create one row per spec
-        for i, spec_num in enumerate(entry.get("spec_numbers", [])):
-            spec = SfiSpec(
-                product_name=entry.get("product_name", ""),
-                category=entry.get("category", ""),
-                subcategory=entry.get("subcategory", ""),
-                spec_number=spec_num,
-                spec_pdf=entry["spec_pdfs"][i] if i < len(entry.get("spec_pdfs", [])) else "",
-                manufacturer_pdf=entry["manufacturer_pdfs"][i] if i < len(entry.get("manufacturer_pdfs", [])) else "",
-                products_pdf=entry["products_pdfs"][i] if i < len(entry.get("products_pdfs", [])) else "",
-                effective_date=entry.get("effective_date", ""),
-            )
-            db.session.add(spec)
-            count += 1
-
-    db.session.commit()
-    print(f"[SFI] Loaded {count} specs into database")
+    data = load_specs()  # validate before opening a write transaction
+    from catalog import normalize_number
+    try:
+        existing = {normalize_number(s.spec_number) for s in SfiSpec.query.all()}
+        for entry in data:
+            for i, number in enumerate(entry.get('spec_numbers', [])):
+                key = normalize_number(number)
+                if key in existing:
+                    continue
+                def at(field):
+                    values = entry.get(field, [])
+                    return values[i] if i < len(values) else ''
+                db.session.add(SfiSpec(
+                    product_name=entry['product_name'], category=entry['category'],
+                    subcategory=entry.get('subcategory', ''), spec_number=key,
+                    spec_pdf=at('spec_pdfs'), manufacturer_pdf=at('manufacturer_pdfs'),
+                    products_pdf=at('products_pdfs'), effective_date=entry.get('effective_date', ''),
+                ))
+                existing.add(key)
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+        raise

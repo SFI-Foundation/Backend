@@ -15,15 +15,53 @@ Endpoints:
 """
 
 from flask import Blueprint, request, jsonify
+from sqlalchemy.exc import OperationalError
+from functools import wraps
 from flask_restful import Api, Resource
-from sqlalchemy import or_, func
+from sqlalchemy import or_
+from catalog import canonical_specs, find_specs, normalize_number
 from __init__ import db
-from model.sfi_spec import SfiSpec, search_sfi_specs
 from model.sfi_spec import SfiSpec
 from api.auth_utils import admin_required
 
+def catalog_ready(func):
+    @wraps(func)
+    def wrapped(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except OperationalError:
+            db.session.rollback()
+            return {'error': 'Catalog database unavailable; verify the Phase 1 migration and database connection'}, 503
+    return wrapped
+
+
 sfi_spec_api = Blueprint('sfi_spec_api', __name__, url_prefix='/api/sfi')
 api = Api(sfi_spec_api)
+
+
+def catalog_response(search=False):
+    query = ' '.join(request.args.get('q', '').split())
+    category = ' '.join(request.args.get('category', '').split())
+    if len(query) > 200 or len(category) > 100:
+        return {'error': 'Query exceeds 200 characters or category exceeds 100 characters'}, 400
+    if search and not query:
+        return {'error': "Missing 'q' query parameter; use /specs to browse"}, 400
+    try:
+        page = int(request.args.get('page', '1'))
+        limit = int(request.args.get('limit', '200'))
+        if page < 1 or page > 100000 or not 1 <= limit <= 200:
+            raise ValueError
+    except ValueError:
+        return {'error': 'page must be 1..100000 and limit must be 1..200'}, 400
+    items = find_specs(query, category)
+    offset = (page - 1) * limit
+    selected = items[offset:offset + limit]
+    # Preserve array responses by default. Opt into counts and pagination envelope.
+    if request.args.get('format') == 'page':
+        return jsonify(items=selected, total=len(items), page=page, limit=limit)
+    response = jsonify(selected)
+    response.headers['X-Total-Count'] = str(len(items))
+    return response
 
 
 class SfiSpecAPI:
@@ -33,13 +71,9 @@ class SfiSpecAPI:
 
     class _Search(Resource):
         """GET /api/sfi/specs/search?q=<keyword>"""
+        @catalog_ready
         def get(self):
-            query = request.args.get('q', '').strip()
-            if not query:
-                return {"error": "Missing 'q' query parameter"}, 400
-
-            results = search_sfi_specs(query)
-            return jsonify([spec.to_dict() for spec in results])
+            return catalog_response(search=True)
 
     # ── List (GET) + Create (POST) on /specs ───────────────
 
@@ -47,15 +81,9 @@ class SfiSpecAPI:
         """GET  /api/sfi/specs?category=<name>  — list specs
            POST /api/sfi/specs                  — create a spec
         """
+        @catalog_ready
         def get(self):
-            category = request.args.get('category', '').strip()
-            if category:
-                results = SfiSpec.query.filter(
-                    SfiSpec.category.ilike(f"%{category}%")
-                ).all()
-            else:
-                results = SfiSpec.query.all()
-            return jsonify([spec.to_dict() for spec in results])
+            return catalog_response()
 
         @admin_required
         def post(self):
@@ -68,11 +96,14 @@ class SfiSpecAPI:
             if missing:
                 return {"error": f"Missing required fields: {', '.join(missing)}"}, 400
 
+            number = normalize_number(data['spec_number'])
+            if any(normalize_number(s.spec_number) == number for s in SfiSpec.query.all()):
+                return {'error': 'Specification already exists; edit its categories instead'}, 409
             spec = SfiSpec(
                 product_name=data['product_name'],
                 category=data['category'],
                 subcategory=data.get('subcategory', ''),
-                spec_number=data['spec_number'],
+                spec_number=number,
                 spec_pdf=data.get('spec_pdf', ''),
                 manufacturer_pdf=data.get('manufacturer_pdf', ''),
                 products_pdf=data.get('products_pdf', ''),
@@ -107,6 +138,33 @@ class SfiSpecAPI:
             if blank:
                 return {"error": f"Required fields cannot be empty: {', '.join(blank)}"}, 400
 
+            if 'spec_number' in data:
+                target = normalize_number(data['spec_number'])
+                if target != normalize_number(spec.spec_number) and any(s.id != spec.id and normalize_number(s.spec_number) == target for s in SfiSpec.query.all()):
+                    return {'error': 'Target specification already exists'}, 409
+                data['spec_number'] = target
+
+            from model.sfi_spec import SfiCatalogEntry
+            if any(field in data for field in ('spec_number', 'effective_date', 'spec_pdf')):
+                overlay = db.session.get(SfiCatalogEntry, normalize_number(spec.spec_number))
+                if overlay:
+                    import json
+                    payload = json.loads(overlay.payload)
+                    payload['document'] = {'status': 'needs_review'}
+                    overlay.payload = json.dumps(payload, sort_keys=True)
+
+            overlay = db.session.get(SfiCatalogEntry, normalize_number(spec.spec_number))
+            if overlay and any(field in data for field in ('product_name', 'category')):
+                import json
+                payload = json.loads(overlay.payload)
+                if 'product_name' in data:
+                    payload['product_name'] = data['product_name']
+                    payload['aliases'] = sorted(set(payload.get('aliases', [])) | {data['product_name']})
+                if 'category' in data:
+                    payload['categories'] = sorted(set(payload.get('categories', [])) | {data['category']})
+                payload['manual_edits'] = sorted(set(payload.get('manual_edits', [])) | set(data))
+                overlay.payload = json.dumps(payload, sort_keys=True)
+
             for field in ['product_name', 'category', 'subcategory',
                           'spec_number', 'spec_pdf', 'manufacturer_pdf',
                           'products_pdf', 'effective_date']:
@@ -130,11 +188,9 @@ class SfiSpecAPI:
 
     class _Categories(Resource):
         """GET /api/sfi/categories"""
+        @catalog_ready
         def get(self):
-            rows = SfiSpec.query.with_entities(
-                SfiSpec.category
-            ).distinct().all()
-            return jsonify([row.category for row in rows])
+            return jsonify(sorted({c for s in canonical_specs() for c in s['categories']}))
 
     # ── Visual Part Detector ───────────────────────────────
 
@@ -198,24 +254,14 @@ class SfiSpecAPI:
 
     class _Stats(Resource):
         """GET /api/sfi/stats — summary counts for the admin dashboard."""
+        @catalog_ready
         def get(self):
-            total = SfiSpec.query.count()
-            categories = SfiSpec.query.with_entities(
-                SfiSpec.category
-            ).distinct().count()
-            subcategories = SfiSpec.query.with_entities(
-                SfiSpec.subcategory
-            ).distinct().count()
-
-            breakdown = db.session.query(
-                SfiSpec.category, func.count(SfiSpec.id)
-            ).group_by(SfiSpec.category).all()
-
+            items = canonical_specs()
+            cats = sorted({c for s in items for c in s['categories']})
             return jsonify({
-                "total_specs": total,
-                "total_categories": categories,
-                "total_subcategories": subcategories,
-                "by_category": {cat: cnt for cat, cnt in breakdown},
+                'total_specs': len(items), 'total_categories': len(cats),
+                'total_subcategories': len({s['subcategory'] for s in items if s['subcategory']}),
+                'by_category': {c: sum(c in s['categories'] for s in items) for c in cats},
             })
 
     # ── Register all routes ────────────────────────────────
