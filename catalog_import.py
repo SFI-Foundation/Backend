@@ -13,7 +13,7 @@ from pathlib import Path, PurePosixPath
 from xml.etree import ElementTree
 
 import pdfplumber
-from catalog import normalize_number, normalized
+from catalog import normalize_number
 
 MAX_MEMBERS = 512
 MAX_FILE = 16 * 1024 * 1024

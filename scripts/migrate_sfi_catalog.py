@@ -13,7 +13,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from sqlalchemy import create_engine, inspect
+from sqlalchemy import create_engine
 from model.sfi_spec import SfiCatalogEntry
 
 

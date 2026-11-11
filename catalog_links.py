@@ -1,6 +1,5 @@
 """Validate links discovered on official SFI pages; never upload local sources."""
 
-import io
 import re
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
@@ -8,7 +7,7 @@ from html.parser import HTMLParser
 from urllib.parse import urljoin, urlparse
 
 import requests
-from catalog import official_url, normalize_number
+from catalog import official_url
 from catalog_import import MAX_FILE, inspect_pdf, current_document
 
 ROOT = 'https://sfifoundation.com/specifications-participating-manufacturers/'

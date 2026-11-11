@@ -14,7 +14,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from __init__ import db, validate_cors_origin, add_cors_headers
 from api.sfi_spec import sfi_spec_api
-from model.persona import Persona, UserPersona
+from model.persona import Persona, UserPersona  # noqa: F401 -- register ORM relationship targets
 from model.sfi_spec import SfiSpec, SfiSpecChunk
 
 

@@ -76,7 +76,6 @@ def main():
             )
         from sqlalchemy import create_engine, inspect
         from sqlalchemy.orm import Session
-        from model.sfi_spec import SfiSpec, SfiCatalogEntry
 
         engine = create_engine(args.database)
         if not {'sfi_specs', 'sfi_catalog_entries'} <= set(
