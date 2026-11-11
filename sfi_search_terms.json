@@ -1,0 +1,17 @@
+{
+  "16.1": {
+    "terms": ["harness", "seat belt"],
+    "source": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_16.1.pdf",
+    "basis": "Terms present in the specification text, checked locally against the supplied document."
+  },
+  "16.2": {
+    "terms": ["harness", "seat belt"],
+    "source": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_16.2.pdf",
+    "basis": "Terms present in the specification text, checked locally against the supplied document."
+  },
+  "16.5": {
+    "terms": ["harness"],
+    "source": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_16.5.pdf",
+    "basis": "Harness terminology present in the specification text."
+  }
+}

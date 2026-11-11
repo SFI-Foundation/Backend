@@ -33,6 +33,7 @@ def isolated_run():
                 shutil.copyfile(source / path, destination)
         # Explicit fixture source: isolated snapshots have no sibling Frontend.
         shutil.copyfile(source / 'sfi_specs.json', target / 'sfi_specs.json')
+        shutil.copyfile(source / 'sfi_search_terms.json', target / 'sfi_search_terms.json')
         (target / 'instance/volumes').mkdir(parents=True)
         environment = {
             'PATH': os.defpath, 'PYTHON_DOTENV_DISABLED': '1',
@@ -285,9 +286,10 @@ class ProfileTests(unittest.TestCase):
 
     def test_existing_sfi_gear_moderation_and_public_endpoints(self):
         self.login()
-        for path in ('/api/sfi/specs', '/api/sfi/categories', '/api/sfi/stats', '/api/sfi/classifier/status'):
+        for path in ('/api/sfi/specs', '/api/sfi/categories', '/api/sfi/stats'):
             with self.subTest(path=path):
                 self.assertEqual(self.client.get(path).status_code, 200)
+        self.assertEqual(self.client.get('/api/sfi/classifier/status').status_code, 404)
         response = self.client.post('/api/sfi/gear', json={'name': 'Isolated helmet', 'spec': '31.1', 'category': 'Helmet'})
         self.assertEqual(response.status_code, 200)
         gear_id = response.json['id']
@@ -329,6 +331,9 @@ def wsgi_bridge():
         db.session.add(User(name='Integration Member', uid=uid, password=password))
         db.session.add(User(name='Integration Admin', uid=admin_uid, password=password, role='Admin'))
         db.session.commit()
+        # Bridge users are created after main's initial group seeding. Apply the
+        # normal role-to-group initialization for these synthetic accounts too.
+        initSfiGroups()
     client = app.test_client()
     socket_path = str(root / 'flask.sock')
     server = None

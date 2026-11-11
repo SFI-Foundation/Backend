@@ -22,3 +22,26 @@ instance/data/jokes.json
 instance/sfi_pdf_cache/
 
 !.env.example
+
+# Phase 1 private sources, local databases, reports, caches and archives
+sfi-private-data/
+*.pdf
+*.docx
+*.zip
+*.db
+*.sqlite*
+*.bak
+*.joblib
+instance/phase1*/
+*import-report*.json
+*link-report*.json
+.phase1-local/
+
+# Local secrets and QA artifacts
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+/qa-evidence/

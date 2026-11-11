@@ -114,7 +114,10 @@ app.register_blueprint(sfi_pdf_summary_api)  # Register the SFI PDF summary API
 
 # Jokes file initialization
 with app.app_context():
-    db.create_all()  # idempotent — creates any newly defined tables (sfi_groups, sfi_user_groups, user_gear, ...)
+    # Phase 1 catalog metadata has an explicit additive migration.
+    db.metadata.create_all(bind=db.engine, tables=[
+        table for table in db.metadata.sorted_tables if table.name != 'sfi_catalog_entries'
+    ])  # preserve existing startup behavior for other legacy tables
     initJokes()
     try:
         initSfiGroups()  # ensure baseline groups exist (administrators, members) + admin membership
@@ -325,7 +328,6 @@ def update_user(uid):
 
     # Get the JSON data from the request
     data = request.get_json()
-    print(f"Request Data: {data}")  # Log the incoming data
 
     # Find the user in the database
     user = User.query.filter_by(_uid=uid).first()
@@ -366,4 +368,4 @@ if __name__ == "__main__":
     host = "0.0.0.0"
     port = app.config['FLASK_PORT']
     print(f"** Server running: http://localhost:{port}")  # Pretty link
-    app.run(debug=True, host=host, port=port, use_reloader=False)
+    app.run(debug=not app.config['IS_PRODUCTION'], host=host, port=port, use_reloader=False)

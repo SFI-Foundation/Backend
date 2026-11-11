@@ -1,10 +1,11 @@
+import os
 import psycopg2
 import json
 
-rds_host = 'kasm-student-db-instance.ctenoof0kzic.us-east-2.rds.amazonaws.com'
+rds_host = os.environ['DB_ENDPOINT']
 rds_port = '3306'
-rds_user = 'kasm_admin'
-rds_password = 'pZTXfhhcvuqkF2vEy27x'
+rds_user = os.environ['DB_USERNAME']
+rds_password = os.environ['DB_PASSWORD']
 
 # Name of new db
 new_db_name = 'new_database_name'

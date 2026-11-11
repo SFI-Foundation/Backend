@@ -7,6 +7,7 @@ Endpoints:
     DELETE /api/sfi/gear/<id>           — remove a gear item (owner or admin)
     GET    /api/sfi/gear/all            — all gear (requires can_view_all_gear)
     GET    /api/sfi/gear/pending        — all pending gear (requires can_approve_gear)
+    PUT    /api/sfi/gear/<id>/review    — existing admin client compatibility (same permission check)
     PATCH  /api/sfi/gear/<id>/status    — approve/reject (requires can_approve_gear)
 """
 
@@ -91,11 +92,25 @@ class UserGearAPI:
             new_status = (body.get('status') or '').strip().lower()
             if new_status not in ALLOWED_STATUSES:
                 return {'error': f'status must be one of {ALLOWED_STATUSES}'}, 400
-            gear.set_status(new_status, g.current_user.id, body.get('note', ''))
+            gear.set_status(new_status, g.current_user.id, body.get('notes', body.get('note', '')))
             return jsonify(_dict_with_owner(gear))
+
+    class _GearReview(Resource):
+        @token_required()
+        def put(self, gear_id):
+            # The existing administrative client uses PUT /review. Reuse the
+            # authenticated permission check and transaction of PATCH /status.
+            body = request.get_json(silent=True)
+            if not isinstance(body, dict) or body.get('status') not in ('approved', 'rejected'):
+                return {'error': 'Review status must be approved or rejected'}, 400
+            notes = body.get('notes', '')
+            if not isinstance(notes, str) or len(notes) > 4000 or (body['status'] == 'rejected' and not notes.strip()):
+                return {'error': 'Provide review notes (up to 4000 characters); rejection requires a reason'}, 400
+            return UserGearAPI._GearStatus().patch(gear_id)
 
     api.add_resource(_GearCollection, '/gear')
     api.add_resource(_GearItem, '/gear/<int:gear_id>')
     api.add_resource(_GearAll, '/gear/all')
     api.add_resource(_GearPending, '/gear/pending')
     api.add_resource(_GearStatus, '/gear/<int:gear_id>/status')
+    api.add_resource(_GearReview, '/gear/<int:gear_id>/review')

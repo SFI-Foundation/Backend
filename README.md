@@ -37,11 +37,11 @@ Implemented endpoints:
 | Method | Endpoint | Purpose |
 | --- | --- | --- |
 | `GET` | `/api/sfi/specs` | List all specs, with optional `?category=` filter. |
-| `POST` | `/api/sfi/specs` | Create a new spec record. Currently not admin-protected. |
+| `POST` | `/api/sfi/specs` | Create a validated canonical spec (admin only). |
 | `GET` | `/api/sfi/specs/search?q=...` | Keyword search across spec number, product name, category, and subcategory. |
 | `GET` | `/api/sfi/specs/<id>` | Get one spec by ID. |
-| `PUT` | `/api/sfi/specs/<id>` | Update one spec by ID. Currently not admin-protected. |
-| `DELETE` | `/api/sfi/specs/<id>` | Delete one spec by ID. Currently not admin-protected. |
+| `PUT` | `/api/sfi/specs/<id>` | Update the canonical spec by ID (admin only). |
+| `DELETE` | `/api/sfi/specs/<id>` | Archive the canonical spec with explicit confirmation (admin only). |
 | `GET` | `/api/sfi/categories` | Return distinct SFI spec categories. |
 | `GET` | `/api/sfi/stats` | Return total specs, categories, subcategories, and category counts. |
 | `POST` | `/api/sfi/classify` | Classify a free-text part description into likely SFI specs. |
@@ -54,7 +54,7 @@ Implemented endpoints:
 Partially implemented or prototype-only behavior:
 
 - `POST /api/sfi/detect` exists, but it is keyword-based. It is separate from the browser-side detector in the frontend.
-- Standalone admin/group endpoints expected by the frontend `/admin/` page are not implemented yet.
+- Administrative user/group/gear endpoints are implemented and require their respective permission groups.
 
 ## Data Flow
 
@@ -209,15 +209,15 @@ See [the feature diagram and capstone notes](docs/sfi-config.md).
 
 ## Known Gaps
 
-- No implemented admin/group endpoints for the standalone frontend `/admin/` page.
-- Spec create, update, and delete endpoints are not currently restricted to admin users.
-- Gear API does not support pending, approved, rejected, owner metadata, reviewer notes, or all-user admin views.
+- The standalone admin portal requires an authenticated account with administrative group permissions.
+- Canonical catalog writes require administrator authorization; deletion is an archive preserving legacy rows.
+- Gear API supports pending/approved/rejected status, owner metadata, review notes and authorized all-user views; PUT review and PATCH status are supported.
 - Chatbot retrieval includes relevant spec rows, PDF chunks, and indexed SFI website pages.
 - No PDF extraction, summarization, vector search, or RAG layer exists yet.
 - Chatbot does not yet retrieve PDF chunks or crawl the website; it only receives compact spec rows from the database.
 - PDF extraction and chunk storage are implemented; PDF summaries, search, and chatbot retrieval remain future work.
 - `/api/sfi/detect` is keyword-based and separate from the frontend's TensorFlow.js image detector.
-- There are no focused automated tests for the SFI API endpoints yet.
+- Catalog/API/import/migration/authentication regression coverage is documented in `docs/sfi-phase1-repairs.md`.
 
 ## Future Roadmap
 
@@ -255,3 +255,5 @@ flowchart TD
     V -->|ok| H["Route handler"] --> DB[("SQLite")]
     G["GET spec routes"] -->|public| H2["Read handler"]
 ```
+
+See [Phase 1 repairs, localhost QA, and launch instructions](docs/sfi-phase1-repairs.md) for the corrected catalog counts and current acceptance evidence.
