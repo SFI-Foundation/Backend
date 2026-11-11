@@ -104,7 +104,14 @@ def parse_docx(data, source):
     for index, row in enumerate(root.findall('.//w:tr', NS), 1):
         cells = [
             ' '.join(
-                ''.join(t.text or '' for t in p.findall('.//w:t', NS))
+                ''.join(
+                    (node.text or '')
+                    if node.tag == '{' + NS['w'] + '}t'
+                    else ' '
+                    if node.tag in {'{' + NS['w'] + '}br', '{' + NS['w'] + '}tab'}
+                    else ''
+                    for node in p.iter()
+                )
                 for p in c.findall('.//w:p', NS)
             )
             for c in row.findall('w:tc', NS)

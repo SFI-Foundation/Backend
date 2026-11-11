@@ -1,0 +1,728 @@
+{
+  "checked_at": "2026-11-11T02:44:08.518158+00:00",
+  "discovery_failures": [],
+  "checked": 80,
+  "verified_current": 63,
+  "results": [
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_1.1.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "1.1",
+      "sha256": "9033419809c24e71d41d18f00e486ed57aab3e67d4f25605d1d0b10864e7b452",
+      "effective_date": "2001-11-09",
+      "latest_change": "2020-06-01",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_1.2.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "1.2",
+      "sha256": "f69b22e9d9e685674481749013c956a7e4b29e85bbd516b370b37da2238def0a",
+      "effective_date": "2006-02-09",
+      "latest_change": "2025-12-11",
+      "status": "revision_or_number_mismatch"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_1.3.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "1.3",
+      "sha256": "def5ba119fbfcafa30c4617121141f238fbfb96f545a231dbe96249b88ad54f9",
+      "effective_date": "2000-05-23",
+      "latest_change": "2023-12-07",
+      "status": "revision_or_number_mismatch"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_1.4.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "1.4",
+      "sha256": "df480f696db85563ed06c5fb5f96dcce10e595aff3f6780bb48eadca5a31c16b",
+      "effective_date": "2000-05-23",
+      "latest_change": "2020-06-01",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_1.5.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "1.5",
+      "sha256": "e52d547a661dc436f1c388b410658a1017c8e1a465ca31e8bc63122af2152612",
+      "effective_date": "2006-02-09",
+      "latest_change": "2021-12-09",
+      "status": "revision_or_number_mismatch"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_14.1.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "14.1",
+      "sha256": "045da0ce380295079ef2daf0ff6458ce4266074fe02d80407e2fe58d89b49000",
+      "effective_date": "1992-01-29",
+      "latest_change": "2026-03-09",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_14.2.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "14.2",
+      "sha256": "9b34dc62337152c3cdb5822107daf4bedf0fe28325297630ca1928bfc28f75d2",
+      "effective_date": "2021-04-22",
+      "latest_change": "2026-03-19",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_14.21.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "14.21",
+      "sha256": "168e7b9b23108b1685a0b360af0178d4b68d21dbdb128008cbce685605f4951d",
+      "effective_date": "2024-06-18",
+      "latest_change": "2026-03-19",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_14.3.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "14.3",
+      "sha256": "b72dca8f5ca7b378eb4277189e5bf12c4aeb9a1dab3cd54f54ae117b5bfe99ba",
+      "effective_date": "2017-08-25",
+      "latest_change": "2026-03-19",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_14.4.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "14.4",
+      "sha256": "145f75e9383e548c7906afc33b6f2b585afb1601613a2c9851414949326f2356",
+      "effective_date": "2004-03-23",
+      "latest_change": "2020-03-26",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_14.5.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "14.5",
+      "sha256": "7bb70598aacf1bf4ca6f83d507bf8d0ff71dd3b6be700a4bceb326cd37752a96",
+      "effective_date": "2014-08-29",
+      "latest_change": "2020-03-26",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_14.6.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "14.6",
+      "sha256": "7df10da9985b23cd79677bf3fb057441516d2465098eb9056da316d5bc8f9d75",
+      "effective_date": "2015-03-16",
+      "latest_change": "2020-03-26",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_14.8.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "14.8",
+      "sha256": "1bd0ec3158be128d071c0d1cafe0a6fe00c738a66f2eb9b0a51fb6190aa63f6b",
+      "effective_date": "2019-04-19",
+      "latest_change": "2020-03-26",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_15.1.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "15.1",
+      "sha256": "b12f9e9fe8228a11a90ddf1f12df4ecdf950ce159c90bcd6ba05ab11434ff233",
+      "effective_date": "2026-04-09",
+      "latest_change": "2026-04-09",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_15.2.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "15.2",
+      "sha256": "1cc632621773234bddcb7bed40dc0d4bdaa4fbe3dfac1676ecd73f1bf3aeeb9c",
+      "effective_date": "2026-04-09",
+      "latest_change": "2026-04-09",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_15.3.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "15.3",
+      "sha256": "e4ea6f104acc72e5a11fe56f5cd277bc4cdf3c85d8932368a6b647748bf3e3c7",
+      "effective_date": "2026-04-09",
+      "latest_change": "2026-04-09",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_15.4.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "15.4",
+      "sha256": "8cd6bd75f64469206714d16bdefb02f56b7e5e0559357172d59658d8b61f3b23",
+      "effective_date": "2026-04-09",
+      "latest_change": "2026-04-09",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_16.1_022614.pdf",
+      "discovered_on": "https://sfifoundation.com/protectivegearrestraintsnets/",
+      "spec_number": "16.1",
+      "sha256": "df204cd71923b63c047bf957d2342a183a7e9ca1f96ef045de7759fac943e8c9",
+      "effective_date": "2014-02-26",
+      "latest_change": "2020-03-26",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_16.2_022614.pdf",
+      "discovered_on": "https://sfifoundation.com/protectivegearrestraintsnets/",
+      "spec_number": "16.2",
+      "sha256": "3e44e86f57f89ea0872e3b8c12a3ba0de7c416e7146a0d1e5781369a6118afb3",
+      "effective_date": "2014-02-26",
+      "latest_change": "2020-03-26",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_16.5_122914.pdf",
+      "discovered_on": "https://sfifoundation.com/protectivegearrestraintsnets/",
+      "spec_number": "16.5",
+      "sha256": "8148d2859a0d140f279c2510983aeb2998e861f21d590f77595004dcc7db34e4",
+      "effective_date": "2014-12-29",
+      "latest_change": "2020-03-26",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_16.6_042018.pdf",
+      "discovered_on": "https://sfifoundation.com/protectivegearrestraintsnets/",
+      "spec_number": "16.6",
+      "sha256": "628dd7d293e73e38acf69b525d58f76267fb373804ccb16bcb9f7a846c8c14c3",
+      "effective_date": "2018-04-20",
+      "latest_change": "2020-03-26",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_16.7.pdf",
+      "discovered_on": "https://sfifoundation.com/protectivegearrestraintsnets/",
+      "spec_number": "16.7",
+      "sha256": "6dcf28db93da478a973e829cf013418224be77418e3283fe4c2c49ec57c9f20d",
+      "effective_date": "2026-04-09",
+      "latest_change": "2026-04-09",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_17.1_062620.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "17.1",
+      "sha256": "94290ba0bed75ab8d6fb36efd56f9452b42136bc27ad4b6d3f83172e6fdadcef",
+      "effective_date": "2020-06-26",
+      "latest_change": "2020-06-26",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_17.2_041919.pdf",
+      "discovered_on": "https://www.sfifoundation.com/autoracing/",
+      "spec_number": "17.2",
+      "sha256": "4c0b0a5356344a3233e09624ee9fa5c77b400252e6a2a7fd958aaf36aef1eaaa",
+      "effective_date": "2019-04-19",
+      "latest_change": "2020-03-26",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_17.3.pdf",
+      "discovered_on": "https://www.sfifoundation.com/autoracing/",
+      "spec_number": "17.3",
+      "sha256": "9e87ab241cfc621e50c2f19c0fda43580a95ae2699275be40301a2c4df24c85a",
+      "effective_date": "2022-04-01",
+      "latest_change": "2022-04-01",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_18.1_082616.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "18.1",
+      "sha256": "90d938c3fb51dcac986bafe1bb2541a589cc2d9508e435a16a3fada51907beff",
+      "effective_date": "2016-08-26",
+      "latest_change": "2020-03-26",
+      "status": "revision_or_number_mismatch"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_20.1_072610.pdf",
+      "discovered_on": "https://sfifoundation.com/protectivegearrestraintsnets/",
+      "spec_number": "20.1",
+      "sha256": "916ecccbfd3faaff3b8e707e4a0d0b4e04b27945a73d6ce89835ccf5e2b3cbb7",
+      "effective_date": "2010-07-26",
+      "latest_change": "2011-12-09",
+      "status": "revision_or_number_mismatch"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_23.1_050108.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "23.1",
+      "sha256": "71409f2aa5be863c5f1359abfca9f684100925e258b8e028802710fb5f742fbf",
+      "effective_date": "2008-05-01",
+      "latest_change": "2020-03-26",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_24.1.pdf",
+      "discovered_on": "https://sfifoundation.com/protectivegearrestraintsnets/",
+      "spec_number": "24.1",
+      "sha256": "a18528782a41b5be315d8cdcfe463acc700a29565314d198622270046bf31370",
+      "effective_date": "2021-03-12",
+      "latest_change": "2021-03-12",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_27.1_101106.pdf",
+      "discovered_on": "https://sfifoundation.com/protectivegearrestraintsnets/",
+      "spec_number": "27.1",
+      "sha256": "dcdcde337ae1ce3b617bbbc205ca8cb219c7c5995567fb11954c148a3e3c3194",
+      "effective_date": "2006-10-11",
+      "latest_change": "2020-03-26",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_28.1_082517.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "28.1",
+      "sha256": "ff8a79fdbf62a2741b65f950d1f7456c04b3c694ae3deb854f0cb259b9b8f4ba",
+      "effective_date": "2017-08-25",
+      "latest_change": "2020-03-26",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_28.2_071400.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "28.2",
+      "sha256": "13896d42058bc0f44b0bf6a00040b7d0c90278c2e6185ce8ed07dbfa7a9cb190",
+      "effective_date": "2000-07-14",
+      "latest_change": "2003-07-17",
+      "status": "revision_or_number_mismatch"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_28.3.pdf",
+      "discovered_on": "https://www.sfifoundation.com/autoracing/",
+      "spec_number": "28.3",
+      "sha256": "708e7052b64968a0a0de8afda4e56f5e03c230970ac2c4f31cec4b4c0973bf11",
+      "effective_date": "2022-06-17",
+      "latest_change": "2022-06-17",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_28.4.pdf",
+      "discovered_on": "https://www.sfifoundation.com/autoracing/",
+      "spec_number": "28.4",
+      "sha256": "a39a8fcba5f6145301460662bd13f8ef5838e41b58556ce6ebca9d7bc48c940e",
+      "effective_date": "2025-05-13",
+      "latest_change": "2025-05-13",
+      "status": "revision_or_number_mismatch"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_29.1.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "29.1",
+      "sha256": "a7e85c8b5ee66c19df11e439105f0d10707d29fab9ff67f152f402faad4dc92d",
+      "effective_date": "2016-08-26",
+      "latest_change": "2023-12-07",
+      "status": "revision_or_number_mismatch"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_29.2.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "29.2",
+      "sha256": "7064a086b95c7a67ce1734685198683da77e6076420ea8c348021a66b14fbfda",
+      "effective_date": "2016-08-26",
+      "latest_change": "2020-03-26",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_29.3.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "29.3",
+      "sha256": "ee67c99e6fda2210610d4acfc2f23eb7822d5b6fac26c17e7bd47c71c337d0a1",
+      "effective_date": "2014-02-26",
+      "latest_change": "2020-03-26",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_3.2A.pdf",
+      "discovered_on": "https://sfifoundation.com/protectivegearrestraintsnets/",
+      "spec_number": "3.2A",
+      "sha256": "9d4012a04736ce84ad21e8e8ac774e5d63926d5cd8cb10b42a5fa7773122ae6a",
+      "effective_date": "2020-06-26",
+      "latest_change": "2026-03-03",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_3.3.pdf",
+      "discovered_on": "https://sfifoundation.com/protectivegearrestraintsnets/",
+      "spec_number": "3.3",
+      "sha256": "a6e678d0d72bbac029a526f9aee99027768285fde4ed6b4dc3d8def892897c55",
+      "effective_date": "2022-04-01",
+      "latest_change": "2026-03-03",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_3.4.pdf",
+      "discovered_on": "https://sfifoundation.com/protectivegearrestraintsnets/",
+      "spec_number": "3.4",
+      "sha256": "c90ba2f4822acd5e17216fbceb2483e02672281447755db129fd3d203ea860db",
+      "effective_date": "2019-10-18",
+      "latest_change": "2026-03-03",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_30.1.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "30.1",
+      "sha256": "6f49123e3abbdd64384ee5f16ef694f8bab2ef08b293568e93ecc9620a0f2859",
+      "effective_date": "1999-06-17",
+      "latest_change": "2021-12-09",
+      "status": "revision_or_number_mismatch"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_31.1_032713.pdf",
+      "discovered_on": "https://sfifoundation.com/protectivegearrestraintsnets/",
+      "spec_number": "31.1",
+      "sha256": "dbb213504f1f89348928553ae58e51505135f8f73f5ac98306a6006d73752c54",
+      "effective_date": "2013-03-27",
+      "latest_change": "2013-03-27",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_32.1.pdf",
+      "discovered_on": "https://www.sfifoundation.com/autoracing/",
+      "spec_number": "32.1",
+      "sha256": "45ed87ecef9737355f8a74e9242b3df03f9bbc201f0c0fb2c40d5aeec0074012",
+      "effective_date": "2020-06-26",
+      "latest_change": "2025-01-31",
+      "status": "revision_or_number_mismatch"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_32.2_032409.pdf",
+      "discovered_on": "https://www.sfifoundation.com/autoracing/",
+      "spec_number": "32.2",
+      "sha256": "a5974f6fbb0e4eb5359b1ddb26110049f390eb541e77cd131e5e9713e1f7d600",
+      "effective_date": "2009-03-24",
+      "latest_change": "2020-03-26",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_34.1.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "34.1",
+      "sha256": "3490f91d35773fb977939b60f040132ca43f3bc0b11c4ab8a11ccb273e391d7f",
+      "effective_date": "2023-07-24",
+      "latest_change": "2023-07-24",
+      "status": "revision_or_number_mismatch"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_35.1_082608.pdf",
+      "discovered_on": "https://www.sfifoundation.com/autoracing/",
+      "spec_number": "35.1",
+      "sha256": "9a74e0e745cec28b58f5d6b67285eb93a9b077792fbd5f596ad0966db98f95b7",
+      "effective_date": "2008-08-26",
+      "latest_change": "2020-03-26",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_35.2.pdf",
+      "discovered_on": "https://www.sfifoundation.com/autoracing/",
+      "spec_number": "35.2",
+      "sha256": "e0574b8dafa691a8b53a17083cac437466e170207c3499ee301caed733b2747e",
+      "effective_date": "2022-11-11",
+      "latest_change": "2022-11-11",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_35.3.pdf",
+      "discovered_on": "https://www.sfifoundation.com/autoracing/",
+      "spec_number": "35.3",
+      "sha256": "9fec3ba304ee731053bd4f34d9fda6ecd26fbe0bc7a25869391e29d620782236",
+      "effective_date": "2026-05-13",
+      "latest_change": "2026-05-13",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_36.1_060519.pdf",
+      "discovered_on": "https://www.sfifoundation.com/boat-racing/",
+      "spec_number": "36.1",
+      "sha256": "5ba8fb9a5a0d699c21349dd75b62c6c115388fa690290622ddb7ac6dc6a11c50",
+      "effective_date": null,
+      "latest_change": "2010-03-17",
+      "status": "revision_or_number_mismatch"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_36.2_060519.pdf",
+      "discovered_on": "https://www.sfifoundation.com/boat-racing/",
+      "spec_number": "36.2",
+      "sha256": "4844b764e4a1a5f73c627a7ef0e493f5f51d54bfa62c4311d20dbef6610a75b6",
+      "effective_date": "2002-02-12",
+      "latest_change": "2002-02-12",
+      "status": "revision_or_number_mismatch"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_36.3_013097.pdf",
+      "discovered_on": "https://www.sfifoundation.com/boat-racing/",
+      "spec_number": "36.3",
+      "sha256": "a8d3984ab0641fb431a5cf717944f6a96d29c439b1ac49534ea4c6c425cc9b99",
+      "effective_date": "1997-01-30",
+      "latest_change": "1997-01-30",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_37.1_101106.pdf",
+      "discovered_on": "https://sfifoundation.com/protectivegearrestraintsnets/",
+      "spec_number": "37.1",
+      "sha256": "0856e8ec9143edb17fd69ddcf5bc9cc3b90a7cd38530c8c687b91e4357ae6934",
+      "effective_date": "2006-10-11",
+      "latest_change": "2020-03-26",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_38.1_041919.pdf",
+      "discovered_on": "https://sfifoundation.com/protectivegearrestraintsnets/",
+      "spec_number": "38.1",
+      "sha256": "148c721d006609ff64f4ef0d67239a5c178ec6597c59e40e1b235c8a7de45f24",
+      "effective_date": "2019-04-19",
+      "latest_change": "2020-03-26",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_39.1.pdf",
+      "discovered_on": "https://www.sfifoundation.com/autoracing/",
+      "spec_number": "39.1",
+      "sha256": "5e173cb70fcd522a29de5169bd52d7db3d61ab0d9900399ba99f8ba7ac043083",
+      "effective_date": "2023-07-24",
+      "latest_change": "2023-07-24",
+      "status": "revision_or_number_mismatch"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_39.2.pdf",
+      "discovered_on": "https://www.sfifoundation.com/autoracing/",
+      "spec_number": "39.2",
+      "sha256": "b187de151fb9d0cd2f9d48ada86be8d1819f2e5b1c0fc28e5eb842fb96970935",
+      "effective_date": "2023-07-24",
+      "latest_change": "2023-07-24",
+      "status": "revision_or_number_mismatch"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_4.1.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "4.1",
+      "sha256": "4db4e56cc480f0214d0663463fc0f16eb6e0530e5c0efa398fd69682d9e293dd",
+      "effective_date": "2013-03-27",
+      "latest_change": "2020-03-26",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_4.2.pdf",
+      "discovered_on": "https://sfifoundation.com/tractor-pulling/",
+      "spec_number": "4.2",
+      "sha256": "b879db9c91babfe7567138ee747127c5cb9dd18a409eac78cf01f48ed8278f5c",
+      "effective_date": "1994-10-26",
+      "latest_change": "2012-11-29",
+      "status": "revision_or_number_mismatch"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_4.3.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "4.3",
+      "sha256": "ef0f97d329250103aa8bda31f0aaa6ea3f17d5b87c37f716bbab60a43cb0167a",
+      "effective_date": "2023-07-24",
+      "latest_change": "2026-03-17",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_40.1_110493.pdf",
+      "discovered_on": "https://sfifoundation.com/protectivegearrestraintsnets/",
+      "spec_number": "40.1",
+      "sha256": "f6fee5deda3ef5b36454c472ec4f81dbcc797ae5cdc1425a42f8444ffc402e3e",
+      "effective_date": "1993-11-04",
+      "latest_change": "1993-11-04",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_41.1_032713.pdf",
+      "discovered_on": "https://sfifoundation.com/protectivegearrestraintsnets/",
+      "spec_number": "41.1",
+      "sha256": "8918de7b37782a0028979409483ca58e48abaa23809d7a962745b7b0686bc8b8",
+      "effective_date": "2013-03-27",
+      "latest_change": "2013-03-27",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_42.1_021596.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "42.1",
+      "sha256": "32ff1915ed3b84c4168fb28a3b12d50d1ed7eb0cd1a85eca0c44bbc93b52416c",
+      "effective_date": "1996-02-15",
+      "latest_change": "2020-03-26",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_43.1_082517.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "43.1",
+      "sha256": "a4a2b87be78538d30fede65b2fe1528bbbf91ec99dd477d80e699c891f257721",
+      "effective_date": "2017-08-25",
+      "latest_change": "2017-08-25",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_44.1_081105.pdf",
+      "discovered_on": "https://www.sfifoundation.com/autoracing/",
+      "spec_number": "44.1",
+      "sha256": "01e7eb5893ef4aa41262a05bf166c41bd059cc016799dad154b4989f891f0bbc",
+      "effective_date": "2005-08-11",
+      "latest_change": "2006-06-14",
+      "status": "revision_or_number_mismatch"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_45.1_081105.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "45.1",
+      "sha256": "3fffe2e7c90b328f4d200a8e994740c1d14fedb0c4b7bc5709e5dd1a5102bff3",
+      "effective_date": "2005-08-11",
+      "latest_change": "2020-03-26",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_45.2_032713.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "45.2",
+      "sha256": "72d65e938cc5431c34c26d4675cfabde999d6aae08a4048c17f3168a87bd517a",
+      "effective_date": "2013-03-27",
+      "latest_change": "2020-03-26",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_46.1_021398.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "46.1",
+      "sha256": "8fb6cafbe72f5fd0fcb49cfba1c49e861d068e17da221e3c0113fef3409527e8",
+      "effective_date": "1998-02-13",
+      "latest_change": "2020-03-26",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_48.1_071907.pdf",
+      "discovered_on": "https://www.sfifoundation.com/autoracing/",
+      "spec_number": "48.1",
+      "sha256": "5f3c170fe13822d9433349b9b3109fa6704eceb301e9d9e6aea9fbf12bab08d2",
+      "effective_date": "2007-07-19",
+      "latest_change": "2020-03-26",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_49.1_032211.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "49.1",
+      "sha256": "1db43ff07e29f031f7079d8babce14c8ae0e14f95a2c1309365b36bfb97bc8dc",
+      "effective_date": "2011-03-22",
+      "latest_change": "2020-03-26",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_49.2_032211.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "49.2",
+      "sha256": "b478d1e9ba64dc8080c90bfd1946b379b1d620c65d8769047970eca9658c4d0c",
+      "effective_date": "2011-03-22",
+      "latest_change": "2020-03-26",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_52.1_060512.pdf",
+      "discovered_on": "https://www.sfifoundation.com/autoracing/",
+      "spec_number": "52.1",
+      "sha256": "d32be29ed81fe17061494fd916317d0ee3e5ccd1860e8feb52730fe45b6dc740",
+      "effective_date": "2012-06-05",
+      "latest_change": "2012-06-05",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_54.1_011708.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "54.1",
+      "sha256": "e719ff54abc53727585f47cf89edfa21537a1515f7ac7074ea9ef9ad53bebaa2",
+      "effective_date": "2008-01-17",
+      "latest_change": "2008-01-17",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_55.1.pdf",
+      "discovered_on": "https://www.sfifoundation.com/autoracing/",
+      "spec_number": "55.1",
+      "sha256": "b13f5196d4775d0c81e4640405b7d21fa83cb5beaae825432699f1cced45829d",
+      "effective_date": "2009-03-24",
+      "latest_change": "2009-03-24",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_56.1_022614.pdf",
+      "discovered_on": "https://www.sfifoundation.com/autoracing/",
+      "spec_number": "56.1",
+      "sha256": "bba0450e963e9bf816bd503e3301a10509c726c9a1f715d22dfb9c255629f4c3",
+      "effective_date": "2014-02-26",
+      "latest_change": "2014-02-26",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_6.1.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "6.1",
+      "sha256": "3f27f002a9f02267c21dd97ba3296aad3a65d4fc50f0c9042486bf144692771b",
+      "effective_date": "2026-04-09",
+      "latest_change": "2026-04-09",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_6.2.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "6.2",
+      "sha256": "9e9a931ae8a6a9f9eacef78260345c12ad3b570e52d82abc4ff304e12f2e78a0",
+      "effective_date": "2026-04-09",
+      "latest_change": "2026-04-09",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_6.3.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "6.3",
+      "sha256": "0e9c0a58e39bc99ce74b31157d779076445e5e8f3200ba8dd06aba10ead36df4",
+      "effective_date": "2026-04-09",
+      "latest_change": "2026-04-09",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_6.4.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "6.4",
+      "sha256": "1dd24fed0612f1a15de561e094887fbcf8e8b70f2da11ffb884ab1d40cccc537",
+      "effective_date": "2026-05-13",
+      "latest_change": "2026-05-13",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_61.1_062620.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "61.1",
+      "sha256": "8244e1c6f07c2711809bf609553e7c419ccbd865a23199c787fb980f3c5c35d3",
+      "effective_date": "2020-06-26",
+      "latest_change": "2020-06-26",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_7.1.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "7.1",
+      "sha256": "893cc5b3fba5fa4a320fa5de5ea110fbeaafa89aa58528c80f0ee285080690eb",
+      "effective_date": "1998-02-13",
+      "latest_change": "2020-03-26",
+      "status": "verified_current"
+    },
+    {
+      "url": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_7.2.pdf",
+      "discovered_on": "https://www.sfifoundation.com/drag-racing/",
+      "spec_number": "7.2",
+      "sha256": "6d6493a3bbdf1496200b6a5fb42663593ea4a5264e5d440f9383cf97e459a408",
+      "effective_date": "2006-12-15",
+      "latest_change": "2020-03-26",
+      "status": "verified_current"
+    }
+  ]
+}

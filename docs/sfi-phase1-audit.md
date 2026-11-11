@@ -49,8 +49,10 @@ reviews and manufacturer retests. These must not become one generic expiry.
 
 ## Git hygiene and baseline checks
 
-Databases and a model binary are already tracked in Backend; Frontend history
-also contains an old `.env` commit. Reported, not removed or rewritten. Existing
+Databases and a model binary are already tracked in Backend. Frontend currently
+tracks a `.env` containing API-key and password variables (values not reproduced),
+as well as existing mirrored public PDFs and a game asset ZIP. Its history also
+contains old `.env` commits. Credential owners must review/rotate exposed values. Reported, not removed or rewritten. Existing
 default secret/password fallbacks are unsuitable for deployment. No private
 documents will be added. Ignore new databases, archives, caches and reports.
 

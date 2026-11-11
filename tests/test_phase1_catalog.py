@@ -128,6 +128,21 @@ class ParserTests(unittest.TestCase):
         self.assertEqual(row['spec_number'], '3.2A')
         self.assertEqual(row['revision_date'], 'March 1, 2026')
 
+    def test_docx_line_breaks_separate_words_without_splitting_runs(self):
+        xml = '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body><w:tbl><w:tr>'
+        for value in ['16.1', 'Demo<w:br/>Restraints', 'March 1, 2026', '2 Years']:
+            xml += (
+                '<w:tc><w:p><w:r><w:t>'
+                + value.replace('<w:br/>', '</w:t><w:br/><w:t>')
+                + '</w:t></w:r></w:p></w:tc>'
+            )
+        xml += '</w:tr></w:tbl></w:body></w:document>'
+        data = io.BytesIO()
+        with zipfile.ZipFile(data, 'w') as archive:
+            archive.writestr('word/document.xml', xml)
+        row = parse_docx(data.getvalue(), 'Synthetic.docx')[0]
+        self.assertEqual(row['product_name'], 'Demo Restraints')
+
     def test_duplicate_and_variant_rules_preserved(self):
         rows = [source_row(), source_row(source='b.docx')]
         entries, conflicts = reconcile(rows)
