@@ -7,7 +7,7 @@ See [the initial audit](sfi-phase1-audit.md), [public link evidence](sfi-phase1-
 
 The existing Flask/SQLAlchemy API and Jekyll/vanilla-JS/Sass frontend remain in use.
 `catalog.py` aggregates existing rows by normalized **full** specification number.
-Suffixes remain significant: 25.5 and 25.5E are different identities. Historical
+Suffixes and slash qualifiers remain significant (20.1/1 and 20.1/2 stay separate): 25.5 and 25.5E are different identities. Historical
 revision labels and product aliases remain in the response; they are not promoted
 to current PDF links. Categories are a union across associated legacy rows and
 reviewed import metadata. No legacy rows, users, gear, chunks or foreign keys are
@@ -94,7 +94,9 @@ python scripts/import_sfi_catalog.py --source-dir "$SFI_PRIVATE_DATA_DIR" \
 run only the migration and import with its explicit URI. The migration takes a
 SQLite backup, creates only the additional table, and is repeatable. Legacy IDs
 and rows stay intact. An existing `sfi_specs` table is required for apply. The
-migration uses SQLAlchemy DDL; live MySQL compatibility has not been tested.
+migration uses SQLAlchemy DDL. The repairs were tested against an isolated
+MySQL 8.4 instance: additive/repeated migrations, full imports, repeated imports,
+Unicode, rollback, legacy foreign keys, canonical archives and concurrent creates.
 Stop writers and take a separately verified MySQL backup before any eventual
 MySQL rollout: MySQL DDL implicitly commits. No production database was accessed.
 
@@ -141,8 +143,8 @@ Additive fields include `canonical_id`, `legacy_ids`, `legacy_revisions`, `alias
 Default arrays carry `X-Total-Count`; cross-origin clients should use the envelope.
 Category membership totals may exceed the unique overall count. Category filters
 now match whole labels, not substrings. Admin writes keep existing authorization;
-401/403 remain enforced, duplicate creates return 409. Identity/revision/PDF edits
-invalidate link evidence until reviewed. Editing a category preserves previous
+401/403 remain enforced, duplicate creates return 409. Actual normalized identity/revision/PDF changes
+invalidate link evidence until reviewed; unchanged saves and product-only edits preserve approval. Editing a category preserves previous
 associations; removal of a category requires a reviewed metadata change.
 
 ## Documents and future public access
@@ -154,15 +156,19 @@ latest edited/revised date against the reconciled list. Reviewed-only dates are
 not treated as revisions. A newer public PDF that disagrees with the supplied
 list is flagged for review rather than silently replacing that list.
 
-A local-current document has status `local_current_unpublished`; an older local
-revision is `outdated`. Unmatched, missing, ambiguous and conflict cases cannot
+Local evidence has a separate `local_document_status` (`local_current_unpublished`,
+`outdated`, or `missing`). Public document states are `not_checked`,
+`verified_current`, `rejected`, `temporarily_unavailable`, and `needs_review`.
+Every explicit negative check revokes approval. Historical evidence is retained
+privately. Imports cannot restore approval based only on equal revision strings. Unmatched, missing, ambiguous and conflict cases cannot
 produce a view action. The UI never publishes local paths. Original PDFs remain
 in the private source folder/archive with hashes and member paths in the local
 report. No files were uploaded. Standalone revalidation is available with:
 
 ```bash
 python scripts/validate_sfi_links.py --import-report /tmp/sfi-import-report.json \
-  --report /tmp/sfi-public-link-report.json
+  --report /tmp/sfi-public-link-report.json \
+  --database sqlite:////tmp/sfi-phase1-local.db
 ```
 
 For eventual deployment, prefer validated official links. If SFI approves serving
@@ -180,7 +186,12 @@ python scripts/phase1_local.py --database sqlite:////tmp/sfi-phase1-local.db --p
 ```
 
 This opt-in localhost server reuses the real catalog blueprint and database code;
-it has no real accounts. Existing classifier/profile routes belong to the full
+it has no real accounts. For browser administration, add `--demo-accounts` both
+when preparing a NEW sandbox and when starting it. This creates only two fictional
+accounts and requires a preparation marker. Open `http://localhost:8605/local-demo/`
+and choose a synthetic role. This opt-in sandbox also registers the real group
+and gear routes for authorized fictional QA flows. Use `localhost` consistently
+for cookie hosts. The classifier deliberately reports Offline in this sandbox. Existing classifier/profile routes belong to the full
 application and are unavailable in this focused sandbox. To test those features,
 use the normal `main.py` with an explicitly isolated `SFI_DATABASE_URI`, after
 migration; do not point it at an existing production database.
@@ -242,10 +253,31 @@ restore the verified backup only while writers are stopped and after accounting
 for newer user writes. Never drop all tables or delete users to undo a catalog
 change. No automatic production rollback or destructive down migration is supplied.
 
-Known limits: small-catalog in-memory search, no live MySQL execution, no scanned
+Known limits: small-catalog in-memory search, target deployment database still requires rollout checks, no scanned
 OCR, no automatic source-conflict resolution, no public hosting of private PDFs,
 no real manufacturer-management backend and no notification delivery. Legacy
 SQLAlchemy/deprecation warnings and unrelated Jekyll route/post warnings remain.
 Existing tracked database/model files, Frontend `.env`, mirrored PDFs, a game ZIP
 and an approximately 84 MB HTML file were reported and left unchanged. Secret
 values are intentionally absent from these documents and new commits.
+
+## Repair acceptance
+
+See [repair and browser evidence](sfi-phase1-repairs.md) for final commands and
+results. Canonical deletion now means archive, not physical row deletion:
+`DELETE /api/sfi/specs/<id>` requires `{"confirm_canonical_id":"16.1"}`.
+It hides every row in that identity while retaining historical/related records.
+Admins inspect `GET /api/sfi/specs/archived` and restore with
+`POST /api/sfi/specs/<id>/restore` and the same confirmation. Restoration requires
+fresh PDF review; it cannot revive a historical approval. Imports preserve archive
+flags. Canonical renames move the group together and retain an archived tombstone.
+
+Creation reserves the unique metadata primary key in the same transaction as the
+legacy insert. Conflicting concurrent requests receive 409 with a rollback; no
+destructive uniqueness migration touches legacy duplicates. Input objects, string
+types, lengths and full-number grammar are checked before binding values to SQL.
+Catalog responses use `Cache-Control: no-store` so archive/restore and PDF revocation
+are visible immediately. The standalone validator's optional explicit `--database`
+persists only document states and evidence, with snapshot checks to avoid granting
+stale approval after concurrent edits. Its nonzero exit may accompany a successful
+revocation; it reports failed document validation, not a rolled-back revocation.
