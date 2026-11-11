@@ -6,6 +6,27 @@ from functools import lru_cache
 from pathlib import Path
 from urllib.parse import urlparse
 
+NUMBER = r'[0-9]{1,3}\.[0-9]{1,3}[A-Z]?(?:/[1-9][0-9]{0,2})?'
+# These age/rating identities explicitly share the base specification document.
+SHARED_DOCUMENTS = {'20.1/1': '20.1', '20.1/2': '20.1'}
+
+
+def valid_number(value):
+    return isinstance(value, str) and re.fullmatch(NUMBER, value) is not None
+
+
+def document_number(number):
+    return SHARED_DOCUMENTS.get(number, number)
+
+
+def retain_document_history(previous, incoming):
+    """Retain evidence privately, without making historical links actionable."""
+    history = list(previous.get('document_history', []))
+    old = previous.get('document')
+    if old and old != incoming and old not in history:
+        history.append(old)
+    return history
+
 
 def normalize_number(value):
     value = re.sub(
@@ -39,7 +60,7 @@ def verified_terms():
     return json.loads(Path(__file__).with_name('sfi_search_terms.json').read_text())
 
 
-def canonical_specs():
+def canonical_specs(include_archived=False):
     from model.sfi_spec import SfiSpec, SfiCatalogEntry
 
     overlays = {
@@ -53,6 +74,9 @@ def canonical_specs():
     for key, rows in groups.items():
         item = rows[0].legacy_dict()
         metadata = overlays.get(key, {})
+        if metadata.get('archived') and not include_archived:
+            continue
+        item['archived'] = bool(metadata.get('archived'))
         item.update(spec_number=key, canonical_id=key, legacy_ids=[r.id for r in rows])
         item['categories'] = sorted(
             set(metadata.get('categories', []))
@@ -86,7 +110,7 @@ def canonical_specs():
             doc.get('url')
         )
         item['view_spec_url'] = doc['url'] if verified else None
-        item['document_status'] = doc.get('status', 'unverified')
+        item['document_status'] = doc.get('status', 'not_checked')
         item['local_document_available'] = bool(metadata.get('local_documents'))
         item['warnings'] = metadata.get('warnings', [])
         result.append(item)
@@ -94,7 +118,7 @@ def canonical_specs():
 
 
 def find_specs(query='', category='', items=None):
-    """Catalog is small (~103 identities); fixed ORM reads, no interpolated SQL.
+    """Catalog is small; fixed ORM reads, no interpolated SQL.
 
     Rank exact number, number prefix, product/alias phrase, description/keyword,
     then category. Require every whitespace-delimited query term to match.

@@ -90,7 +90,7 @@ class SfiSpec(db.Model):
 
     def to_dict(self):
         from catalog import canonical_specs
-        return next(item for item in canonical_specs() if self.id in item['legacy_ids'])
+        return next(item for item in canonical_specs(include_archived=True) if self.id in item['legacy_ids'])
 
 
 class SfiCatalogEntry(db.Model):

@@ -13,13 +13,18 @@ from pathlib import Path, PurePosixPath
 from xml.etree import ElementTree
 
 import pdfplumber
-from catalog import normalize_number
+from catalog import (
+    NUMBER,
+    normalize_number,
+    document_number,
+    valid_number,
+    retain_document_history,
+)
 
 MAX_MEMBERS = 512
 MAX_FILE = 16 * 1024 * 1024
 MAX_TOTAL = 256 * 1024 * 1024
 MAX_PAGES = 100
-NUMBER = r'\d{1,3}\.\d{1,3}[A-Za-z]?'
 NS = {'w': 'http://schemas.openxmlformats.org/wordprocessingml/2006/main'}
 
 
@@ -70,30 +75,53 @@ def safe_members(archive):
 
 
 def table_record(cells, source, location):
+    first = clean(cells[0]) if cells else ''
+    looks_like_spec = bool(re.match(r'^(?:SFI\s|[0-9])', first, re.I))
+    first = re.sub(r'^SFI\s*(?:SPEC(?:IFICATION)?\s*)?', '', first, flags=re.I)
     if len(cells) != 4:
+        if looks_like_spec:
+            raise ValueError(
+                f'{source} {location}: unsupported specification row (expected four columns)'
+            )
         return None
-    first = clean(cells[0])
     match = re.match(
-        r'^(' + NUMBER + r'|\d{1,3}\.\d{1,3}\s+[A-Za-z])(?=\s|$|\()', first
+        r'^('
+        + NUMBER.replace('/', r'\s*/\s*')
+        + r'|[0-9]{1,3}\.[0-9]{1,3}\s+[A-Za-z])(?=\s|$|\()',
+        first,
+        re.I,
     )
     if not match:
+        if looks_like_spec:
+            raise ValueError(
+                f'{source} {location}: malformed or unsupported specification identifier'
+            )
         return None
     number = normalize_number(match.group(1))
     # DOCX sometimes splits a revision letter from its number.
     spaced = re.match(r'^(\d+\.\d+)\s+([A-Za-z])(?=\s|$)', first)
     if spaced:
         number = normalize_number(''.join(spaced.groups()))
+    if (
+        not valid_number(number)
+        or not clean(cells[1])
+        or first[match.end() :].lstrip().startswith('/')
+    ):
+        raise ValueError(f'{source} {location}: invalid specification row')
     return dict(
         spec_number=number,
         product_name=clean(cells[1]),
         revision_date=clean(cells[2]),
         recertification=clean(cells[3]),
+        identifier_detail=clean(first[match.end() :]),
         source=source,
         location=location,
     )
 
 
 def parse_docx(data, source):
+    if len(data) > MAX_FILE:
+        raise ValueError('DOCX exceeds size limit')
     with zipfile.ZipFile(io.BytesIO(data)) as archive:
         safe_members(archive)
         xml = archive.read('word/document.xml')
@@ -101,6 +129,7 @@ def parse_docx(data, source):
         raise ValueError('Unsafe XML declaration')
     root = ElementTree.fromstring(xml)
     records = []
+    digest = hashlib.sha256(data).hexdigest()
     for index, row in enumerate(root.findall('.//w:tr', NS), 1):
         cells = [
             ' '.join(
@@ -118,23 +147,31 @@ def parse_docx(data, source):
         ]
         record = table_record(cells, source, f'row {index}')
         if record:
-            record['source_sha256'] = hashlib.sha256(data).hexdigest()
+            record['source_sha256'] = digest
             records.append(record)
     return records
 
 
 def parse_list_pdf(data, source):
+    if len(data) > MAX_FILE or not data.startswith(b'%PDF-'):
+        raise ValueError('Invalid or oversized PDF')
     records = []
+    digest = hashlib.sha256(data).hexdigest()
     with pdfplumber.open(io.BytesIO(data)) as pdf:
         if len(pdf.pages) > MAX_PAGES:
             raise ValueError('PDF exceeds page limit')
         for index, page in enumerate(pdf.pages, 1):
-            for table in page.extract_tables():
-                for row in table:
-                    record = table_record(row, source, f'page {index}')
+            for table_index, table in enumerate(page.extract_tables(), 1):
+                for row_index, row in enumerate(table, 1):
+                    record = table_record(
+                        row,
+                        source,
+                        f'page {index}, table {table_index}, row {row_index}',
+                    )
                     if record:
-                        record['source_sha256'] = hashlib.sha256(data).hexdigest()
+                        record['source_sha256'] = digest
                         records.append(record)
+            page.close()
     return records
 
 
@@ -181,6 +218,7 @@ def current_document(document, record):
     expected = dates(record.get('revision_date', ''))
     return (
         document.get('status') == 'identified'
+        and document.get('spec_number') == document_number(record['spec_number'])
         and expected
         and document.get('effective_date') == expected[0]
         and document.get('latest_change') == max(expected)
@@ -260,6 +298,7 @@ def reconcile(records):
                 product_name=r['product_name'],
                 revision_date=r['revision_date'],
                 recertification=r['recertification'],
+                identifier_detail=r.get('identifier_detail', ''),
             )
             for r in rows
         ]
@@ -267,7 +306,12 @@ def reconcile(records):
             dict(
                 spec_number=number,
                 product_name=rows[0]['product_name'],
-                description='; '.join(dict.fromkeys(r['product_name'] for r in rows)),
+                description='; '.join(
+                    dict.fromkeys(
+                        clean(r['product_name'] + ' ' + r.get('identifier_detail', ''))
+                        for r in rows
+                    )
+                ),
                 aliases=sorted({r['product_name'] for r in rows}),
                 revision_date=rows[0]['revision_date'] if len(revisions) == 1 else '',
                 recertification_rules=rules,
@@ -286,12 +330,19 @@ def build_import(source_dir, legacy_data=None):
     if not root.is_dir():
         raise ValueError('Source directory does not exist')
     records, documents, warnings, errors = [], [], [], []
-    files = sorted(root.rglob('*'))
+    files = []
+    # Stop traversal early rather than materializing an unbounded directory tree.
+    for path in root.rglob('*'):
+        files.append(path)
+        if len(files) > MAX_MEMBERS:
+            raise ValueError('Source directory exceeds member limit')
+    files.sort()
     if (
         len(files) > MAX_MEMBERS
         or sum(f.stat().st_size for f in files if f.is_file()) > MAX_TOTAL
     ):
         raise ValueError('Source directory exceeds resource limits')
+    expanded_total = 0
     for path in files:
         if path.is_symlink() or not path.resolve().is_relative_to(root):
             raise ValueError('Symlinks are not supported in private source directories')
@@ -305,7 +356,11 @@ def build_import(source_dir, legacy_data=None):
         try:
             if suffix == '.zip':
                 with zipfile.ZipFile(path) as archive:
-                    for member in safe_members(archive):
+                    members = safe_members(archive)
+                    expanded_total += sum(m.file_size for m in members)
+                    if expanded_total > MAX_TOTAL:
+                        raise ValueError('Combined archives exceed expanded-size limit')
+                    for member in members:
                         if (
                             member.filename.lower().endswith('.pdf')
                             and not member.is_dir()
@@ -352,17 +407,21 @@ def build_import(source_dir, legacy_data=None):
         candidates = [
             d
             for d in documents
-            if d['spec_number'] == number and d['status'] == 'identified'
+            if d['spec_number'] == document_number(number)
+            and d['status'] == 'identified'
         ]
         entry['local_documents'] = candidates
         matched.update(d['source'] for d in candidates)
         current = [d for d in candidates if current_document(d, entry)]
-        entry['document'] = {
-            'status': 'local_current_unpublished'
+        entry['local_document_status'] = (
+            'local_current_unpublished'
             if current
             else 'outdated'
             if candidates
             else 'missing'
+        )
+        entry['document'] = {
+            'status': 'needs_review' if candidates and not current else 'not_checked'
         }
         if not candidates:
             entry['warnings'].append('No matching local PDF; no public URL inferred')
@@ -425,9 +484,23 @@ def apply_import(session, report):
                 previous = json.loads(old.payload)
                 verified = previous.get('document', {})
                 if (
-                    verified.get('status') == 'verified_current'
+                    verified.get('status')
+                    in (
+                        'verified_current',
+                        'rejected',
+                        'temporarily_unavailable',
+                        'needs_review',
+                    )
                     and incoming['import_status'] != 'conflict'
-                    and incoming.get('document', {}).get('status') != 'verified_current'
+                    and (
+                        incoming.get('document', {}).get('status') == 'not_checked'
+                        or (
+                            incoming.get('document') == {'status': 'needs_review'}
+                            and incoming.get('local_document_status') == 'outdated'
+                        )
+                    )
+                    and not incoming.get('document', {}).get('checked_at')
+                    and dates(previous.get('revision_date', ''))
                     and dates(previous.get('revision_date', ''))
                     == dates(incoming.get('revision_date', ''))
                 ):
@@ -456,6 +529,26 @@ def apply_import(session, report):
                         'recertification_rules',
                     ):
                         entry[field] = previous.get(field, incoming[field])
+            if (
+                old
+                and entry['document'].get('status') == 'verified_current'
+                and (
+                    entry['revision_date'] != incoming['revision_date']
+                    or set(previous.get('manual_edits', []))
+                    & {'spec_number', 'spec_pdf', 'effective_date'}
+                )
+            ):
+                entry['document'] = {
+                    'status': 'needs_review',
+                    'reason': 'manual_document_fields_require_review',
+                }
+            history = retain_document_history(
+                previous if old else {}, entry['document']
+            )
+            for evidence in incoming.get('document_history', []):
+                if evidence not in history:
+                    history.append(evidence)
+            entry['document_history'] = history
             payload = json.dumps(entry, sort_keys=True, ensure_ascii=False)
             if old is None:
                 session.add(SfiCatalogEntry(spec_number=number, payload=payload))

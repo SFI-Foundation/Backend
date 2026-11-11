@@ -7,7 +7,7 @@ from html.parser import HTMLParser
 from urllib.parse import urljoin, urlparse
 
 import requests
-from catalog import official_url
+from catalog import official_url, document_number, retain_document_history
 from catalog_import import MAX_FILE, inspect_pdf, current_document
 
 ROOT = 'https://sfifoundation.com/specifications-participating-manufacturers/'
@@ -114,65 +114,131 @@ def discover():
 
 
 def validate_links(entries):
+    """Every explicit check replaces approval, including failed rediscovery.
+
+    Discovery/transport failures are temporary. Wrong bytes, identity, revision,
+    or a definitive 404/410 reject the candidate. Unreadable evidence needs review.
+    An old verified URL is checked even when it disappears from the index.
+    """
+    checked_at = datetime.now(timezone.utc).isoformat()
     try:
         links, failures = discover()
     except Exception as exc:
-        return {
-            'checked': 0,
-            'verified_current': 0,
-            'results': [],
-            'discovery_failures': [{'page': ROOT, 'error': type(exc).__name__}],
-        }
-    by_number = {e['spec_number']: e for e in entries}
+        links, failures = {}, [{'page': ROOT, 'error': type(exc).__name__}]
+    for entry in entries:
+        old_url = entry.get('document', {}).get('url')
+        if official_url(old_url):
+            links.setdefault(old_url, 'previous verification')
 
     def check(pair):
         url, page = pair
-        result = {'url': url, 'discovered_on': page}
+        result = {
+            'url': url,
+            'requested_url': url,
+            'discovered_on': page,
+            'checked_at': checked_at,
+        }
+        # Filename associates a failed download or wrong-content result with its
+        # intended identity. It never establishes successful verification.
+        match = re.search(
+            r'/Spec_([0-9]+\.[0-9]+[A-Z]?)(?=[_.-]|$)', urlparse(url).path, re.I
+        )
+        result['target_number'] = match.group(1).upper() if match else None
         try:
             final, data = fetch(url)
             doc = inspect_pdf(data, urlparse(final).path)
-            number = doc['spec_number']
             result.update(
-                spec_number=number,
+                spec_number=doc['spec_number'],
                 sha256=doc['sha256'],
                 effective_date=doc['effective_date'],
                 latest_change=doc['latest_change'],
+                document_identity_status=doc['status'],
+                url=final,
             )
-            entry = by_number.get(number)
-            if (
-                entry
-                and entry['import_status'] != 'conflict'
-                and current_document(doc, entry)
-            ):
-                result.update(status='verified_current', url=final)
-            else:
-                result['status'] = 'revision_or_number_mismatch'
+            result['status'] = 'inspected'
+        except requests.HTTPError as exc:
+            code = exc.response.status_code if exc.response is not None else None
+            result.update(
+                status='rejected' if code in (404, 410) else 'temporarily_unavailable',
+                error=type(exc).__name__,
+                http_status=code,
+            )
+        except requests.RequestException as exc:
+            result.update(status='temporarily_unavailable', error=type(exc).__name__)
+        except ValueError as exc:
+            result.update(status='rejected', error=type(exc).__name__)
         except Exception as exc:
-            result.update(status='unavailable', error=type(exc).__name__)
+            result.update(status='needs_review', error=type(exc).__name__)
         return result
 
     with ThreadPoolExecutor(max_workers=4) as pool:
         results = list(pool.map(check, sorted(links.items())))
-    for number, entry in by_number.items():
-        matches = [
+    outcomes = []
+    for entry in entries:
+        number = document_number(entry['spec_number'])
+        previous_url = entry.get('document', {}).get('url')
+        candidates = [
             r
             for r in results
-            if r.get('spec_number') == number and r['status'] == 'verified_current'
+            if r.get('target_number') == number
+            or (not r.get('target_number') and r.get('spec_number') == number)
+            or r['url'] == previous_url
+            or r.get('requested_url') == previous_url
         ]
-        if matches:
-            # Prefer the bare official hostname, then deterministic lexical order.
-            selected = sorted(
-                matches,
-                key=lambda r: (
-                    urlparse(r['url']).hostname != 'sfifoundation.com',
-                    r['url'],
-                ),
-            )[0]
-            entry['document'] = selected
+        assessed = []
+        for result in candidates:
+            doc = dict(result)
+            if doc['status'] == 'inspected':
+                evidence = {**doc, 'status': doc['document_identity_status']}
+                doc['status'] = (
+                    'verified_current'
+                    if entry.get('import_status') != 'conflict'
+                    and current_document(evidence, entry)
+                    else 'rejected'
+                )
+            assessed.append(doc)
+        # A known rejected candidate cannot revive via matching date strings in
+        # apply_import. Only a fresh successful content check grants approval.
+        priority = {
+            'verified_current': 0,
+            'rejected': 1,
+            'needs_review': 2,
+            'temporarily_unavailable': 3,
+        }
+        assessed.sort(
+            key=lambda r: (
+                priority[r['status']],
+                urlparse(r['url']).hostname != 'sfifoundation.com',
+                r['url'],
+            )
+        )
+        selected = (
+            assessed[0]
+            if assessed
+            else {
+                'status': 'temporarily_unavailable' if failures else 'needs_review',
+                'checked_at': checked_at,
+                'reason': 'discovery_failed' if failures else 'no_official_candidate',
+            }
+        )
+        entry['document_history'] = retain_document_history(entry, selected)
+        entry['document'] = selected
+        outcomes.append({'canonical_id': entry['spec_number'], **selected})
+    # Classify every inspected public URL, including those absent from the lists.
+    for result in results:
+        related = [r for r in outcomes if r.get('url') == result['url']]
+        result['status'] = (
+            'verified_current'
+            if any(r['status'] == 'verified_current' for r in related)
+            else 'rejected'
+            if result['status'] == 'inspected'
+            else result['status']
+        )
     return {
-        'checked_at': datetime.now(timezone.utc).isoformat(),
+        'checked_at': checked_at,
         'discovery_failures': failures,
         'checked': len(results),
         'verified_current': sum(r['status'] == 'verified_current' for r in results),
         'results': results,
+        'entries': outcomes,
     }
