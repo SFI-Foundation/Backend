@@ -13,14 +13,14 @@ from unittest.mock import patch
 
 import jwt
 import requests
+import test_phase1_catalog as fixture
 from sqlalchemy import create_engine
 
-import test_phase1_catalog as fixture
 from __init__ import db
 from catalog import normalize_number, valid_number
-from catalog_import import table_record, parse_docx, build_import, apply_import
+from catalog_import import apply_import, build_import, parse_docx, table_record
 from catalog_links import validate_links
-from model.sfi_spec import SfiSpec, SfiSpecChunk, SfiCatalogEntry
+from model.sfi_spec import SfiCatalogEntry, SfiSpec, SfiSpecChunk
 
 ROOT = Path(__file__).resolve().parents[1]
 URL = 'https://sfifoundation.com/wp-content/pdfs/specs/Spec_16.1.pdf'
@@ -305,7 +305,6 @@ class AdminRepairTests(unittest.TestCase):
 
     def test_negative_revalidation_transitions_and_repeat_imports_public_api(self):
         report = self.verified()
-        entry = report['entries'][0]
 
         def check(data=None, failure=None, links=True):
             with (
@@ -394,6 +393,7 @@ class CliRepairTests(unittest.TestCase):
             cwd=ROOT,
             env={**os.environ, 'PYTHON_DOTENV_DISABLED': '1'},
             capture_output=True,
+            check=False,
             text=True,
             timeout=40,
         )

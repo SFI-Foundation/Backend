@@ -1,11 +1,11 @@
 """Validated canonical management. Never delete legacy rows or related evidence."""
 
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from __init__ import db
-from catalog import normalize_number, normalized, valid_number, retain_document_history
-from model.sfi_spec import SfiSpec, SfiCatalogEntry
+from catalog import normalize_number, normalized, retain_document_history, valid_number
+from model.sfi_spec import SfiCatalogEntry, SfiSpec
 
 LIMITS = {
     'product_name': 255,
@@ -193,7 +193,7 @@ def archive_spec(id, data, archived):
         db.session.add(overlay)
     if bool(payload.get('archived')) != archived:
         payload.update(
-            archived=archived, archive_changed_at=datetime.now(timezone.utc).isoformat()
+            archived=archived, archive_changed_at=datetime.now(UTC).isoformat()
         )
         # Restoring visibility is not fresh PDF verification.
         document = {'status': 'needs_review', 'reason': 'canonical_archive_changed'}

@@ -1,37 +1,36 @@
 """Synthetic Phase 1 tests; private documents are not test fixtures."""
 
 import io
-import json
-import jwt
-import sqlite3
 import tempfile
 import unittest
 import zipfile
 from pathlib import Path
 from unittest.mock import patch
 
+import jwt
 from flask import Flask
 from flask_login import LoginManager
 from sqlalchemy import create_engine, event, text
+
 from __init__ import db
-from model.persona import Persona, UserPersona
-from model.user import User
-from model.group import SfiGroup
-from model.sfi_spec import SfiSpec, SfiSpecChunk, SfiCatalogEntry, initSfiSpecs
 from api.sfi_spec import sfi_spec_api
-from catalog import canonical_specs, find_specs
+from catalog import find_specs
 from catalog_import import (
+    apply_import,
+    build_import,
+    current_document,
+    inspect_pdf,
     parse_docx,
     parse_list_pdf,
-    inspect_pdf,
-    safe_members,
     reconcile,
-    build_import,
-    apply_import,
-    current_document,
+    safe_members,
 )
-from scripts.migrate_sfi_catalog import upgrade
 from catalog_links import fetch as fetch_official
+from model.group import SfiGroup  # noqa: F401 -- register ORM relationships
+from model.persona import Persona, UserPersona  # noqa: F401 -- register ORM relationships
+from model.sfi_spec import SfiCatalogEntry, SfiSpec, initSfiSpecs
+from model.user import User
+from scripts.migrate_sfi_catalog import upgrade
 
 
 def pdf_bytes(lines, table=False):
@@ -85,14 +84,14 @@ def source_row(
     revision='March 1, 2026',
     product='Demo Restraints',
 ):
-    return dict(
-        spec_number=number,
-        product_name=product,
-        revision_date=revision,
-        recertification=period,
-        source=source,
-        location='page 1',
-    )
+    return {
+        'spec_number': number,
+        'product_name': product,
+        'revision_date': revision,
+        'recertification': period,
+        'source': source,
+        'location': 'page 1',
+    }
 
 
 def report_fixture(number='16.1'):

@@ -7,22 +7,24 @@ import sys
 import unittest
 from pathlib import Path
 from unittest.mock import patch
+
 from flask import Flask
-from security_config import settings, ConfigurationError
+
+from security_config import ConfigurationError, settings
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
 def production():
-    return dict(
-        IS_PRODUCTION='true',
-        SECRET_KEY=secrets.token_urlsafe(48),
-        ADMIN_PASSWORD=secrets.token_urlsafe(24),
-        DEFAULT_PASSWORD=secrets.token_urlsafe(24),
-        DB_ENDPOINT='mysql.invalid',
-        DB_USERNAME='synthetic',
-        DB_PASSWORD=secrets.token_urlsafe(24),
-    )
+    return {
+        'IS_PRODUCTION': 'true',
+        'SECRET_KEY': secrets.token_urlsafe(48),
+        'ADMIN_PASSWORD': secrets.token_urlsafe(24),
+        'DEFAULT_PASSWORD': secrets.token_urlsafe(24),
+        'DB_ENDPOINT': 'mysql.invalid',
+        'DB_USERNAME': 'synthetic',
+        'DB_PASSWORD': secrets.token_urlsafe(24),
+    }
 
 
 class PublicSecurityTests(unittest.TestCase):
@@ -90,6 +92,7 @@ class PublicSecurityTests(unittest.TestCase):
             cwd=ROOT,
             env=env,
             capture_output=True,
+            check=False,
             text=True,
         )
         self.assertNotEqual(result.returncode, 0)
@@ -136,9 +139,17 @@ class PublicSecurityTests(unittest.TestCase):
                 '/api/sfi/manufacturer-demo',
                 '/sfi-manufacturer-demo/',
             ):
-                for query in ('', '?demo=true&development=true&sfi_manufacturer_demo=true'):
+                for query in (
+                    '',
+                    '?demo=true&development=true&sfi_manufacturer_demo=true',
+                ):
                     for method in ('get', 'post'):
-                        with self.subTest(production=production_mode, route=route, method=method, query=query):
+                        with self.subTest(
+                            production=production_mode,
+                            route=route,
+                            method=method,
+                            query=query,
+                        ):
                             response = getattr(client, method)(route + query)
                             self.assertEqual(response.status_code, 404)
                             self.assertNotIn(b'DEMO-001', response.data)

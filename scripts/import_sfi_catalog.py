@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from catalog_import import build_import, apply_import
+from catalog_import import apply_import, build_import
 
 
 def main():
@@ -87,7 +87,7 @@ def main():
         with Session(engine) as session:
             try:
                 report['upsert'] = apply_import(session, report)
-            except Exception as exc:
+            except Exception as exc:  # noqa: BLE001 -- report failure and preserve restricted state
                 report['errors'].append(
                     {'source': 'database', 'error': type(exc).__name__}
                 )

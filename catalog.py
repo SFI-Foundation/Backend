@@ -30,7 +30,10 @@ def retain_document_history(previous, incoming):
 
 def normalize_number(value):
     value = re.sub(
-        r'^SFI\s*(?:SPEC(?:IFICATION)?\s*)?', '', str(value).strip(), flags=re.I
+        r'^SFI\s*(?:SPEC(?:IFICATION)?\s*)?',
+        '',
+        str(value).strip(),
+        flags=re.IGNORECASE,
     )
     return re.sub(r'\s+', '', value).upper()
 
@@ -61,7 +64,7 @@ def verified_terms():
 
 
 def canonical_specs(include_archived=False):
-    from model.sfi_spec import SfiSpec, SfiCatalogEntry
+    from model.sfi_spec import SfiCatalogEntry, SfiSpec
 
     overlays = {
         x.spec_number: json.loads(x.payload) for x in SfiCatalogEntry.query.all()

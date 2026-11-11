@@ -2,13 +2,14 @@
 
 import re
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from html.parser import HTMLParser
 from urllib.parse import urljoin, urlparse
 
 import requests
-from catalog import official_url, document_number, retain_document_history
-from catalog_import import MAX_FILE, inspect_pdf, current_document
+
+from catalog import document_number, official_url, retain_document_history
+from catalog_import import MAX_FILE, current_document, inspect_pdf
 
 ROOT = 'https://sfifoundation.com/specifications-participating-manufacturers/'
 HOSTS = {'sfifoundation.com', 'www.sfifoundation.com'}
@@ -105,10 +106,10 @@ def discover():
             for href in parser.links:
                 target = urljoin(final, href)
                 if official_url(target) and re.search(
-                    r'/specs/', urlparse(target).path, re.I
+                    r'/specs/', urlparse(target).path, re.IGNORECASE
                 ):
                     pdfs[target] = page
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001 -- report failures without approving documents
             failures.append({'page': page, 'error': type(exc).__name__})
     return pdfs, failures
 
@@ -120,10 +121,10 @@ def validate_links(entries):
     or a definitive 404/410 reject the candidate. Unreadable evidence needs review.
     An old verified URL is checked even when it disappears from the index.
     """
-    checked_at = datetime.now(timezone.utc).isoformat()
+    checked_at = datetime.now(UTC).isoformat()
     try:
         links, failures = discover()
-    except Exception as exc:
+    except Exception as exc:  # noqa: BLE001 -- report failures without approving documents
         links, failures = {}, [{'page': ROOT, 'error': type(exc).__name__}]
     for entry in entries:
         old_url = entry.get('document', {}).get('url')
@@ -141,7 +142,9 @@ def validate_links(entries):
         # Filename associates a failed download or wrong-content result with its
         # intended identity. It never establishes successful verification.
         match = re.search(
-            r'/Spec_([0-9]+\.[0-9]+[A-Z]?)(?=[_.-]|$)', urlparse(url).path, re.I
+            r'/Spec_([0-9]+\.[0-9]+[A-Z]?)(?=[_.-]|$)',
+            urlparse(url).path,
+            re.IGNORECASE,
         )
         result['target_number'] = match.group(1).upper() if match else None
         try:
@@ -167,7 +170,7 @@ def validate_links(entries):
             result.update(status='temporarily_unavailable', error=type(exc).__name__)
         except ValueError as exc:
             result.update(status='rejected', error=type(exc).__name__)
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001 -- report failures without approving documents
             result.update(status='needs_review', error=type(exc).__name__)
         return result
 

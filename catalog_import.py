@@ -13,12 +13,13 @@ from pathlib import Path, PurePosixPath
 from xml.etree import ElementTree
 
 import pdfplumber
+
 from catalog import (
     NUMBER,
-    normalize_number,
     document_number,
-    valid_number,
+    normalize_number,
     retain_document_history,
+    valid_number,
 )
 
 MAX_MEMBERS = 512
@@ -40,7 +41,7 @@ def comparable(value):
 def dates(value):
     pattern = r'\b(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s*(\d{1,2}),?\s*(\d{4})'
     result = []
-    for month, day, year in re.findall(pattern, value, re.I):
+    for month, day, year in re.findall(pattern, value, re.IGNORECASE):
         try:
             m = datetime.strptime(month[:3].title(), '%b').month
             result.append(datetime(int(year), m, int(day)).date().isoformat())
@@ -76,8 +77,8 @@ def safe_members(archive):
 
 def table_record(cells, source, location):
     first = clean(cells[0]) if cells else ''
-    looks_like_spec = bool(re.match(r'^(?:SFI\s|[0-9])', first, re.I))
-    first = re.sub(r'^SFI\s*(?:SPEC(?:IFICATION)?\s*)?', '', first, flags=re.I)
+    looks_like_spec = bool(re.match(r'^(?:SFI\s|[0-9])', first, re.IGNORECASE))
+    first = re.sub(r'^SFI\s*(?:SPEC(?:IFICATION)?\s*)?', '', first, flags=re.IGNORECASE)
     if len(cells) != 4:
         if looks_like_spec:
             raise ValueError(
@@ -89,7 +90,7 @@ def table_record(cells, source, location):
         + NUMBER.replace('/', r'\s*/\s*')
         + r'|[0-9]{1,3}\.[0-9]{1,3}\s+[A-Za-z])(?=\s|$|\()',
         first,
-        re.I,
+        re.IGNORECASE,
     )
     if not match:
         if looks_like_spec:
@@ -108,15 +109,15 @@ def table_record(cells, source, location):
         or first[match.end() :].lstrip().startswith('/')
     ):
         raise ValueError(f'{source} {location}: invalid specification row')
-    return dict(
-        spec_number=number,
-        product_name=clean(cells[1]),
-        revision_date=clean(cells[2]),
-        recertification=clean(cells[3]),
-        identifier_detail=clean(first[match.end() :]),
-        source=source,
-        location=location,
-    )
+    return {
+        'spec_number': number,
+        'product_name': clean(cells[1]),
+        'revision_date': clean(cells[2]),
+        'recertification': clean(cells[3]),
+        'identifier_detail': clean(first[match.end() :]),
+        'source': source,
+        'location': location,
+    }
 
 
 def parse_docx(data, source):
@@ -186,32 +187,32 @@ def inspect_pdf(data, source):
     header = re.search(
         r'SFI\s+(?:SPECIFICATION|TECHNICAL\s+BULLETIN)\s+(' + NUMBER + r')\b',
         first,
-        re.I,
+        re.IGNORECASE,
     )
     number = normalize_number(header.group(1)) if header else None
-    effective = re.search(r'EFFECTIVE\s*:\s*([^\n]+)', first, re.I)
+    effective = re.search(r'EFFECTIVE\s*:\s*([^\n]+)', first, re.IGNORECASE)
     effective_dates = dates(effective.group(1)) if effective else []
     revision_dates = list(effective_dates)
     for line in last.splitlines():
-        if re.match(r'\s*(Edited|Revised)\s*:', line, re.I):
+        if re.match(r'\s*(Edited|Revised)\s*:', line, re.IGNORECASE):
             revision_dates.extend(dates(line))
     filename = re.search(
         r'(?:Spec[_ -]|TechBulletin[_ -])(' + NUMBER + r')(?=[_. -]|$)',
         Path(source).name,
-        re.I,
+        re.IGNORECASE,
     )
     filename_number = normalize_number(filename.group(1)) if filename else None
-    return dict(
-        source=source,
-        sha256=hashlib.sha256(data).hexdigest(),
-        spec_number=number,
-        filename_number=filename_number,
-        effective_date=effective_dates[0] if effective_dates else None,
-        latest_change=max(revision_dates) if revision_dates else None,
-        status='identified'
+    return {
+        'source': source,
+        'sha256': hashlib.sha256(data).hexdigest(),
+        'spec_number': number,
+        'filename_number': filename_number,
+        'effective_date': effective_dates[0] if effective_dates else None,
+        'latest_change': max(revision_dates) if revision_dates else None,
+        'status': 'identified'
         if number and (not filename_number or filename_number == number)
         else 'number_mismatch',
-    )
+    }
 
 
 def current_document(document, record):
@@ -235,7 +236,7 @@ def reconcile(records):
         for row in rows:
             variants[comparable(row['product_name'])].append(row)
         rules, provenance, warnings = [], [], []
-        for name, variants_rows in variants.items():
+        for variants_rows in variants.values():
             for field in ('revision_date', 'recertification'):
                 values = {
                     tuple(dates(r[field]))
@@ -291,36 +292,38 @@ def reconcile(records):
         if len(source_sets) < 2:
             warnings.append('Metadata appears in only one supplied list')
         provenance = [
-            dict(
-                source=r['source'],
-                source_sha256=r.get('source_sha256'),
-                location=r['location'],
-                product_name=r['product_name'],
-                revision_date=r['revision_date'],
-                recertification=r['recertification'],
-                identifier_detail=r.get('identifier_detail', ''),
-            )
+            {
+                'source': r['source'],
+                'source_sha256': r.get('source_sha256'),
+                'location': r['location'],
+                'product_name': r['product_name'],
+                'revision_date': r['revision_date'],
+                'recertification': r['recertification'],
+                'identifier_detail': r.get('identifier_detail', ''),
+            }
             for r in rows
         ]
         result.append(
-            dict(
-                spec_number=number,
-                product_name=rows[0]['product_name'],
-                description='; '.join(
+            {
+                'spec_number': number,
+                'product_name': rows[0]['product_name'],
+                'description': '; '.join(
                     dict.fromkeys(
                         clean(r['product_name'] + ' ' + r.get('identifier_detail', ''))
                         for r in rows
                     )
                 ),
-                aliases=sorted({r['product_name'] for r in rows}),
-                revision_date=rows[0]['revision_date'] if len(revisions) == 1 else '',
-                recertification_rules=rules,
-                provenance=provenance,
-                warnings=warnings,
-                import_status='conflict'
+                'aliases': sorted({r['product_name'] for r in rows}),
+                'revision_date': rows[0]['revision_date']
+                if len(revisions) == 1
+                else '',
+                'recertification_rules': rules,
+                'provenance': provenance,
+                'warnings': warnings,
+                'import_status': 'conflict'
                 if any(c['spec_number'] == number for c in conflicts)
                 else 'parsed',
-            )
+            }
         )
     return result, conflicts
 
@@ -383,7 +386,7 @@ def build_import(source_dir, legacy_data=None):
                         records.extend(parsed)
                     else:
                         documents.append(inspect_pdf(data, relative))
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001 -- report failures without approving documents
             errors.append({'source': relative, 'error': str(exc)})
     expected = {'SpecList3.pdf', 'SpecList.docx', 'Specs.zip'}
     missing = sorted(expected - {p.name for p in files if p.is_file()})
@@ -435,30 +438,30 @@ def build_import(source_dir, legacy_data=None):
             )
         if len({d['sha256'] for d in candidates}) > 1:
             entry['warnings'].append('Multiple local PDF versions retained')
-    counts = dict(
-        parsed=len(records),
-        canonical=len(entries),
-        matched=sum(bool(e['local_documents']) for e in entries),
-        unmatched=sum(not e['local_documents'] for e in entries),
-        duplicate=len(records) - len(entries),
-        conflicting=len({c['spec_number'] for c in conflicts}),
-        documents=len(documents),
-        unmatched_documents=sum(d['source'] not in matched for d in documents),
-    )
-    return dict(
-        counts=counts,
-        entries=entries,
-        conflicts=conflicts,
-        warnings=warnings,
-        errors=errors,
-        unmatched_documents=[d for d in documents if d['source'] not in matched],
-        missing_sources=missing,
-    )
+    counts = {
+        'parsed': len(records),
+        'canonical': len(entries),
+        'matched': sum(bool(e['local_documents']) for e in entries),
+        'unmatched': sum(not e['local_documents'] for e in entries),
+        'duplicate': len(records) - len(entries),
+        'conflicting': len({c['spec_number'] for c in conflicts}),
+        'documents': len(documents),
+        'unmatched_documents': sum(d['source'] not in matched for d in documents),
+    }
+    return {
+        'counts': counts,
+        'entries': entries,
+        'conflicts': conflicts,
+        'warnings': warnings,
+        'errors': errors,
+        'unmatched_documents': [d for d in documents if d['source'] not in matched],
+        'missing_sources': missing,
+    }
 
 
 def apply_import(session, report):
     """One commit, rollback on failure; deterministic JSON avoids no-op UPDATEs."""
-    from model.sfi_spec import SfiSpec, SfiCatalogEntry
+    from model.sfi_spec import SfiCatalogEntry, SfiSpec
 
     if report['errors'] or not report['entries']:
         raise ValueError('Import has parser errors or no records; no changes applied')

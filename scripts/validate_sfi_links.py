@@ -24,6 +24,7 @@ def main():
     if args.database:
         from sqlalchemy import create_engine, select
         from sqlalchemy.orm import Session
+
         from model.sfi_spec import SfiCatalogEntry
 
         engine = create_engine(args.database)

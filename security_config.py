@@ -2,6 +2,7 @@
 
 import os
 import secrets
+
 from sqlalchemy.engine import make_url
 
 
@@ -48,7 +49,7 @@ def settings(env=None):
     research = boolean(env, 'SFI_INTERNAL_RESEARCH')
     if production and research:
         raise ConfigurationError('SFI_INTERNAL_RESEARCH is forbidden in production')
-    result = dict(IS_PRODUCTION=production, SFI_INTERNAL_RESEARCH=research)
+    result = {'IS_PRODUCTION': production, 'SFI_INTERNAL_RESEARCH': research}
     result['SECRET_KEY'] = secret(env, 'SECRET_KEY', production=production)
     for name in (
         'DEFAULT_PASSWORD',
@@ -84,7 +85,7 @@ def settings(env=None):
                 or not url.database
             ):
                 raise ValueError()
-        except Exception:
+        except Exception:  # noqa: BLE001 -- fail closed across driver/parser errors
             raise ConfigurationError(
                 'SFI_DATABASE_URI is invalid; production requires an authenticated MySQL URI'
             ) from None

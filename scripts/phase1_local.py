@@ -8,19 +8,20 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from flask import Flask, request, jsonify, g, redirect, make_response
+import jwt
+from flask import Flask, g, jsonify, make_response, redirect, request
 from flask_login import LoginManager
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
-from __init__ import db, validate_cors_origin, add_cors_headers
+
+from __init__ import add_cors_headers, db, validate_cors_origin
+from api.authorize import auth_required
 from api.sfi_spec import sfi_spec_api
+from model.group import initSfiGroups
 from model.persona import Persona, UserPersona  # noqa: F401 -- register ORM relationship targets
 from model.sfi_spec import SfiSpec, SfiSpecChunk
 from model.user import User
-from model.user_gear import UserGear  # register the optional synthetic gear table
-from model.group import initSfiGroups
-from api.authorize import auth_required
-import jwt
+from model.user_gear import UserGear  # noqa: F401 -- register synthetic gear table
 
 
 def create_app(database, demo_accounts=False):
@@ -86,6 +87,7 @@ def create_app(database, demo_accounts=False):
         # Normal password authentication on synthetic users, confined to this
         # prepared disposable database. No production account is seeded.
         from flask_restful import Api
+
         from api.user import UserAPI
 
         Api(app).add_resource(UserAPI._Security, '/api/authenticate')
@@ -159,7 +161,7 @@ def prepare(database, demo_accounts=False):
         for entry in json.loads(source.read_text()):
             for index, number in enumerate(entry['spec_numbers']):
 
-                def at(field):
+                def at(field, entry=entry, index=index):
                     values = entry.get(field, [])
                     return values[index] if index < len(values) else ''
 

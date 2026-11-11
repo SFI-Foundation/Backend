@@ -14,15 +14,17 @@ Endpoints:
     GET    /api/sfi/stats              — dashboard summary stats
 """
 
-from flask import Blueprint, request, jsonify, current_app, abort
-from sqlalchemy.exc import OperationalError, IntegrityError
 from functools import wraps
+
+from flask import Blueprint, abort, current_app, jsonify, request
 from flask_restful import Api, Resource
 from sqlalchemy import or_
-from catalog import canonical_specs, find_specs, normalize_number
+from sqlalchemy.exc import IntegrityError, OperationalError
+
 from __init__ import db
-from model.sfi_spec import SfiSpec, SfiCatalogEntry
 from api.auth_utils import admin_required
+from catalog import canonical_specs, find_specs
+from model.sfi_spec import SfiSpec
 
 
 def catalog_ready(func):
@@ -109,7 +111,7 @@ class SfiSpecAPI:
         @admin_required
         @catalog_ready
         def post(self):
-            from catalog_admin import validate_input, create_spec
+            from catalog_admin import create_spec, validate_input
 
             data, error = validate_input(request.get_json(silent=True), creating=True)
             if error:
@@ -130,7 +132,7 @@ class SfiSpecAPI:
         @admin_required
         @catalog_ready
         def put(self, id):
-            from catalog_admin import validate_input, update_spec
+            from catalog_admin import update_spec, validate_input
 
             data, error = validate_input(request.get_json(silent=True))
             if error:

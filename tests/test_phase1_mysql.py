@@ -1,23 +1,23 @@
 """Opt-in tests against a dedicated disposable MySQL schema, never app config."""
 
-import os
 import json
+import os
 import unittest
 from concurrent.futures import ThreadPoolExecutor
 from threading import Barrier
 from unittest.mock import patch
 
+import test_phase1_catalog as fixture
 from flask import Flask
 from sqlalchemy import create_engine, event, text
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from __init__ import db
-from catalog_admin import create_spec, archive_spec
+from catalog_admin import archive_spec, create_spec
 from catalog_import import apply_import
-from model.sfi_spec import SfiSpec, SfiSpecChunk, SfiCatalogEntry
+from model.sfi_spec import SfiCatalogEntry, SfiSpec, SfiSpecChunk
 from scripts.migrate_sfi_catalog import upgrade
-import test_phase1_catalog as fixture
 
 URI = os.environ.get('SFI_QA_MYSQL_URI', '')
 

@@ -9,11 +9,12 @@ MySQL externally and stop writers first (MySQL DDL is not transactional).
 import argparse
 import sqlite3
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from sqlalchemy import create_engine
+
 from model.sfi_spec import SfiCatalogEntry
 
 
@@ -38,10 +39,7 @@ def main():
                 'Existing SQLite database required; create an isolated empty SQLite file first for a fresh sandbox.'
             )
         backup = path.with_name(
-            path.name
-            + '.'
-            + datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%f')
-            + '.bak'
+            path.name + '.' + datetime.now(UTC).strftime('%Y%m%dT%H%M%S%f') + '.bak'
         )
         with sqlite3.connect(path) as source, sqlite3.connect(backup) as target:
             source.backup(target)
