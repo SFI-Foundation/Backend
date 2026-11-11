@@ -127,16 +127,22 @@ class PublicSecurityTests(unittest.TestCase):
     def test_manufacturer_endpoints_never_expose_sample_records(self):
         from scripts.phase1_local import create_app
 
-        app = create_app('sqlite://')
-        client = app.test_client()
-        for route in (
-            '/api/sfi/manufacturers',
-            '/api/sfi/manufacturer-demo',
-            '/sfi-manufacturer-demo/',
-        ):
-            response = client.get(route)
-            self.assertEqual(response.status_code, 404)
-            self.assertNotIn(b'DEMO-001', response.data)
+        for production_mode in (False, True):
+            app = create_app('sqlite://')
+            app.config['IS_PRODUCTION'] = production_mode
+            client = app.test_client()
+            for route in (
+                '/api/sfi/manufacturers',
+                '/api/sfi/manufacturer-demo',
+                '/sfi-manufacturer-demo/',
+            ):
+                for query in ('', '?demo=true&development=true&sfi_manufacturer_demo=true'):
+                    for method in ('get', 'post'):
+                        with self.subTest(production=production_mode, route=route, method=method, query=query):
+                            response = getattr(client, method)(route + query)
+                            self.assertEqual(response.status_code, 404)
+                            self.assertNotIn(b'DEMO-001', response.data)
+                            self.assertNotIn(b'Fictional Apex', response.data)
 
 
 if __name__ == '__main__':

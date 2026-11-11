@@ -9,6 +9,7 @@ from flask import Flask
 from scripts import ingest_sfi_pdfs
 from __init__ import db
 from model.persona import Persona, UserPersona  # register existing User relationship targets
+from model.user import User  # register users/sections before creating all fixture tables
 from model.sfi_spec import SfiSpec, SfiSpecChunk
 
 
