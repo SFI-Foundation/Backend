@@ -58,6 +58,20 @@ class GearTests(unittest.TestCase):
         self.assertEqual(self.client.delete(f'/api/sfi/gear/{foreign.id}').status_code, 403)
         self.assertEqual(self.client.delete(f"/api/sfi/gear/{item['id']}").status_code, 200)
         self.assertEqual(self.client.get('/api/sfi/gear').json, [])
+
+    def test_existing_client_review_alias_preserves_permissions_and_notes(self):
+        gear = UserGear.create(self.user.id, {'name': 'Synthetic review helmet'})
+        url = f'/api/sfi/gear/{gear.id}/review'
+        self.assertEqual(self.client.put(url, json={'status': 'approved'}).status_code, 403)
+        group = SfiGroup(name='synthetic-reviewers', can_approve_gear=True)
+        group.members.append(self.user)
+        db.session.add(group)
+        db.session.commit()
+        self.assertEqual(self.client.put(url, json={'status': 'rejected'}).status_code, 400)
+        self.assertEqual(self.client.put(url, json={'status': 'approved', 'notes': []}).status_code, 400)
+        response = self.client.put(url, json={'status': 'rejected', 'notes': 'Synthetic review reason'})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json['reviewNote'], 'Synthetic review reason')
         self.client.delete_cookie('token')
         self.assertEqual(self.client.get('/api/sfi/gear').status_code, 401)
 

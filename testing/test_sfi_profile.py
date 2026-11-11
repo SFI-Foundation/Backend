@@ -330,6 +330,9 @@ def wsgi_bridge():
         db.session.add(User(name='Integration Member', uid=uid, password=password))
         db.session.add(User(name='Integration Admin', uid=admin_uid, password=password, role='Admin'))
         db.session.commit()
+        # Bridge users are created after main's initial group seeding. Apply the
+        # normal role-to-group initialization for these synthetic accounts too.
+        initSfiGroups()
     client = app.test_client()
     socket_path = str(root / 'flask.sock')
     server = None
