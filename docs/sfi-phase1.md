@@ -77,13 +77,8 @@ approved local OCR workflow; none are uploaded automatically.
 Do **not** use `scripts/db_init.py`: it drops all application tables. Do not use
 legacy `generate_data` against an existing database. The retained `initSfiSpecs`
 function now inserts only missing full numbers and never deletes/replaces rows.
-For local SQLite, normal Flask startup creates missing tables and seeds an empty
-catalog from the sibling Frontend JSON (or `SFI_SPECS_PATH`). Restart the backend
-after updating the code. Existing catalog rows and metadata are preserved.
-Startup does not import documents or verify PDF links.
-
-For production and non-SQLite databases, run the explicit migration before
-starting the updated application.
+Normal application startup does not import documents or create the new metadata
+table. Run its explicit migration first.
 
 Prepare an entirely new disposable catalog sandbox:
 

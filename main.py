@@ -7,7 +7,6 @@ from flask.cli import AppGroup
 from flask_login import current_user, login_required
 from flask import current_app
 from dotenv import load_dotenv
-from sqlalchemy import text
 
 # import "objects" from "this" project
 from __init__ import app, db, login_manager  # Key Flask objects 
@@ -57,8 +56,7 @@ from model.skill_snapshot import SkillSnapshot
 from model.post import Post, init_posts
 from model.microblog import MicroBlog, Topic, initMicroblogs
 from model.leaderboard import ScoreCounterEvent, ElementaryLeaderboardEvent
-from model.sfi_spec import SfiCatalogEntry, SfiSpec, initSfiSpecs
-from sfi_config import SpecDataError
+from model.sfi_spec import SfiSpec, initSfiSpecs
 from model.sfi_classifier import SfiClassifier, initSfiClassifier
 from model.user_gear import UserGear
 from model.group import SfiGroup, initSfiGroups
@@ -116,24 +114,10 @@ app.register_blueprint(sfi_pdf_summary_api)  # Register the SFI PDF summary API
 
 # Jokes file initialization
 with app.app_context():
-    if not app.config['IS_PRODUCTION'] and db.engine.dialect.name == 'sqlite':
-        # Serialize local schema creation and the empty-catalog check.
-        with db.engine.begin() as connection:
-            connection.exec_driver_sql('BEGIN IMMEDIATE')
-            db.metadata.create_all(bind=connection)
-        db.session.execute(text('BEGIN IMMEDIATE'))
-        try:
-            if SfiSpec.query.first() is None:
-                initSfiSpecs()
-        except SpecDataError as exc:
-            app.logger.warning('Local SFI catalog seed skipped: %s', exc)
-        finally:
-            db.session.rollback()
-    else:
-        # Production and non-SQLite databases use the explicit additive migration.
-        db.metadata.create_all(bind=db.engine, tables=[
-            table for table in db.metadata.sorted_tables if table is not SfiCatalogEntry.__table__
-        ])
+    # Phase 1 catalog metadata has an explicit additive migration.
+    db.metadata.create_all(bind=db.engine, tables=[
+        table for table in db.metadata.sorted_tables if table.name != 'sfi_catalog_entries'
+    ])  # preserve existing startup behavior for other legacy tables
     initJokes()
     try:
         initSfiGroups()  # ensure baseline groups exist (administrators, members) + admin membership
