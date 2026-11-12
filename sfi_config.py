@@ -10,15 +10,20 @@ class SpecDataError(ValueError):
 
 def specs_path():
     value = os.environ.get("SFI_SPECS_PATH", "").strip()
-    path = Path(value).expanduser() if value else BACKEND_ROOT.parent / "Frontend/_data/sfi_specs.json"
-    return (BACKEND_ROOT / path).resolve() if not path.is_absolute() else path.resolve()
+    if value:
+        # An explicit override is authoritative, including a missing/invalid file.
+        path = Path(value).expanduser()
+        return (BACKEND_ROOT / path).resolve() if not path.is_absolute() else path.resolve()
+    candidates = [BACKEND_ROOT.parent / name / "_data/sfi_specs.json"
+                  for name in ("Frontend", "SFI-Frontend")]
+    return next((path for path in candidates if path.is_file()), candidates[0]).resolve()
 
 def load_specs():
     path = specs_path()
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, UnicodeError, json.JSONDecodeError) as exc:
-        raise SpecDataError(f"SFI spec data at {path}: {exc}. Set SFI_SPECS_PATH or clone sibling Frontend.") from exc
+        raise SpecDataError(f"SFI spec data at {path}: {exc}. Set SFI_SPECS_PATH to an absolute file or clone sibling Frontend (also supports SFI-Frontend).") from exc
     def invalid(message):
         raise SpecDataError(f"Invalid SFI spec data at {path}: {message}")
     if not isinstance(data, list) or not data:

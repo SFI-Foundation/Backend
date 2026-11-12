@@ -78,7 +78,8 @@ Do **not** use `scripts/db_init.py`: it drops all application tables. Do not use
 legacy `generate_data` against an existing database. The retained `initSfiSpecs`
 function now inserts only missing full numbers and never deletes/replaces rows.
 For local SQLite, normal Flask startup creates missing tables and seeds an empty
-catalog from the sibling Frontend JSON (or `SFI_SPECS_PATH`). Restart the backend
+catalog from the sibling Frontend (or SFI-Frontend) JSON, or explicit
+`SFI_SPECS_PATH`. Restart the backend
 after updating the code. Existing catalog rows and metadata are preserved.
 Startup does not import documents or verify PDF links.
 
@@ -286,3 +287,144 @@ are visible immediately. The standalone validator's optional explicit `--databas
 persists only document states and evidence, with snapshot checks to avoid granting
 stale approval after concurrent edits. Its nonzero exit may accompany a successful
 revocation; it reports failed document validation, not a rolled-back revocation.
+
+## Empty catalog after normal startup (2026-11-12)
+
+The `/sfi-specs/` initial All request must return the Phase 1 envelope
+`{items, total, page, limit}`. A successful response with `items: []` and
+`total: 0` means the connected database has no published catalog; it is different
+from an API failure or a filtered search with no matches. The frontend never
+substitutes a bundled JSON catalog for the backend.
+
+In the `SFI-Backend` / `SFI-Frontend` workspace, normal `python main.py` startup
+previously searched only sibling `Frontend/_data/sfi_specs.json`. With no
+`SFI_SPECS_PATH`, it logged `Local SFI catalog seed skipped` and left the local
+SQLite catalog empty. Source discovery now checks `Frontend`, then
+`SFI-Frontend`, independently of the current working directory. An explicit
+`SFI_SPECS_PATH` remains authoritative, including missing or invalid sources;
+an invalid preferred source does not silently fall back to another catalog.
+The existing nonproduction SQLite bootstrap runs only when `sfi_specs` has no
+rows. It leaves existing rows, canonical archives, document approvals and related
+records intact. It does not import private documents or approve PDF links.
+
+Local browser evidence before the fix: `window.SFI_API_BASE` was
+`http://localhost:8605`; the process was the sibling Backend's `main.py`, using
+`instance/volumes/user_management.db`, with zero rows in both `sfi_specs` and
+`sfi_catalog_entries`. The stats/categories/paginated-list requests returned
+200 and valid empty responses. CORS allowed `http://localhost:4500`.
+Restarting normal `main.py` against an explicitly disposable SQLite database
+with the repaired source discovery produced:
+
+| Request | Before | After |
+| --- | --- | --- |
+| `/api/sfi/stats` | 200; 0 specs, 0 categories, 0 subcategories | 200; 103 canonical specs, 6 categories, 8 subcategories |
+| `/api/sfi/categories` | 200; `[]` | 200; array of 6 categories |
+| `/api/sfi/specs?format=page&page=1&limit=20&category=all` | 200; 0 items, total 0 | 200; 20 items, total 103 |
+| `/api/sfi/health` | 404; HTML | 404; HTML |
+
+`/api/sfi/health` is registered by `scripts/phase1_local.py` only. Its 404 under
+normal `main.py` is expected and does not establish the backend revision. Use
+the stats/categories/page contract and the deployed checkout/image revision to
+check compatibility. The public JSON bootstrap is intentionally less rich than
+a reviewed Phase 1 private import: these 103 identities all remain `not_checked`
+with no public PDF actions. Do not infer document approval from catalog presence.
+
+For this workspace, stop the existing local backend in its terminal, then restart
+it on this feature branch. This command explicitly selects the readable source
+and retains normal database configuration:
+
+```bash
+cd /home/ruhaanb622/sfi-foundation/SFI-Backend
+SFI_SPECS_PATH=/home/ruhaanb622/sfi-foundation/SFI-Frontend/_data/sfi_specs.json \
+  venv/bin/python main.py
+```
+
+Wait for the frontend's normal Jekyll regeneration, then refresh
+`http://localhost:4500/sfi-specs/`. If the local database already contains rows,
+startup intentionally does not top it up; review the explicit additive import
+below rather than using `generate_data`. Changing a source path does not import
+or approve documents in an existing catalog.
+
+### Hosted checks and operator-only migration/import
+
+The published Pages artifact at `https://sfi-foundation.github.io/Frontend/`
+currently builds an empty `sfi_api_base`, selecting
+`https://greppers-be.opencodingsociety.com`. Read-only checks on 2026-11-12 found
+that backend's stats returned 140 legacy rows / 7 categories / 9 subcategories,
+but `format=page&category=all` returned an empty **array**, not the Phase 1
+envelope. Responses did not contain `Access-Control-Allow-Origin` for
+`https://sfi-foundation.github.io`; Chromium confirmed that the requests were
+blocked by CORS. The hosted problem therefore needs a compatible backend
+rollout and CORS/proxy verification, rather than a blind data reseed.
+No deployed host/database access or deployment revision was available through
+the connected tools; Backend GitHub deployments and Actions runs were empty.
+The exact deployed database, table counts, metadata migration and import state
+remain unverified. Do not infer those from legacy public stats.
+
+Before any production write, the operator must identify the serving process or
+container and revision (`git rev-parse HEAD`, or the image's recorded source
+revision), compare it with the reviewed Backend revision containing PR #38 and
+this fix, and inspect the effective `SFI_DATABASE_URI` or MySQL target with
+credentials redacted. Open SQLite with `mode=ro` if applicable. For MySQL use a
+read-only session to check existence and row counts of `sfi_specs` and
+`sfi_catalog_entries`; inspect archive/document status distribution without
+rewriting it. Check the actual proxy serving the Greppers hostname forwards
+OPTIONS and lets Flask own credentialed CORS. The current Flask allowlist already
+includes the Pages origin; adding duplicate proxy CORS headers is unnecessary.
+
+Read-only HTTP checks (run after rollout too):
+
+```bash
+curl -i -H 'Origin: https://sfi-foundation.github.io' \
+  https://greppers-be.opencodingsociety.com/api/sfi/stats
+curl -i -H 'Origin: https://sfi-foundation.github.io' \
+  https://greppers-be.opencodingsociety.com/api/sfi/categories
+curl -i -H 'Origin: https://sfi-foundation.github.io' \
+  'https://greppers-be.opencodingsociety.com/api/sfi/specs?format=page&page=1&limit=20&category=all'
+curl -i -X OPTIONS -H 'Origin: https://sfi-foundation.github.io' \
+  -H 'Access-Control-Request-Method: GET' \
+  https://greppers-be.opencodingsociety.com/api/sfi/specs
+```
+
+Expect exactly one allow-origin header matching the Pages origin, credentialed
+CORS, a successful preflight, and a paginated object containing real rows. If the
+operator confirms a different backend URL, set Frontend `_config.yml`
+`sfi_api_base` to its scheme/host (without `/api`) and rebuild the published
+artifact; verify `assets/js/sfi/api-base.js` and the browser Network URLs.
+Do not pick an unverified replacement host.
+
+The importer dry-run below reads sources and writes only a private local report;
+it does not connect to or change the target database. This review's dry-run is
+under `/tmp/sfi-empty-catalog-fix/import-dry-run.json`: 220 observations, 108
+canonical identities, 29 unmatched identities, 2 unmatched documents, and no
+conflicting source fields. That run did not validate external links or apply
+anything; its non-strict unblocked status is not import approval. Review missing sources,
+conflicts, warnings and document evidence before approving an apply. Keep reports
+outside Git. `--validate-links` performs read-only requests to official SFI URLs;
+omitting it does not verify or approve any current public document.
+
+```bash
+# From Backend, using the deployment's Python environment:
+python scripts/import_sfi_catalog.py --dry-run \
+  --source-dir "$SFI_PRIVATE_DATA_DIR" --catalog sfi_specs.json \
+  --validate-links --report /tmp/sfi-catalog-dry-run.json
+```
+
+Only if inspection confirms migration/import is needed: stop writers, take and
+verify a target database backup, coordinate a maintenance window, and review the
+report. The operator supplies `SFI_TARGET_DATABASE_URI` through the deployment's
+secret configuration; never echo it or commit it. These are the existing
+explicit, additive commands, prepared for the operator and **not executed against
+production** during this fix:
+
+```bash
+python scripts/migrate_sfi_catalog.py --database "$SFI_TARGET_DATABASE_URI"
+python scripts/import_sfi_catalog.py --apply --database "$SFI_TARGET_DATABASE_URI" \
+  --source-dir "$SFI_PRIVATE_DATA_DIR" --catalog sfi_specs.json \
+  --validate-links --report /tmp/sfi-catalog-applied.json
+```
+
+Preserve legacy IDs, archives and existing reviewed approvals. If the database is
+already migrated/imported, do not re-import merely to fix CORS or an old backend
+image. Follow the earlier migration/rollback guidance, including MySQL DDL
+limitations. Deployment and all production writes remain operator actions.

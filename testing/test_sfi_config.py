@@ -6,27 +6,54 @@ import unittest
 from unittest.mock import patch
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from sfi_config import BACKEND_ROOT, SpecDataError, load_specs, specs_path
+from sfi_config import SpecDataError, load_specs, specs_path
 
 class SpecConfigTests(unittest.TestCase):
-    def test_default_and_cwd(self):
+    def test_default_names_and_cwd(self):
         previous = Path.cwd()
         try:
-            with patch.dict(os.environ, {'SFI_SPECS_PATH': ''}):
-                expected = BACKEND_ROOT.parent / 'Frontend/_data/sfi_specs.json'
-                for cwd in (BACKEND_ROOT, BACKEND_ROOT / 'scripts', Path('/tmp')):
-                    os.chdir(cwd)
-                    self.assertEqual(specs_path(), expected)
-                    self.assertGreater(len(load_specs()), 0)
+            for name in ('Frontend', 'SFI-Frontend'):
+                with self.subTest(name=name), tempfile.TemporaryDirectory() as folder:
+                    backend = Path(folder) / 'SFI-Backend'
+                    (backend / 'scripts').mkdir(parents=True)
+                    source = Path(folder) / name / '_data/sfi_specs.json'
+                    source.parent.mkdir(parents=True)
+                    source.write_text('[{"product_name":"Harness","category":"Safety","spec_numbers":["16.1"]}]')
+                    with patch('sfi_config.BACKEND_ROOT', backend), patch.dict(os.environ, {'SFI_SPECS_PATH': ''}):
+                        for cwd in (backend, backend / 'scripts', Path('/tmp')):
+                            os.chdir(cwd)
+                            self.assertEqual(specs_path(), source)
+                            self.assertEqual(len(load_specs()), 1)
         finally:
             os.chdir(previous)
 
+    def test_default_precedence_and_explicit_override_never_fall_back(self):
+        with tempfile.TemporaryDirectory() as folder:
+            backend = Path(folder) / 'Backend'
+            for name in ('Frontend', 'SFI-Frontend'):
+                source = Path(folder) / name / '_data/sfi_specs.json'
+                source.parent.mkdir(parents=True)
+                source.write_text('invalid source')
+            primary = Path(folder) / 'Frontend/_data/sfi_specs.json'
+            with patch('sfi_config.BACKEND_ROOT', backend), patch.dict(os.environ, {'SFI_SPECS_PATH': ''}):
+                self.assertEqual(specs_path(), primary)
+                with self.assertRaises(SpecDataError):
+                    load_specs()
+                for value in ('missing.json', str(Path(folder) / 'missing.json')):
+                    with patch.dict(os.environ, {'SFI_SPECS_PATH': value}):
+                        self.assertEqual(specs_path(), (backend / value).resolve())
+                        with self.assertRaises(SpecDataError):
+                            load_specs()
+
     def test_custom_relative_and_absolute(self):
-        source = BACKEND_ROOT.parent / 'Frontend/_data/sfi_specs.json'
-        for value in (str(source), '../Frontend/_data/sfi_specs.json'):
-            with patch.dict(os.environ, {'SFI_SPECS_PATH': value}):
-                self.assertEqual(specs_path(), source)
-                self.assertGreater(len(load_specs()), 0)
+        with tempfile.TemporaryDirectory() as folder:
+            backend = Path(folder) / 'Backend'
+            source = Path(folder) / 'custom.json'
+            source.write_text('[{"product_name":"Harness","category":"Safety","spec_numbers":["16.1"]}]')
+            for value in (str(source), '../custom.json'):
+                with patch('sfi_config.BACKEND_ROOT', backend), patch.dict(os.environ, {'SFI_SPECS_PATH': value}):
+                    self.assertEqual(specs_path(), source)
+                    self.assertEqual(len(load_specs()), 1)
 
     def test_missing_and_invalid(self):
         with tempfile.TemporaryDirectory() as folder:
