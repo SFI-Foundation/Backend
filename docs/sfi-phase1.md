@@ -104,6 +104,12 @@ MySQL rollout: MySQL DDL implicitly commits. No production database was accessed
 work. The importer/migration still require `--database` and never infer a
 production URI from application configuration. Avoid secrets in shell history.
 
+Legacy catalog discovery supports sibling checkouts named `Frontend` or
+`SFI-Frontend`, in that order. An explicit `SFI_SPECS_PATH` remains authoritative;
+an invalid override fails rather than silently switching sources. The public
+frontend uses `https://sfi.opencodingsociety.com` at the domain root, and that
+exact HTTPS origin is included in Flask's credentialed CORS allowlist.
+
 ## Search API
 
 Existing public routes, unchanged paths:
