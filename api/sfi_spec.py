@@ -23,7 +23,7 @@ from sqlalchemy.exc import IntegrityError, OperationalError
 
 from __init__ import db
 from api.auth_utils import admin_required
-from catalog import canonical_specs, find_specs
+from catalog import CatalogNotInitialized, canonical_specs, find_specs
 from model.sfi_spec import SfiSpec
 
 
@@ -32,6 +32,11 @@ def catalog_ready(func):
     def wrapped(*args, **kwargs):
         try:
             return func(*args, **kwargs)
+        except CatalogNotInitialized:
+            return {
+                'error': 'Catalog not initialized; verify the selected database and follow the Phase 1 setup or recovery workflow',
+                'code': 'catalog_not_initialized',
+            }, 503
         except IntegrityError:
             db.session.rollback()
             return {

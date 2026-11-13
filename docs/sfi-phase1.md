@@ -26,6 +26,11 @@ an in-memory ranker suitable for this small catalog, with no user-supplied SQL.
 
 ## Local import
 
+For a successful startup with an empty catalog, see
+[the local empty-catalog investigation and recovery](sfi-empty-catalog-recovery.md).
+The application must use the same database that was migrated and imported;
+merging the code does not copy a previously prepared `/tmp` catalog.
+
 Use the backend's existing Python environment (`pip install -r requirements.txt`
 when preparing a new environment). No external AI/OCR services are used. DOCX
 processing uses standard-library ZIP/XML and PDF processing uses existing

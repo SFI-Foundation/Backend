@@ -11,6 +11,10 @@ NUMBER = r'[0-9]{1,3}\.[0-9]{1,3}[A-Z]?(?:/[1-9][0-9]{0,2})?'
 SHARED_DOCUMENTS = {'20.1/1': '20.1', '20.1/2': '20.1'}
 
 
+class CatalogNotInitialized(RuntimeError):
+    """The selected database has no specification records to publish."""
+
+
 def valid_number(value):
     return isinstance(value, str) and re.fullmatch(NUMBER, value) is not None
 
@@ -69,8 +73,11 @@ def canonical_specs(include_archived=False):
     overlays = {
         x.spec_number: json.loads(x.payload) for x in SfiCatalogEntry.query.all()
     }
+    rows = SfiSpec.query.order_by(SfiSpec.id).all()
+    if not rows:
+        raise CatalogNotInitialized('No specification records in the selected database')
     groups = {}
-    for row in SfiSpec.query.order_by(SfiSpec.id).all():
+    for row in rows:
         key = normalize_number(row.spec_number)
         groups.setdefault(key, []).append(row)
     result = []
