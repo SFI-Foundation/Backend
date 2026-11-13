@@ -148,7 +148,7 @@ cp .env.example .env
 
 The app loads Backend's `.env` independently of the current directory. Existing
 environment variables take precedence. Gemini is optional; database credentials
-are optional (blank selects local SQLite). `FLASK_PORT` defaults to 8423.
+are optional (blank selects local SQLite). `FLASK_PORT` defaults to 8605.
 `IS_PRODUCTION=true` retains the existing HTTPS credential-cookie behavior for
 the current Open Coding Society service; its cookie domain is still
 `.opencodingsociety.com`. A replacement host needs cookie/deployment verification.
@@ -195,7 +195,7 @@ The frontend pages that depend on this backend include:
 Flask owns credentialed CORS, including OPTIONS; both checked-in nginx templates
 forward requests without adding CORS headers. Exact allowed origins are
 `https://sfi-foundation.github.io` and HTTP localhost/127.0.0.1 ports
-4000, 4100, 4500, 4600, 8000, 8080 and 8423. Origins have no `/Frontend` path.
+4000, 4100, 4500, 4600, 8000, 8080 and 8605. Origins have no `/Frontend` path.
 Unapproved Origin headers receive 403 without allow-origin headers; requests
 without Origin remain usable by CLI clients. `Vary: Origin` separates caches.
 Authentication/authorization remain required independently of CORS.

@@ -32,7 +32,7 @@ ALLOWED_ORIGINS = {
     "https://sfi-foundation.github.io",
     "https://sfi.opencodingsociety.com",
     *(f"http://{host}:{port}" for host in ("localhost", "127.0.0.1")
-      for port in (4000, 4100, 4500, 4600, 8000, 8080, 8423)),
+      for port in (4000, 4100, 4500, 4600, 8000, 8080, 8605)),
 }
 
 @app.before_request
