@@ -171,6 +171,48 @@ Run the backend:
 python main.py
 ```
 
+### Local administrator bootstrap and credential recovery
+
+Normal startup creates legacy tables and seeds permission groups, but does not
+create users or replace their passwords. `ADMIN_UID`/`ADMIN_PASSWORD` in `.env`
+are bootstrap/recovery inputs; editing them does not change an existing database
+account. Do not run the destructive `db_init.py` to repair login.
+
+For an existing local SQLite database, use the explicit recovery command below
+from Backend with the same virtual environment as `main.py`. Replace the UID
+with the exact configured `ADMIN_UID`; never put the password on the command
+line. The command reads `ADMIN_PASSWORD` from Backend's `.env` (shell variables
+still take precedence), requires the existing password-strength validation,
+and never prints credentials or hashes.
+
+```bash
+# First administrator only: dry run, then explicitly confirmed application.
+python scripts/admin_credentials.py --database-path "$PWD/instance/volumes/user_management.db" --uid '<configured-admin-uid>' --bootstrap --dry-run
+python scripts/admin_credentials.py --database-path "$PWD/instance/volumes/user_management.db" --uid '<configured-admin-uid>' --bootstrap --apply
+
+# Existing authorized administrator: use its reviewed numeric database ID.
+python scripts/admin_credentials.py --database-path "$PWD/instance/volumes/user_management.db" --uid '<configured-admin-uid>' --user-id 123 --dry-run
+python scripts/admin_credentials.py --database-path "$PWD/instance/volumes/user_management.db" --uid '<configured-admin-uid>' --user-id 123 --apply
+```
+
+`--apply` validates the plan and requires typing `APPLY` before writing, then
+rechecks it under a database write lock. The absolute path must match Flask's
+resolved database. Relative `SFI_DATABASE_URI` SQLite paths resolve beneath
+Backend's `instance/`, independent of the working directory. Production and
+non-SQLite recovery are refused; use a separately reviewed operational procedure
+for those systems. No tables are dropped or created by this command: run normal
+startup first if the local schema has not been created.
+
+Bootstrap refuses existing administrators, existing reserved identities, and
+case/space/accent conflicts. It adds only the configured first administrator
+with the Admin role and administrators group. Repair requires the exact UID and
+numeric ID of an already authorized administrator, changes only its password,
+and preserves users, roles, memberships and group permissions. Missing or
+conflicting identities require operator review; no arbitrary user is elevated.
+Restart a running Backend if you changed `.env`, then sign in through the local
+Frontend at `http://localhost:4500/login/`. API login uses an HttpOnly JWT cookie;
+Flask-Login sessions remain supported by protected APIs.
+
 The expected local backend base URL is:
 
 ```text
