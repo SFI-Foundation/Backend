@@ -2,7 +2,7 @@ import jwt
 from flask import Blueprint, app, request, jsonify, current_app, Response, g
 from flask_restful import Api, Resource # used for REST API building
 from flask_login import logout_user
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from __init__ import app, db
 from api.authorize import token_required
 from model.user import User
@@ -19,7 +19,7 @@ api = Api(user_api)
 def reserved_admin_uid(uid):
     # MySQL usernames may compare case-insensitively and ignore trailing spaces.
     return isinstance(uid, str) and uid.strip().casefold() in {
-        'admin', app.config['ADMIN_UID'].strip().casefold(),
+        'admin', current_app.config.get('ADMIN_UID', app.config['ADMIN_UID']).strip().casefold(),
     }
 
 
@@ -113,8 +113,7 @@ class UserAPI:
             uid = body.get('uid')
             if not isinstance(uid, str) or len(uid) < 2:
                 return {'message': f'User ID is missing, or is less than 2 characters'}, 400
-            # Startup assigns the administrators group to the reserved admin UID.
-            # Public signup must never claim that identity, even on an empty DB.
+            # Public signup must never claim the trusted bootstrap identity.
             if reserved_admin_uid(uid):
                 return {'message': 'This username is reserved. Please choose another.'}, 400
           
@@ -380,8 +379,8 @@ class UserAPI:
     class _Security(Resource):
         def post(self):
             try:
-                body = request.get_json()
-                if not body:
+                body = request.get_json(silent=True)
+                if not isinstance(body, dict) or not body:
                     return {
                         "message": "Please provide user details",
                         "data": None,
@@ -389,10 +388,10 @@ class UserAPI:
                     }, 400
                 ''' Get Data '''
                 uid = body.get('uid')
-                if uid is None:
+                if not isinstance(uid, str) or not uid:
                     return {'message': f'User ID is missing'}, 401
                 password = body.get('password')
-                if not password:
+                if not isinstance(password, str) or not password:
                     return {'message': f'Password is missing'}, 401
                             
                 ''' Find user '''
@@ -407,7 +406,8 @@ class UserAPI:
                 if user:
                     try:
                         token = jwt.encode(
-                            {"_uid": user._uid},
+                            {"_uid": user._uid,
+                             "exp": datetime.now(timezone.utc) + timedelta(hours=12)},
                             current_app.config["SECRET_KEY"],
                             algorithm="HS256"
                         )
@@ -444,25 +444,26 @@ class UserAPI:
                                 token,
                                 max_age=43200,  # 12 hours in seconds
                                 secure=False,
-                                httponly=False,  # Set to True for more security if JS access not needed
+                                httponly=True,
                                 path='/',
                                 samesite='Lax'
                             )
-                        return resp 
-                    except Exception as e:
+                        resp.headers['Cache-Control'] = 'no-store'
+                        return resp
+                    except Exception:
                         return {
                                         "error": "Something went wrong",
-                                        "message": str(e)
+                                        "message": "Authentication could not be completed."
                                     }, 500
                 return {
                                 "message": "Error fetching auth token!",
                                 "data": None,
                                 "error": "Unauthorized"
                             }, 404
-            except Exception as e:
+            except Exception:
                  return {
                                 "message": "Something went wrong!",
-                                "error": str(e),
+                                "error": "Authentication could not be completed.",
                                 "data": None
                             }, 500
                  
@@ -474,7 +475,7 @@ class UserAPI:
                 # Generate a token with practically 0 age
                 token = jwt.encode(
                     {"_uid": current_user._uid, 
-                     "exp": datetime.utcnow()},
+                     "exp": datetime.now(timezone.utc)},
                     current_app.config["SECRET_KEY"],
                     algorithm="HS256"
                 )
@@ -501,16 +502,16 @@ class UserAPI:
                         token,
                         max_age=0,  # Immediately expire the cookie
                         secure=False,
-                        httponly=False,  # Set to True for more security if JS access not needed
+                        httponly=True,
                         path='/',
                         samesite='Lax'
                     )
                 logout_user()
                 return resp
-            except Exception as e:
+            except Exception:
                 return {
                     "message": "Failed to invalidate token",
-                    "error": str(e)
+                    "error": "Sign out could not be completed."
                 }, 500
 
     class _GradeData(Resource):
@@ -692,8 +693,11 @@ class UserAPI:
 
             # Validate uid (username)
             uid = body.get('uid')
-            if uid is None or len(uid) < 2:
+            if not isinstance(uid, str) or len(uid) < 2:
                 return {'message': 'Username is missing, or is less than 2 characters'}, 400
+
+            if reserved_admin_uid(uid):
+                return {'message': 'This username is reserved. Please choose another.'}, 400
 
             # Validate password (relaxed requirement for guests)
             password = body.get('password')
