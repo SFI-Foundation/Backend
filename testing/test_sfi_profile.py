@@ -23,7 +23,7 @@ def isolated_run():
             path = Path(name)
             if not name or path.parts[0] in ('instance', 'venv', '.git'):
                 continue
-            if path.suffix != '.py' and path.parts[0] != 'datasets':
+            if path.suffix != '.py' and path.parts[0] not in ('datasets', 'templates'):
                 continue
             if path.name.startswith('.env') or path.suffix in ('.db', '.sqlite', '.sqlite3'):
                 continue
@@ -79,6 +79,7 @@ import main
 from __init__ import app, db
 from model.user import User
 from model.sfi_profile import SfiProfile, empty_interests
+from model.sfi_onboarding import SfiOnboarding, empty_preferences, MULTI_CHOICES, TEXT_LIMITS
 from model.group import SfiGroup, initSfiGroups, user_has_permission
 from sqlalchemy import inspect
 from sqlalchemy.exc import SQLAlchemyError
@@ -87,6 +88,141 @@ app.config.update(TESTING=True, SECRET_KEY=secrets.token_hex(32))
 
 
 class ProfileTests(unittest.TestCase):
+    def preferences(self, body):
+        return self.client.patch('/api/sfi/profile/preferences', json=body)
+
+    def test_motorsports_full_partial_reload_edit_clear_and_legacy(self):
+        self.login()
+        self.assertEqual(self.get().json['preferences'], empty_preferences())
+        self.assertIsNone(db.session.get(SfiOnboarding, self.user.id))
+        self.assertEqual(self.preferences({}).status_code, 200)  # All optional.
+        self.save(self.answers)
+        full = {key: [value for value in values if value not in ('prefer_not_to_answer', 'not_applicable')]
+                for key, values in MULTI_CHOICES.items()}
+        full.update(organization_name='Synthetic Racing', organization_website='https://example.org/racing',
+                    job_title='Engineer', primary_goal='research_equipment',
+                    additional_notes='<script>alert("untrusted text")</script>')
+        self.assertEqual(self.preferences(full).json['preferences'], full)
+        db.session.remove()
+        self.assertEqual(self.get().json['preferences'], full)
+        edited = self.preferences({'involvement': ['driver'], 'primary_goal': None,
+                                   'organization_website': None}).json['preferences']
+        self.assertEqual(edited, {**full, 'involvement': ['driver'], 'primary_goal': None,
+                                 'organization_website': ''})
+        self.assertEqual(self.get().json['interests'], self.answers)
+        self.assertEqual(self.preferences(empty_preferences()).json['preferences'], empty_preferences())
+        self.assertEqual(SfiOnboarding.query.filter_by(user_id=self.user.id).count(), 1)
+        self.assertEqual(self.get().json['interests'], self.answers)
+        self.save(empty_interests())
+        self.assertEqual(self.get().json['preferences'], empty_preferences())
+
+    def test_preference_validation_limits_and_atomicity(self):
+        self.login()
+        valid = {'involvement': ['driver'], 'additional_notes': 'Saved'}
+        self.preferences(valid)
+        invalid = [None, [], {'unknown': []}, {'primary_goal': []}, {'primary_goal': 'Admin'},
+                   {'organization_name': 42}, {'additional_notes': False},
+                   {'additional_notes': 'bad\x00text'},
+                   {'involvement': ['prefer_not_to_answer', 'driver']},
+                   {'disciplines': ['not_applicable', 'road_racing']}]
+        for key in MULTI_CHOICES:
+            invalid.extend([{key: ['unknown']}, {key: 'driver'}, {key: [['driver']]},
+                            {key: [MULTI_CHOICES[key][0]] * 2}])
+        for key, limit in TEXT_LIMITS.items():
+            invalid.append({key: 'x' * (limit + 1)})
+        for url in ('example.org', 'javascript:alert(1)', 'https://u:p@example.org',
+                    'https://example.org:99999', 'https://', 'https://exa mple.org',
+                    'https://example.org\\@evil.org', 'https://example.org\n/path',
+                    'https://invalid-.example', 'https://-invalid.example'):
+            invalid.append({'organization_website': url})
+        for body in invalid:
+            with self.subTest(body=body):
+                response = self.client.patch('/api/sfi/profile/preferences', data=json.dumps(body), content_type='application/json')
+                self.assertEqual(response.status_code, 400)
+        self.assertEqual(self.get().json['preferences']['additional_notes'], 'Saved')
+        self.assertEqual(self.client.patch('/api/sfi/profile/preferences', data='{}').status_code, 415)
+        self.assertEqual(self.client.patch('/api/sfi/profile/preferences', data='{', content_type='application/json').status_code, 400)
+        for key in ('organization_name', 'job_title', 'additional_notes'):
+            self.assertEqual(self.preferences({key: 'x' * TEXT_LIMITS[key]}).status_code, 200)
+        self.assertEqual(self.preferences({'organization_website': 'https://example.org/' + 'x' * 480}).status_code, 200)
+        self.assertEqual(self.preferences({key: None for key in empty_preferences()}).json['preferences'], empty_preferences())
+
+    def test_preference_claims_cannot_escalate_or_target_other_users(self):
+        self.assertEqual(self.preferences({}).status_code, 401)
+        self.login()
+        other = User(name='Other racer', uid='other_' + secrets.token_hex(6), password=self.password)
+        db.session.add(other)
+        db.session.commit()
+        original_hash = self.user._password
+        for claim in ('sfi_staff', 'manufacturer', 'sanctioning_body', 'technical_inspector'):
+            self.assertEqual(self.preferences({'involvement': [claim], 'organization_name': 'Claimed SFI'}).status_code, 200)
+            for route in ('/api/sfi/profile/roles', '/api/sfi/users', '/api/sfi/groups', '/api/sfi/gear/all'):
+                self.assertEqual(self.client.get(route).status_code, 403)
+            self.assertEqual(self.client.patch(f'/api/sfi/profile/roles/{other.id}', json={'role': 'Admin'}).status_code, 403)
+            self.assertFalse(self.get().json['can_manage_roles'])
+            self.assertEqual(self.user.role, 'User')
+            self.assertFalse(user_has_permission(self.user, 'can_manage_users'))
+            self.assertEqual(self.user._password, original_hash)
+        for key, value in (('user_id', other.id), ('uid', other.uid), ('role', 'Admin'),
+                           ('groups', ['administrators']), ('can_manage_roles', True), ('permissions', {})):
+            self.assertEqual(self.preferences({key: value}).status_code, 400)
+        self.assertIsNone(db.session.get(SfiOnboarding, other.id))
+        self.assertEqual(self.client.patch(f'/api/sfi/profile/preferences/{other.id}', json={}).status_code, 404)
+        self.assertEqual(self.preferences({'involvement': ['administrator']}).status_code, 400)
+        for path in ('/api/sfi/profile', '/api/sfi/profile/preferences'):
+            self.assertEqual(app.test_client().get(path).status_code, 401 if path.endswith('profile') else 405)
+        # The public/account list representation never includes private preferences.
+        self.assertTrue(all('preferences' not in item and 'organization_name' not in item
+                            for item in self.client.get('/api/user').json))
+        self.assertEqual(self.client.patch('/api/sfi/profile/preferences', json={},
+                         headers={'Origin': 'https://untrusted.example'}).status_code, 403)
+
+    def test_admin_login_and_privileges_survive_preferences(self):
+        admin = User(name='Preferences admin', uid='admin_' + secrets.token_hex(6),
+                     password=self.password, role='Admin')
+        db.session.add(admin)
+        db.session.commit()
+        initSfiGroups()
+        self.login(uid=admin.uid)
+        original_hash = admin._password
+        self.assertEqual(self.preferences({'involvement': ['enthusiast']}).status_code, 200)
+        self.assertEqual(self.get().json['role'], 'Admin')
+        self.assertTrue(self.get().json['can_manage_roles'])
+        self.assertEqual(self.client.get('/api/sfi/profile/roles').status_code, 200)
+        self.assertEqual(self.client.get('/api/sfi/users').status_code, 200)
+        self.assertEqual(admin._password, original_hash)
+
+    def test_preferences_rollback(self):
+        self.login()
+        self.preferences({'additional_notes': 'Saved'})
+        with patch.object(db.session, 'commit', side_effect=SQLAlchemyError('synthetic failure')):
+            self.assertEqual(self.preferences({'additional_notes': 'Unsaved'}).status_code, 500)
+        self.assertEqual(self.get().json['preferences']['additional_notes'], 'Saved')
+
+    def test_preferences_migration_repeat_reverse_and_legacy_preservation(self):
+        from scripts.migrate_sfi_onboarding import migrate
+        from sqlalchemy import create_engine, text
+        with tempfile.TemporaryDirectory() as directory:
+            engine = create_engine('sqlite:///' + str(Path(directory) / 'migration.db'))
+            with engine.begin() as connection:
+                connection.execute(text('CREATE TABLE users (id INTEGER PRIMARY KEY)'))
+                connection.execute(text('INSERT INTO users VALUES (1)'))
+                connection.execute(text('CREATE TABLE sfi_profiles (user_id INTEGER PRIMARY KEY, skills TEXT)'))
+                connection.execute(text("INSERT INTO sfi_profiles VALUES (1, 'Legacy skills')"))
+            migrate(engine)
+            migrate(engine)
+            with engine.begin() as connection:
+                self.assertEqual(connection.scalar(text('SELECT skills FROM sfi_profiles')), 'Legacy skills')
+                connection.execute(text("INSERT INTO sfi_onboarding_preferences VALUES (1, '{}')"))
+            with self.assertRaises(ValueError):
+                migrate(engine, downgrade=True)
+            with engine.begin() as connection:
+                connection.execute(text('DELETE FROM sfi_onboarding_preferences'))
+            migrate(engine, downgrade=True)
+            migrate(engine, downgrade=True)
+            migrate(engine)
+            engine.dispose()
+
     def setUp(self):
         self.context = app.app_context()
         self.context.push()
@@ -288,7 +424,11 @@ class ProfileTests(unittest.TestCase):
         self.login()
         for path in ('/api/sfi/specs', '/api/sfi/categories', '/api/sfi/stats'):
             with self.subTest(path=path):
-                self.assertEqual(self.client.get(path).status_code, 200)
+                # Since the catalog-initialization fix, a fresh empty database
+                # must report unavailability, never a healthy empty catalog.
+                response = self.client.get(path)
+                self.assertEqual(response.status_code, 503)
+                self.assertEqual(response.json['code'], 'catalog_not_initialized')
         self.assertEqual(self.client.get('/api/sfi/classifier/status').status_code, 404)
         response = self.client.post('/api/sfi/gear', json={'name': 'Isolated helmet', 'spec': '31.1', 'category': 'Helmet'})
         self.assertEqual(response.status_code, 200)
