@@ -1,10 +1,15 @@
 """Current-user profile and editable, optional interest quiz."""
 from flask import Blueprint, current_app, g, jsonify, request
 from sqlalchemy.exc import SQLAlchemyError
+from urllib.parse import urlsplit
+from ipaddress import ip_address
+import re
 
 from __init__ import db
 from api.authorize import token_required
 from model.sfi_profile import SfiProfile, empty_interests
+from model.sfi_onboarding import (SfiOnboarding, empty_preferences, MULTI_CHOICES,
+                                  GOALS, TEXT_LIMITS)
 from model.user import User
 from model.group import SfiGroup, user_is_admin
 
@@ -25,6 +30,7 @@ def can_manage_roles(user):
 def profile_data():
     user = g.current_user
     profile = db.session.get(SfiProfile, user.id)
+    preferences = db.session.get(SfiOnboarding, user.id)
     return {
         'name': user.name,
         'uid': user.uid,
@@ -32,6 +38,7 @@ def profile_data():
         'role_label': 'Member' if user.role == 'User' else user.role,
         'can_manage_roles': can_manage_roles(user),
         'interests': profile.read() if profile else empty_interests(),
+        'preferences': preferences.read() if preferences else empty_preferences(),
     }
 
 
@@ -150,3 +157,82 @@ def save_interests():
         db.session.rollback()
         current_app.logger.error('Unable to save SFI interest quiz answers.')
         return jsonify(message='Your answers could not be saved. Please try again.'), 500
+
+
+def validate_preferences(body):
+    """Validate only supplied keys; null explicitly clears an optional field."""
+    if not isinstance(body, dict) or set(body) - set(empty_preferences()):
+        return None, {'form': 'Provide only recognized preference fields.'}
+    values, errors = {}, {}
+    for field, value in body.items():
+        if field in MULTI_CHOICES:
+            value = [] if value is None else value
+            choices = MULTI_CHOICES[field]
+            if (not isinstance(value, list) or len(value) > len(choices)
+                    or any(not isinstance(item, str) or item not in choices for item in value)
+                    or len(set(value)) != len(value)):
+                errors[field] = 'Choose valid, unique options.'
+            elif len(value) > 1 and (
+                    (field == 'involvement' and 'prefer_not_to_answer' in value)
+                    or (field == 'disciplines' and 'not_applicable' in value)):
+                errors[field] = 'Choose this option alone or select your involvement.'
+        elif field == 'primary_goal':
+            if value is not None and (not isinstance(value, str) or value not in GOALS):
+                errors[field] = 'Choose a valid primary goal or leave it unanswered.'
+        else:
+            value = '' if value is None else value
+            if not isinstance(value, str) or len(value) > TEXT_LIMITS[field]:
+                errors[field] = f'Use at most {TEXT_LIMITS[field]} characters.'
+            elif any(ord(char) < 32 and char not in ('\n', '\r', '\t') for char in value):
+                errors[field] = 'Remove unsupported control characters.'
+            else:
+                value = value.strip()
+                if field == 'organization_website' and value and not valid_website(value):
+                    errors[field] = 'Enter a full http:// or https:// website without credentials.'
+        values[field] = value
+    return values, errors
+
+
+def valid_website(value):
+    # Stored as plain text; never fetched, linked to an official record, or
+    # used for verification. Reject executable schemes and embedded credentials.
+    try:
+        url = urlsplit(value)
+        host = url.hostname or ''
+        try:
+            ip_address(host)
+            valid_host = True
+        except ValueError:
+            encoded = host.encode('idna').decode()
+            valid_host = len(encoded) <= 253 and all(
+                re.fullmatch(r'[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?', label)
+                for label in encoded.split('.'))
+        return bool(url.scheme in ('http', 'https') and valid_host
+                    and url.username is None and url.password is None
+                    and not re.search(r'[\s\\]', value) and (url.port is None or url.port > 0))
+    except (ValueError, UnicodeError):
+        return False
+
+
+@sfi_profile_api.route('/preferences', methods=['PUT', 'PATCH'])
+@token_required()
+def save_preferences():
+    if not request.is_json:
+        return jsonify(message='Send preferences as JSON.'), 415
+    values, errors = validate_preferences(request.get_json(silent=True))
+    if errors:
+        return jsonify(message='Please check the highlighted preferences.', errors=errors), 400
+    try:
+        # Identity comes exclusively from the authenticated session or verified
+        # token. No editable identifiers, roles, groups or permissions accepted.
+        profile = db.session.get(SfiOnboarding, g.current_user.id)
+        if profile is None:
+            profile = SfiOnboarding(user_id=g.current_user.id)
+            db.session.add(profile)
+        profile.answers = {**(profile.read() if profile.answers else empty_preferences()), **values}
+        db.session.commit()
+        return jsonify(profile_data())
+    except SQLAlchemyError:
+        db.session.rollback()
+        current_app.logger.error('Unable to save SFI onboarding preferences.')
+        return jsonify(message='Your preferences could not be saved. Please try again.'), 500
