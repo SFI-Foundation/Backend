@@ -1,12 +1,14 @@
 # /api/javascript_exec_api.py
 from flask import Blueprint, request, jsonify
 from flask_restful import Api, Resource
+from api.authorize import token_required
 import subprocess, tempfile, os
 
 javascript_exec_api = Blueprint('javascript_exec_api', __name__, url_prefix='/run')
 api = Api(javascript_exec_api)
 
 class JavaScriptExec(Resource):
+    @token_required()
     def post(self):
         """Executes submitted JavaScript code using Node.js inside the container."""
         data = request.get_json()
