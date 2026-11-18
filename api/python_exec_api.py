@@ -1,12 +1,14 @@
 # /api/python_exec_api.py
 from flask import Blueprint, request, jsonify
 from flask_restful import Api, Resource
+from api.authorize import token_required
 import subprocess, tempfile, os
 
 python_exec_api = Blueprint('python_exec_api', __name__, url_prefix='/run')
 api = Api(python_exec_api)
 
 class PythonExec(Resource):
+    @token_required()
     def post(self):
         """Executes submitted Python code safely in a short-lived subprocess."""
         data = request.get_json()
