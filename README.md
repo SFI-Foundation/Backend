@@ -143,7 +143,7 @@ pip install -r requirements.txt
 Copy the placeholder-only example and replace passwords and the session secret:
 
 ```bash
-cp .env.example .env
+test -e .env || cp .env.example .env
 ```
 
 The app loads Backend's `.env` independently of the current directory. Existing
@@ -160,8 +160,8 @@ python scripts/db_init.py
 ```
 
 This initializer drops tables after confirmation. Do not run it against an
-existing/shared database to apply this configuration change; no schema migration
-is required. The repository includes prototype SQLite files: in a disposable
+existing/shared database. For preferences upgrades, use the additive settings
+migration documented below. The repository includes prototype SQLite files: in a disposable
 clone only, use a new empty `instance/volumes/user_management.db` and accept the
 initializer prompt (main imports create tables before that prompt).
 
@@ -224,7 +224,8 @@ http://localhost:8605
 The companion frontend expects the backend at:
 
 - Local: `http://localhost:8605`
-- Deployed: `https://greppers-be.opencodingsociety.com`
+- Frontend's configured deployed fallback: `https://sfi-api.opencodingsociety.com`;
+  verify the actual host, HTTPS cookies and CORS separately during deployment.
 
 The frontend pages that depend on this backend include:
 
@@ -232,19 +233,21 @@ The frontend pages that depend on this backend include:
 - `/quiz/` for authenticated gear sync.
 - `/login/` and `/signup/` for auth.
 - Site-wide chatbot widget for `/api/sfi/chat`.
-- `/admin/`, although the required admin endpoints are currently missing.
+- `/admin/` for permission-protected users, groups and gear review.
+- `/settings/` for authenticated account presentation preferences.
+- `/sfi-profile/` for profile editing and optional onboarding answers.
 
 Flask owns credentialed CORS, including OPTIONS; both checked-in nginx templates
 forward requests without adding CORS headers. Exact allowed origins are
-`https://sfi-foundation.github.io` and HTTP localhost/127.0.0.1 ports
+`https://sfi-foundation.github.io`, `https://sfi.opencodingsociety.com` and HTTP localhost/127.0.0.1 ports
 4000, 4100, 4500, 4600, 8000, 8080 and 8605. Origins have no `/Frontend` path.
 Unapproved Origin headers receive 403 without allow-origin headers; requests
 without Origin remain usable by CLI clients. `Vary: Origin` separates caches.
 Authentication/authorization remain required independently of CORS.
 
 Frontend `sfi_api_base` in `_config.yml` configures the shared API base for
-SFI pages and auth. Blank preserves the current service listed above; no new
-production URL is confirmed. Deployment/nginx reload, browser authentication
+SFI pages and auth. Blank uses the frontend fallback listed above; deployed
+connectivity still requires verification. Deployment/nginx reload, browser authentication
 on Pages, and production CORS verification remain pending.
 
 See [the feature diagram and capstone notes](docs/sfi-config.md).
@@ -263,9 +266,8 @@ See [the feature diagram and capstone notes](docs/sfi-config.md).
 
 ## Future Roadmap
 
-- Add admin-auth-protected SFI management endpoints.
-- Implement `/api/sfi/me`, `/api/sfi/users`, `/api/sfi/groups`, `/api/sfi/gear/pending`, and `/api/sfi/gear/all` or update the frontend admin page to use existing APIs.
-- Extend `UserGear` with status, source, owner/admin review fields, reviewer notes, and timestamps.
+- Continue regression checks for the existing permission-protected user, group,
+  gear moderation and account APIs when deploying paired frontend changes.
 - Add a PDF ingestion pipeline that downloads or reads SFI PDFs, extracts text, chunks/indexes content, and exposes summary/search endpoints.
 - Run `python scripts/index_sfi_site.py` to refresh the chatbot's searchable snapshot of the main SFI Foundation pages.
 - Upgrade the chatbot further with citations and broader PDF retrieval before calling Gemini.
@@ -281,7 +283,8 @@ Before continuing backend work:
 - Test `GET /api/sfi/classifier/status` to confirm the classifier trained.
 - Configure `GEMINI_API_KEY` before testing `POST /api/sfi/chat`.
 - Run `python scripts/ingest_sfi_pdfs.py` to refresh the local SFI PDF chunk index.
-- Treat the `/admin/` frontend as unfinished until the backend admin endpoints and permission checks are added.
+- Verify `/admin/` with synthetic accounts that have the appropriate permissions;
+  ordinary members and manufacturer interests must never gain administrative access.
 
 ## SFI spec write access (admin only)
 
