@@ -143,7 +143,7 @@ pip install -r requirements.txt
 Copy the placeholder-only example and replace passwords and the session secret:
 
 ```bash
-cp .env.example .env
+test -e .env || cp .env.example .env
 ```
 
 The app loads Backend's `.env` independently of the current directory. Existing
@@ -160,8 +160,8 @@ python scripts/db_init.py
 ```
 
 This initializer drops tables after confirmation. Do not run it against an
-existing/shared database to apply this configuration change; no schema migration
-is required. The repository includes prototype SQLite files: in a disposable
+existing/shared database. For preferences upgrades, use the additive settings
+migration documented below. The repository includes prototype SQLite files: in a disposable
 clone only, use a new empty `instance/volumes/user_management.db` and accept the
 initializer prompt (main imports create tables before that prompt).
 
@@ -224,7 +224,8 @@ http://localhost:8605
 The companion frontend expects the backend at:
 
 - Local: `http://localhost:8605`
-- Deployed: `https://greppers-be.opencodingsociety.com`
+- Frontend's configured deployed fallback: `https://sfi-api.opencodingsociety.com`;
+  verify the actual host, HTTPS cookies and CORS separately during deployment.
 
 The frontend pages that depend on this backend include:
 
@@ -232,19 +233,21 @@ The frontend pages that depend on this backend include:
 - `/quiz/` for authenticated gear sync.
 - `/login/` and `/signup/` for auth.
 - Site-wide chatbot widget for `/api/sfi/chat`.
-- `/admin/`, although the required admin endpoints are currently missing.
+- `/admin/` for permission-protected users, groups and gear review.
+- `/settings/` for authenticated account presentation preferences.
+- `/sfi-profile/` for profile editing and optional onboarding answers.
 
 Flask owns credentialed CORS, including OPTIONS; both checked-in nginx templates
 forward requests without adding CORS headers. Exact allowed origins are
-`https://sfi-foundation.github.io` and HTTP localhost/127.0.0.1 ports
+`https://sfi-foundation.github.io`, `https://sfi.opencodingsociety.com` and HTTP localhost/127.0.0.1 ports
 4000, 4100, 4500, 4600, 8000, 8080 and 8605. Origins have no `/Frontend` path.
 Unapproved Origin headers receive 403 without allow-origin headers; requests
 without Origin remain usable by CLI clients. `Vary: Origin` separates caches.
 Authentication/authorization remain required independently of CORS.
 
 Frontend `sfi_api_base` in `_config.yml` configures the shared API base for
-SFI pages and auth. Blank preserves the current service listed above; no new
-production URL is confirmed. Deployment/nginx reload, browser authentication
+SFI pages and auth. Blank uses the frontend fallback listed above; deployed
+connectivity still requires verification. Deployment/nginx reload, browser authentication
 on Pages, and production CORS verification remain pending.
 
 See [the feature diagram and capstone notes](docs/sfi-config.md).
@@ -263,9 +266,8 @@ See [the feature diagram and capstone notes](docs/sfi-config.md).
 
 ## Future Roadmap
 
-- Add admin-auth-protected SFI management endpoints.
-- Implement `/api/sfi/me`, `/api/sfi/users`, `/api/sfi/groups`, `/api/sfi/gear/pending`, and `/api/sfi/gear/all` or update the frontend admin page to use existing APIs.
-- Extend `UserGear` with status, source, owner/admin review fields, reviewer notes, and timestamps.
+- Continue regression checks for the existing permission-protected user, group,
+  gear moderation and account APIs when deploying paired frontend changes.
 - Add a PDF ingestion pipeline that downloads or reads SFI PDFs, extracts text, chunks/indexes content, and exposes summary/search endpoints.
 - Run `python scripts/index_sfi_site.py` to refresh the chatbot's searchable snapshot of the main SFI Foundation pages.
 - Upgrade the chatbot further with citations and broader PDF retrieval before calling Gemini.
@@ -281,7 +283,8 @@ Before continuing backend work:
 - Test `GET /api/sfi/classifier/status` to confirm the classifier trained.
 - Configure `GEMINI_API_KEY` before testing `POST /api/sfi/chat`.
 - Run `python scripts/ingest_sfi_pdfs.py` to refresh the local SFI PDF chunk index.
-- Treat the `/admin/` frontend as unfinished until the backend admin endpoints and permission checks are added.
+- Verify `/admin/` with synthetic accounts that have the appropriate permissions;
+  ordinary members and manufacturer interests must never gain administrative access.
 
 ## SFI spec write access (admin only)
 
@@ -299,3 +302,137 @@ flowchart TD
 ```
 
 See [Phase 1 repairs, localhost QA, and launch instructions](docs/sfi-phase1-repairs.md) for the corrected catalog counts and current acceptance evidence.
+
+
+## Account presentation preferences and database setup
+
+The README's supported database choices remain distinct: SQLite is the local
+fallback; configured MySQL uses PyMySQL. Production requires authenticated MySQL
+and strong configured secrets. `SFI_DATABASE_URI` is an explicit override, intended
+for isolated databases; never put a credential-bearing URI in command history or
+reports. `.env` is ignored by Git and loaded from this repository regardless of cwd.
+Environment variables override `.env`. Do not overwrite an existing `.env`.
+
+For a fresh clone only:
+
+```bash
+python3 -m venv venv
+. venv/bin/activate
+pip install -r requirements.txt
+test -e .env || cp .env.example .env
+# Edit .env locally; never commit it.
+python -c 'import secrets; from pathlib import Path; p=Path(".env"); s=p.read_text(); s=s.replace("SECRET_KEY=\n", "SECRET_KEY="+secrets.token_urlsafe(48)+"\n"); p.write_text(s); p.chmod(0o600)'
+```
+
+The generation command fills only an empty session secret and never prints it.
+For stable sessions across restarts, configure that secret. Blank local bootstrap
+password settings are independently generated per process and do not change
+existing accounts. Production must explicitly configure strong `DEFAULT_PASSWORD`
+and `ADMIN_PASSWORD` through its approved secrets mechanism. Normal startup never
+creates privileged users or resets passwords.
+
+| Variable | Meaning |
+| --- | --- |
+| `DB_ENDPOINT` | MySQL hostname; blank with other credentials selects local SQLite |
+| `DB_PORT` | MySQL port, default `3306`, validated range 1–65535 |
+| `DB_NAME` | MySQL database name, default `user_management` |
+| `DB_USERNAME`, `DB_PASSWORD` | MySQL credentials; configure together with endpoint |
+| `SFI_DATABASE_URI` | Optional explicit DB URI; relative SQLite paths resolve under `instance/` |
+| `SECRET_KEY` | Stable generated session secret, 32+ random characters |
+| `IS_PRODUCTION` | `false` locally; `true` enforces HTTPS cookies and MySQL |
+| `FLASK_PORT` | API port, default `8605` |
+| `SFI_SPECS_PATH` | Existing specification source configuration |
+
+For MySQL development, create an empty development database with a dedicated
+account using your normal MySQL administration tools. Example SQL, with placeholders:
+
+```sql
+CREATE DATABASE sfi_development CHARACTER SET utf8mb4;
+CREATE USER 'sfi_dev'@'localhost' IDENTIFIED BY '<generated-development-password>';
+GRANT ALL PRIVILEGES ON sfi_development.* TO 'sfi_dev'@'localhost';
+```
+
+Set endpoint, port, name and both credentials in `.env`; leave `SFI_DATABASE_URI`
+blank when using these variables. Do not substitute an existing production schema.
+For SQLite development leave all MySQL credentials blank. Preserve existing files
+under `instance/volumes/`; use an explicitly named disposable SQLite URI for QA.
+
+### Additive settings migration and rollback
+
+`model/sfi_settings.py` adds `sfi_account_settings` with one row per authenticated
+user, a validated JSON preference object and revision. It does not change users,
+roles, profiles, onboarding answers or catalog records. Normal startup follows
+the existing additive `create_all` convention. For explicit migration of an
+existing database, stop writers and use the existing backup procedure, then:
+
+```bash
+python scripts/migrate_sfi_settings.py --from-env
+python scripts/migrate_sfi_settings.py --from-env  # repeat safely
+python main.py
+```
+
+The explicit migration imports configuration, not `main.py`; it does not seed data
+or call `drop_all`. It requires an existing `users` table. A new disposable clone
+can first start `main.py` to create legacy tables. Do not use destructive
+`scripts/db_init.py` as an upgrade mechanism. The existing catalog migration is
+separate; see `docs/sfi-phase1-repairs.md`.
+
+Rollback: first deploy the previous application and leave the unused settings
+table intact. `--downgrade` removes only an empty settings table and refuses to
+discard saved settings. MySQL DDL is not transactional; review deployment plans
+and normal backups before applying any production migration. This task does not
+authorize production modification.
+
+### Account settings API
+
+Authenticated `GET /api/sfi/settings` returns
+`{"version":1,"revision":0,"preferences":{}}` before the first save. PATCH accepts
+exactly `version`, the last read integer `revision`, and allowlisted `preferences`.
+It returns the incremented revision after commit. Conflicts return 409; reload
+rather than overwriting another device. Invalid values/identity/role keys return
+400; non-JSON returns 415, oversized payloads 413, unauthenticated requests 401,
+and database failures 503. Responses are `no-store`. Identity comes exclusively
+from existing authenticated cookies/tokens; no user ID is accepted. JSON PATCH
+uses the existing exact-origin credentialed CORS policy and preflight protection.
+The endpoint has a 16 KiB request bound within the app's existing 5 MiB global
+limit; no new per-user rate limiter is introduced.
+
+No notification subscriptions or unsupported search sorts/layouts are stored.
+Opted-in remembered category values remain browser-local; only their enablement
+setting synchronizes. Onboarding preference APIs remain separate and unchanged.
+
+### Connectivity, tests and troubleshooting
+
+Start Frontend at `http://localhost:4500` as described in its README. For local
+connectivity, `curl -i http://localhost:8605/api/sfi/settings` should return 401
+without a session, confirming the endpoint is protected. Sign in through the UI,
+change a setting, and verify account-save feedback and a second browser context.
+A 503 catalog response requires the separate catalog initialization, not an empty
+success. An API connection error requires checking the configured base URL, port,
+credentials, database existence and exact CORS origin. Use `localhost` consistently;
+its cookies are distinct from `127.0.0.1`. Production domain/cookie configuration
+must be verified separately by the deployer. Never paste credential-bearing
+exceptions or `.env` contents into issues.
+
+```bash
+python testing/test_sfi_settings_config.py
+python testing/test_sfi_profile.py
+PYTHON_DOTENV_DISABLED=1 SFI_DATABASE_URI=sqlite:// python -m unittest discover -s tests -v
+```
+
+Profile tests copy source into a temporary directory, never copy `.env` or existing
+databases, create synthetic accounts and verify real SQLite writes, migration
+repeatability, account isolation, validation, failures, roles and process-restart
+persistence. Opt-in MySQL account tests additionally accept `SFI_QA_MYSQL_URI`
+through the environment only for a fresh localhost schema prefixed
+`sfi_preferences_qa`, port 13376. Use a fresh schema per run; the suite retains
+its synthetic rows. Supply generated credentials privately, never in a report.
+Three separate catalog MySQL tests require their own `sfi_phase1_qa` fixture.
+
+For the customer, `python testing/test_sfi_profile.py --demo` starts a disposable
+Flask API on port 8865 with synthetic catalog entries (override with `SFI_DEMO_PORT`); register synthetic users
+through the normal UI. Stop it after the demonstration. It never opens local
+customer databases, seeds privileged accounts or modifies real credentials.
+
+See the paired Frontend's `docs/teacher-deployment-preferences-verification.md`
+for evidence and the customer demonstration guide. No deployment is performed.
