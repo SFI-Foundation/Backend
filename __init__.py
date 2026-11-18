@@ -98,10 +98,10 @@ DB_USERNAME = os.environ.get('DB_USERNAME') or None
 DB_PASSWORD = os.environ.get('DB_PASSWORD') or None
 if DB_ENDPOINT and DB_USERNAME and DB_PASSWORD:
    # Production - Use MySQL
-   DB_PORT = '3306'
-   DB_NAME = dbName
+   DB_PORT = os.environ.get('DB_PORT') or '3306'
+   DB_NAME = os.environ.get('DB_NAME') or dbName
    dbString = URL.create('mysql+pymysql', username=DB_USERNAME, password=DB_PASSWORD, host=DB_ENDPOINT, port=int(DB_PORT))
-   dbURI = dbString.set(database=dbName)
+   dbURI = dbString.set(database=DB_NAME)
    backupURI = None  # MySQL backup would require a different approach
 else:
    # Development - Use SQLite
@@ -112,7 +112,7 @@ else:
 app.config['DB_ENDPOINT'] = DB_ENDPOINT
 app.config['DB_USERNAME'] = DB_USERNAME
 app.config['DB_PASSWORD'] = DB_PASSWORD
-app.config['SQLALCHEMY_DATABASE_NAME'] = dbName
+app.config['SQLALCHEMY_DATABASE_NAME'] = DB_NAME if DB_ENDPOINT and DB_USERNAME and DB_PASSWORD else dbName
 app.config['SQLALCHEMY_DATABASE_STRING'] = dbString
 # Explicit local/test override; never print credentials from this URI.
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SFI_DATABASE_URI') or dbURI

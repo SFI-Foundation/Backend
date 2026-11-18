@@ -73,6 +73,14 @@ def settings(env=None):
         raise ConfigurationError(
             'DB_ENDPOINT, DB_USERNAME and DB_PASSWORD must be configured together'
         )
+    try:
+        port = int(env.get('DB_PORT') or '3306')
+        if not 1 <= port <= 65535:
+            raise ValueError()
+    except ValueError:
+        raise ConfigurationError('DB_PORT must be an integer from 1 to 65535') from None
+    if not (env.get('DB_NAME') or 'user_management').strip():
+        raise ConfigurationError('DB_NAME must not be whitespace')
     uri = env.get('SFI_DATABASE_URI', '').strip()
     if uri:
         try:
