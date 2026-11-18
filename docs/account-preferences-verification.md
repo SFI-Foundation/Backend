@@ -40,3 +40,5 @@ Manufacturer is an optional self-reported interest, never an authorization role.
 Existing catalog PDF approval/invalidation and gear moderation tests remain covered.
 Real camera downloads, physical phones, production hosts and other browser engines
 are not asserted as verified.
+
+Companion draft: [Frontend #39](https://github.com/SFI-Foundation/Frontend/pull/39). Backend draft: [#47](https://github.com/SFI-Foundation/Backend/pull/47). Both target main with auto-merge disabled. Fresh revalidation repeated the SQLite, MySQL, configuration, regression and disposable-demo checks above. The final frontend browser run passed 286 theme/responsive checks and 13 axe scans; its report separately discloses a pre-existing failing legacy chatbot Sass audit. No production deployment was performed.
