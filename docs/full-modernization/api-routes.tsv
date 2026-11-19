@@ -1,0 +1,147 @@
+source	line	handler	route or registration	decorators
+api/ainpc_api.py	268	Flask-RESTful registration	api.add_resource(_Prompt, '/prompt')	guards on resource methods; inspect source
+api/ainpc_api.py	269	Flask-RESTful registration	api.add_resource(_Greeting, '/greeting')	guards on resource methods; inspect source
+api/ainpc_api.py	270	Flask-RESTful registration	api.add_resource(_Reset, '/reset')	guards on resource methods; inspect source
+api/ainpc_api.py	271	Flask-RESTful registration	api.add_resource(_Test, '/test')	guards on resource methods; inspect source
+api/ainpc_api.py	272	Flask-RESTful registration	api.add_resource(_Status, '/status/<session_id>')	guards on resource methods; inspect source
+api/analytics.py	325	Flask-RESTful registration	api.add_resource(GitHubUserAPI, '/github/user')	guards on resource methods; inspect source
+api/analytics.py	326	Flask-RESTful registration	api.add_resource(UserProfileLinks, '/github/user/profile_links')	guards on resource methods; inspect source
+api/analytics.py	327	Flask-RESTful registration	api.add_resource(UserCommits, '/github/user/commits')	guards on resource methods; inspect source
+api/analytics.py	328	Flask-RESTful registration	api.add_resource(UserPrs, '/github/user/prs')	guards on resource methods; inspect source
+api/analytics.py	329	Flask-RESTful registration	api.add_resource(UserIssues, '/github/user/issues')	guards on resource methods; inspect source
+api/analytics.py	330	Flask-RESTful registration	api.add_resource(UserIssueComments, '/github/user/issue_comments')	guards on resource methods; inspect source
+api/analytics.py	331	Flask-RESTful registration	api.add_resource(UserReceivedIssueComments, '/github/user/received_issue_comments')	guards on resource methods; inspect source
+api/analytics.py	332	Flask-RESTful registration	api.add_resource(GitHubOrgUsers, '/github/org/<string:org_name>/users')	guards on resource methods; inspect source
+api/analytics.py	333	Flask-RESTful registration	api.add_resource(GitHubOrgRepos, '/github/org/<string:org_name>/repos')	guards on resource methods; inspect source
+api/analytics.py	334	Flask-RESTful registration	api.add_resource(AdminUserCommits, '/commits/<string:uid>')	guards on resource methods; inspect source
+api/analytics.py	335	Flask-RESTful registration	api.add_resource(AdminUserIssues, '/issues/<string:uid>')	guards on resource methods; inspect source
+api/data_export_import_api.py	1066	Flask-RESTful registration	api.add_resource(ExportAllData, '/all')	guards on resource methods; inspect source
+api/data_export_import_api.py	1067	Flask-RESTful registration	api.add_resource(ImportAllData, '/import')	guards on resource methods; inspect source
+api/data_export_import_api.py	1070	Flask-RESTful registration	api.add_resource(ExportSections, '/sections')	guards on resource methods; inspect source
+api/data_export_import_api.py	1071	Flask-RESTful registration	api.add_resource(ExportUsers, '/users')	guards on resource methods; inspect source
+api/data_export_import_api.py	1072	Flask-RESTful registration	api.add_resource(ExportTopics, '/topics')	guards on resource methods; inspect source
+api/data_export_import_api.py	1073	Flask-RESTful registration	api.add_resource(ExportMicroblogs, '/microblogs')	guards on resource methods; inspect source
+api/data_export_import_api.py	1074	Flask-RESTful registration	api.add_resource(ExportPosts, '/posts')	guards on resource methods; inspect source
+api/data_export_import_api.py	1075	Flask-RESTful registration	api.add_resource(ExportClassrooms, '/classrooms')	guards on resource methods; inspect source
+api/data_export_import_api.py	1076	Flask-RESTful registration	api.add_resource(ExportFeedback, '/feedback')	guards on resource methods; inspect source
+api/data_export_import_api.py	1077	Flask-RESTful registration	api.add_resource(ExportStudy, '/study')	guards on resource methods; inspect source
+api/data_export_import_api.py	1078	Flask-RESTful registration	api.add_resource(ExportPersonas, '/personas')	guards on resource methods; inspect source
+api/data_export_import_api.py	1079	Flask-RESTful registration	api.add_resource(ExportUserPersonas, '/user_personas')	guards on resource methods; inspect source
+api/data_export_import_api.py	1082	Flask-RESTful registration	api.add_resource(ImportSections, '/import/sections')	guards on resource methods; inspect source
+api/data_export_import_api.py	1083	Flask-RESTful registration	api.add_resource(ImportUsers, '/import/users')	guards on resource methods; inspect source
+api/data_export_import_api.py	1084	Flask-RESTful registration	api.add_resource(ImportTopics, '/import/topics')	guards on resource methods; inspect source
+api/data_export_import_api.py	1085	Flask-RESTful registration	api.add_resource(ImportMicroblogs, '/import/microblogs')	guards on resource methods; inspect source
+api/data_export_import_api.py	1086	Flask-RESTful registration	api.add_resource(ImportPosts, '/import/posts')	guards on resource methods; inspect source
+api/data_export_import_api.py	1087	Flask-RESTful registration	api.add_resource(ImportClassrooms, '/import/classrooms')	guards on resource methods; inspect source
+api/data_export_import_api.py	1088	Flask-RESTful registration	api.add_resource(ImportFeedback, '/import/feedback')	guards on resource methods; inspect source
+api/data_export_import_api.py	1089	Flask-RESTful registration	api.add_resource(ImportStudy, '/import/study')	guards on resource methods; inspect source
+api/data_export_import_api.py	1090	Flask-RESTful registration	api.add_resource(ImportPersonas, '/import/personas')	guards on resource methods; inspect source
+api/data_export_import_api.py	1091	Flask-RESTful registration	api.add_resource(ImportUserPersonas, '/import/user_personas')	guards on resource methods; inspect source
+api/feedback_api.py	109	Flask-RESTful registration	api.add_resource(FeedbackAPI._Create, '/')	guards on resource methods; inspect source
+api/feedback_api.py	110	Flask-RESTful registration	api.add_resource(FeedbackAPI._ReadAll, '/all')	guards on resource methods; inspect source
+api/feedback_api.py	111	Flask-RESTful registration	api.add_resource(FeedbackAPI._UserFeedback, '/user/<string:uid>')	guards on resource methods; inspect source
+api/gemini_api.py	333	Flask-RESTful registration	api.add_resource(_Ask, '/gemini')	guards on resource methods; inspect source
+api/gemini_api.py	334	Flask-RESTful registration	api.add_resource(_Health, '/gemini/health')	guards on resource methods; inspect source
+api/gemini_api.py	335	Flask-RESTful registration	api.add_resource(_Debug, '/gemini/debug')	guards on resource methods; inspect source
+api/grade_api.py	50	Flask-RESTful registration	api.add_resource(Predict, '/predict')	guards on resource methods; inspect source
+api/groq_api.py	292	Flask-RESTful registration	api.add_resource(_Generate, '/groq')	guards on resource methods; inspect source
+api/groq_api.py	293	Flask-RESTful registration	api.add_resource(_Chat, '/groq/chat')	guards on resource methods; inspect source
+api/groq_api.py	294	Flask-RESTful registration	api.add_resource(_Analyze, '/groq/analyze')	guards on resource methods; inspect source
+api/groq_api.py	295	Flask-RESTful registration	api.add_resource(_Models, '/groq/models')	guards on resource methods; inspect source
+api/groq_api.py	296	Flask-RESTful registration	api.add_resource(_Health, '/groq/health')	guards on resource methods; inspect source
+api/group.py	203	Flask-RESTful registration	api.add_resource(_GroupCollection, '/groups')	guards on resource methods; inspect source
+api/group.py	204	Flask-RESTful registration	api.add_resource(_GroupItem, '/groups/<int:group_id>')	guards on resource methods; inspect source
+api/group.py	205	Flask-RESTful registration	api.add_resource(_GroupMembers, '/groups/<int:group_id>/members')	guards on resource methods; inspect source
+api/group.py	206	Flask-RESTful registration	api.add_resource(_GroupMember, '/groups/<int:group_id>/members/<int:user_id>')	guards on resource methods; inspect source
+api/group.py	207	Flask-RESTful registration	api.add_resource(_Me, '/me')	guards on resource methods; inspect source
+api/group.py	208	Flask-RESTful registration	api.add_resource(_Users, '/users')	guards on resource methods; inspect source
+api/javascript_exec_api.py	46	Flask-RESTful registration	api.add_resource(JavaScriptExec, '/javascript')	guards on resource methods; inspect source
+api/leaderboard.py	104	Flask-RESTful registration	dynamic_restful.add_resource(ScoreCounterAPI, '/leaderboard')	guards on resource methods; inspect source
+api/leaderboard.py	105	Flask-RESTful registration	events_restful.add_resource(ElementaryLeaderboardAPI, '/ELEMENTARY_LEADERBOARD')	guards on resource methods; inspect source
+api/leaderboard.py	106	Flask-RESTful registration	events_restful.add_resource(ElementaryLeaderboardItemAPI, '/ELEMENTARY_LEADERBOARD/<int:event_id>')	guards on resource methods; inspect source
+api/microblog_api.py	556	Flask-RESTful registration	api.add_resource(MicroBlogAPI._CRUD, '/microblog', endpoint='microblog_crud')	guards on resource methods; inspect source
+api/microblog_api.py	557	Flask-RESTful registration	api.add_resource(MicroBlogAPI._Reply, '/microblog/reply', endpoint='microblog_reply')	guards on resource methods; inspect source
+api/microblog_api.py	558	Flask-RESTful registration	api.add_resource(MicroBlogAPI._Reaction, '/microblog/reaction', endpoint='microblog_reaction')	guards on resource methods; inspect source
+api/microblog_api.py	562	Flask-RESTful registration	api.add_resource(TopicAPI._CRUD, '/microblog/topics', endpoint='microblog_topic_crud')	guards on resource methods; inspect source
+api/microblog_api.py	563	Flask-RESTful registration	api.add_resource(TopicAPI._PageMicroblogs, '/microblog/page/<string:page_key>', endpoint='microblog_page_posts')	guards on resource methods; inspect source
+api/microblog_api.py	564	Flask-RESTful registration	api.add_resource(TopicAPI._AutoCreate, '/microblog/topics/auto-create', endpoint='microblog_topic_autocreate')	guards on resource methods; inspect source
+api/persona_api.py	709	Flask-RESTful registration	api.add_resource(_UserPersona, '/user/persona')	guards on resource methods; inspect source
+api/persona_api.py	710	Flask-RESTful registration	api.add_resource(_GetUserPersonas, '/user/personas')	guards on resource methods; inspect source
+api/persona_api.py	711	Flask-RESTful registration	api.add_resource(_DeleteUserPersona, '/user/persona/<int:persona_id>')	guards on resource methods; inspect source
+api/persona_api.py	714	Flask-RESTful registration	api.add_resource(_Create, '/persona/create')	guards on resource methods; inspect source
+api/persona_api.py	715	Flask-RESTful registration	api.add_resource(_Read, '/persona', '/persona/<int:id>')	guards on resource methods; inspect source
+api/persona_api.py	716	Flask-RESTful registration	api.add_resource(_Update, '/persona/update/<int:id>')	guards on resource methods; inspect source
+api/persona_api.py	717	Flask-RESTful registration	api.add_resource(_Delete, '/persona/delete/<int:id>')	guards on resource methods; inspect source
+api/persona_api.py	718	Flask-RESTful registration	api.add_resource(_EvaluateGroup, '/persona/evaluate-group')	guards on resource methods; inspect source
+api/persona_api.py	719	Flask-RESTful registration	api.add_resource(_FormGroups, '/persona/form-groups')	guards on resource methods; inspect source
+api/pfp.py	131	Flask-RESTful registration	api.add_resource(_PFP, '/pfp')	guards on resource methods; inspect source
+api/post.py	269	Flask-RESTful registration	api.add_resource(PostAPI, '')	guards on resource methods; inspect source
+api/post.py	270	Flask-RESTful registration	api.add_resource(PostListAPI, '/all')	guards on resource methods; inspect source
+api/post.py	271	Flask-RESTful registration	api.add_resource(PostPageAPI, '/page')	guards on resource methods; inspect source
+api/post.py	272	Flask-RESTful registration	api.add_resource(PostDetailAPI, '/<int:post_id>')	guards on resource methods; inspect source
+api/post.py	273	Flask-RESTful registration	api.add_resource(PostReplyAPI, '/reply')	guards on resource methods; inspect source
+api/post.py	274	Flask-RESTful registration	api.add_resource(PostUserAPI, '/user/<int:user_id>')	guards on resource methods; inspect source
+api/python_exec_api.py	43	Flask-RESTful registration	api.add_resource(PythonExec, '/python')	guards on resource methods; inspect source
+api/section.py	67	Flask-RESTful registration	api.add_resource(_CRUD, '/section')	guards on resource methods; inspect source
+api/sfi_chat.py	207	Flask-RESTful registration	api.add_resource(_Chat, '/chat')	guards on resource methods; inspect source
+api/sfi_classifier.py	79	Flask-RESTful registration	api.add_resource(_Classify, '/classify')	guards on resource methods; inspect source
+api/sfi_classifier.py	80	Flask-RESTful registration	api.add_resource(_Status, '/classifier/status')	guards on resource methods; inspect source
+api/sfi_classifier.py	81	Flask-RESTful registration	api.add_resource(_Retrain, '/classifier/retrain')	guards on resource methods; inspect source
+api/sfi_pdf_summary.py	202	Flask-RESTful registration	api.add_resource(_Summarize, '/sfi/pdf-summary')	guards on resource methods; inspect source
+api/sfi_profile.py	53	get_profile	sfi_profile_api.route('', methods=['GET'])	token_required()
+api/sfi_profile.py	59	edit_profile	sfi_profile_api.route('', methods=['PUT'])	token_required()
+api/sfi_profile.py	77	list_roles	sfi_profile_api.route('/roles', methods=['GET'])	token_required()
+api/sfi_profile.py	88	edit_role	sfi_profile_api.route('/roles/<int:user_id>', methods=['PATCH'])	token_required()
+api/sfi_profile.py	126	save_interests	sfi_profile_api.route('/interests', methods=['PUT'])	token_required()
+api/sfi_profile.py	219	save_preferences	sfi_profile_api.route('/preferences', methods=['PUT', 'PATCH'])	token_required()
+api/sfi_settings.py	41	settings	sfi_settings_api.route('', methods=['GET', 'PATCH'])	token_required()
+api/sfi_spec.py	270	Flask-RESTful registration	api.add_resource(_Search, '/specs/search')	guards on resource methods; inspect source
+api/sfi_spec.py	271	Flask-RESTful registration	api.add_resource(_ListCreate, '/specs')	guards on resource methods; inspect source
+api/sfi_spec.py	272	Flask-RESTful registration	api.add_resource(_DetailUpdateDelete, '/specs/<int:id>')	guards on resource methods; inspect source
+api/sfi_spec.py	273	Flask-RESTful registration	api.add_resource(_Archived, '/specs/archived')	guards on resource methods; inspect source
+api/sfi_spec.py	274	Flask-RESTful registration	api.add_resource(_Restore, '/specs/<int:id>/restore')	guards on resource methods; inspect source
+api/sfi_spec.py	275	Flask-RESTful registration	api.add_resource(_Categories, '/categories')	guards on resource methods; inspect source
+api/sfi_spec.py	276	Flask-RESTful registration	api.add_resource(_Detect, '/detect')	guards on resource methods; inspect source
+api/sfi_spec.py	277	Flask-RESTful registration	api.add_resource(_Stats, '/stats')	guards on resource methods; inspect source
+api/skill_snapshot_api.py	101	Flask-RESTful registration	api.add_resource(_GetPassport, '/user/skill-passport')	guards on resource methods; inspect source
+api/skill_snapshot_api.py	102	Flask-RESTful registration	api.add_resource(_CreateSnapshot, '/user/skill-snapshot')	guards on resource methods; inspect source
+api/skill_snapshot_api.py	103	Flask-RESTful registration	api.add_resource(_AdminGetPassport, '/admin/skill-passport/<int:user_id>')	guards on resource methods; inspect source
+api/snapshot_proxy.py	39	trigger_aurora	snapshot_proxy.route('/aurora', methods=['POST'])	token_required('Admin')
+api/snapshot_proxy.py	45	trigger_sqlite	snapshot_proxy.route('/sqlite', methods=['POST'])	token_required('Admin')
+api/student.py	48	Flask-RESTful registration	api.add_resource(_John, '/student/john')	guards on resource methods; inspect source
+api/student.py	49	Flask-RESTful registration	api.add_resource(_Jeff, '/student/jeff')	guards on resource methods; inspect source
+api/student.py	50	Flask-RESTful registration	api.add_resource(_Bulk, '/students')	guards on resource methods; inspect source
+api/study.py	13	add_study_record	study_api.route('', methods=['POST'])	not declared here; inspect handler
+api/study.py	61	get_study_records	study_api.route('', methods=['GET'])	not declared here; inspect handler
+api/study.py	81	get_study_stats	study_api.route('/stats', methods=['GET'])	not declared here; inspect handler
+api/study.py	133	delete_study_record	study_api.route('/<int:record_id>', methods=['DELETE'])	login_required
+api/titanic.py	37	Flask-RESTful registration	api.add_resource(_Predict, '/predict')	guards on resource methods; inspect source
+api/user.py	748	Flask-RESTful registration	api.add_resource(_ID, '/id')	guards on resource methods; inspect source
+api/user.py	749	Flask-RESTful registration	api.add_resource(_BULK, '/users')	guards on resource methods; inspect source
+api/user.py	750	Flask-RESTful registration	api.add_resource(_CRUD, '/user')	guards on resource methods; inspect source
+api/user.py	751	Flask-RESTful registration	api.add_resource(_GuestCRUD, '/user/guest')	guards on resource methods; inspect source
+api/user.py	752	Flask-RESTful registration	api.add_resource(_Section, '/user/section')	guards on resource methods; inspect source
+api/user.py	753	Flask-RESTful registration	api.add_resource(_Security, '/authenticate')	guards on resource methods; inspect source
+api/user.py	754	Flask-RESTful registration	api.add_resource(_GradeData, '/grade_data')	guards on resource methods; inspect source
+api/user.py	755	Flask-RESTful registration	api.add_resource(_APExam, '/apexam')	guards on resource methods; inspect source
+api/user.py	756	Flask-RESTful registration	api.add_resource(_School, '/school')	guards on resource methods; inspect source
+api/user.py	846	Flask-RESTful registration	api.add_resource(_Class, '/user/class')	guards on resource methods; inspect source
+api/user_gear.py	111	Flask-RESTful registration	api.add_resource(_GearCollection, '/gear')	guards on resource methods; inspect source
+api/user_gear.py	112	Flask-RESTful registration	api.add_resource(_GearItem, '/gear/<int:gear_id>')	guards on resource methods; inspect source
+api/user_gear.py	113	Flask-RESTful registration	api.add_resource(_GearAll, '/gear/all')	guards on resource methods; inspect source
+api/user_gear.py	114	Flask-RESTful registration	api.add_resource(_GearPending, '/gear/pending')	guards on resource methods; inspect source
+api/user_gear.py	115	Flask-RESTful registration	api.add_resource(_GearStatus, '/gear/<int:gear_id>/status')	guards on resource methods; inspect source
+api/user_gear.py	116	Flask-RESTful registration	api.add_resource(_GearReview, '/gear/<int:gear_id>/review')	guards on resource methods; inspect source
+main.py	152	login	app.route('/login', methods=['GET', 'POST'])	not declared here; inspect handler
+main.py	167	studytracker	app.route('/studytracker')	not declared here; inspect handler
+main.py	171	logout	app.route('/logout')	not declared here; inspect handler
+main.py	181	index	app.route('/')	not declared here; inspect handler
+main.py	189	u2table	app.route('/users/table2')	login_required
+main.py	195	sections	app.route('/sections/')	login_required
+main.py	201	persona	app.route('/persona/')	login_required
+main.py	207	uploaded_file	app.route('/uploads/<path:filename>')	not declared here; inspect handler
+main.py	212	delete_user	app.route('/users/delete/<int:user_id>', methods=['DELETE'])	login_required
+main.py	221	reset_password	app.route('/users/reset_password/<int:user_id>', methods=['POST'])	login_required
+main.py	235	kasm_users	app.route('/kasm_users')	not declared here; inspect handler
+main.py	294	delete_user_kasm	app.route('/delete_user/<user_id>', methods=['DELETE'])	not declared here; inspect handler
+main.py	326	update_user	app.route('/update_user/<string:uid>', methods=['PUT'])	not declared here; inspect handler

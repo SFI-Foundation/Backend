@@ -16,4 +16,4 @@ No runtime, schema, authentication, catalog, PDF or migration changes.
 - Catalog JSON copies: frontend/backend deployment inputs, not redundant runtime files. Retained canonical data.
 - Original checkout's feedback changes, log/metadata deletions and environment edits: preserved as found. All hygiene edits occur in this separate worktree.
 
-Full tracked metadata inventory and exact duplicate groups are recorded alongside this manifest. A duplicate hash alone does not prove safe removal. Tests use disposable synthetic SQLite data and never use the original checkout's `.env`, database or uploads. MySQL-only tests are explicitly skipped where no disposable MySQL instance is provisioned.
+Full tracked metadata inventory and exact duplicate groups are recorded alongside this manifest. A duplicate hash alone does not prove safe removal. Tests use disposable synthetic SQLite data and never use the original checkout's `.env`, database or uploads. The default SQLite run skips three MySQL-only tests. A separate newly created MySQL 8.4 container passed all three catalog tests and all 22 account/profile/preference tests, using explicitly named disposable QA schemas.
