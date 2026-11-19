@@ -38,10 +38,12 @@ instance/phase1*/
 .phase1-local/
 
 # Local secrets and QA artifacts
-.env.*
-!.env.example
 *.pem
 *.key
 *.p12
 *.pfx
 /qa-evidence/
+
+# Generated developer output; historical tracked log requires separate security review.
+/backend.log
+.DS_Store
