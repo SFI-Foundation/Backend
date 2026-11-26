@@ -17,6 +17,8 @@ from sqlalchemy.orm import Session
 from __init__ import add_cors_headers, db, validate_cors_origin
 from api.authorize import auth_required
 from api.sfi_spec import sfi_spec_api
+from api.sfi_profile import sfi_profile_api
+from api.sfi_settings import sfi_settings_api
 from model.group import initSfiGroups
 from model.persona import Persona, UserPersona  # noqa: F401 -- register ORM relationship targets
 from model.sfi_spec import SfiSpec, SfiSpecChunk
@@ -47,6 +49,10 @@ def create_app(database, demo_accounts=False):
 
     app.after_request(add_cors_headers)
     app.register_blueprint(sfi_spec_api)
+    # The shared public layout checks these real authenticated routes. Guests
+    # must receive 401, not a misleading missing-service (404) error banner.
+    app.register_blueprint(sfi_profile_api)
+    app.register_blueprint(sfi_settings_api)
 
     @app.get('/api/sfi/health')
     def health():
@@ -194,6 +200,7 @@ def main():
         help='Create only a new catalog sandbox and seed public legacy catalog',
     )
     parser.add_argument('--port', type=int, default=8605)
+    parser.add_argument('--reload', action='store_true', help='Local stat reloader; debugger stays disabled')
     parser.add_argument(
         '--demo-accounts',
         action='store_true',
@@ -204,7 +211,9 @@ def main():
         prepare(args.database, args.demo_accounts)
     else:
         create_app(args.database, args.demo_accounts).run(
-            host='127.0.0.1', port=args.port, debug=False
+            host='127.0.0.1', port=args.port, debug=False,
+            use_reloader=args.reload, use_debugger=False, reloader_type='stat',
+            extra_files=[str(Path(__file__).resolve().parents[1] / 'sfi_search_terms.json')],
         )
 
 

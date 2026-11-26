@@ -1,4 +1,9 @@
 {
+  "3.3": {
+    "terms": ["racing gloves"],
+    "source": "https://sfifoundation.com/wp-content/pdfs/specs/Spec_3.3.pdf",
+    "basis": "Product-term alias for the Gloves variants explicitly listed under Spec 3.3 in the supplied specification lists; racing describes their catalog use. Does not imply a new certification or rating."
+  },
   "16.1": {
     "terms": ["harness", "seat belt"],
     "source": "https://www.sfifoundation.com/wp-content/pdfs/specs/Spec_16.1.pdf",

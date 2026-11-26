@@ -349,6 +349,21 @@ class CatalogTests(unittest.TestCase):
         for q in ['synthetic-harness', 'Demo Restraints', 'Driver Harness']:
             self.assertEqual(find_specs(q)[0]['spec_number'], '16.1')
 
+    def test_board_search_examples_use_product_terms_without_category_or_duplicates(self):
+        for number, product, categories in [
+            ('1.1', 'Replacement Flywheels and Clutch Assemblies', ['Auto Racing', 'Drag Racing']),
+            ('3.3', 'Driver Accessories', ['Personal Protective Gear, Restraints & Nets']),
+        ]:
+            for category in categories:
+                db.session.add(SfiSpec(spec_number=number, product_name=product, category=category))
+        db.session.commit()
+        for query, expected in [('1.1', '1.1'), ('racing gloves', '3.3'), (' RACING   GLOVES ', '3.3')]:
+            response = self.client.get('/api/sfi/specs/search', query_string={'q': query})
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual([item['spec_number'] for item in response.json], [expected])
+            self.assertIsNone(response.json[0]['view_spec_url'])
+        self.assertEqual(find_specs('racing gloves', category='Auto Racing'), [])
+
     def test_pagination_errors_and_injection_literal(self):
         self.seed()
         for params in [
